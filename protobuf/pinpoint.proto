@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pinpoint;
+
+import "request.proto";
+import "response.proto";
+
+// Protobuf definitions for pinpoint's core service
+service PinpointCore {
+  rpc GetStatus(request.Status) returns (response.Status) {}
+}
