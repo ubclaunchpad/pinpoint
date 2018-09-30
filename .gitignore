@@ -90,3 +90,6 @@ typings/
 
 # Serverless directories
 .serverless
+
+# Build output
+build

@@ -20,6 +20,7 @@
     "no-param-reassign": 0,
     "object-shorthand": 0,
     "import/no-dynamic-require": 0,
-    "import/newline-after-import": 0
+    "import/newline-after-import": 0,
+    "react/jsx-filename-extension": 0
   }
 }
