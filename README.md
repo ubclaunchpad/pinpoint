@@ -31,6 +31,8 @@ $> go get github.com/ubclaunchpad/pinpoint
 
 ### Installing Dependencies
 
+You will need [dep](https://github.com/golang/dep#installation) and [npm](https://www.npmjs.com/get-npm) installed.
+
 ```bash
 $> make deps
 ```
@@ -42,3 +44,5 @@ $> make deps
 ```bash
 $> make proto
 ```
+
+You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.
