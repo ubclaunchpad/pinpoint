@@ -50,7 +50,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "lint": "eslint . --ignore-pattern node_modules/"
+    "lint": "eslint ."
   },
   "jest": {
     "collectCoverageFrom": [
