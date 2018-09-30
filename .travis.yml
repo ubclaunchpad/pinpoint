@@ -1,14 +1,12 @@
-language: go
-go:
-  - "1.11"
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-jobs:
+matrix:
   include:
     # Go components
-    - stage: test
+    - language: go
+      go:
+        - "1.11"
       install:
         - go get -u golang.org/x/lint/golint
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -23,7 +21,10 @@ jobs:
         - go test -race -coverprofile=coverage.txt ./...
 
     # Frontend
-    - before_install: cd frontend
+    - language: node_js
+      node_js:
+        - "8.12"
+      before_install: cd frontend
       install:
         - npm install
       before_script:
@@ -33,7 +34,10 @@ jobs:
         - npm test -- --coverage 
 
     # Client
-    - before_install: cd client
+    - language: node_js
+      node_js:
+        - "8.12"
+      before_install: cd client
       install:
         - npm install
       before_script:
