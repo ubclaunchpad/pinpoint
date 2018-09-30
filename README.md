@@ -26,7 +26,7 @@ To get started, make sure you have the following installed:
 To fetch the codebase, use `go get`:
 
 ```bash
-$> go get github.com/ubclaunchpad/
+$> go get github.com/ubclaunchpad/pinpoint
 ```
 
 ### Installing Dependencies
