@@ -2,6 +2,7 @@
 vendor
 node_modules
 package-lock.json
+yarn.lock
 
 # Binaries for programs and plugins
 *.exe
