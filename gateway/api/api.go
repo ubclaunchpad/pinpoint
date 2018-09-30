@@ -18,7 +18,7 @@ type API struct {
 }
 
 // New creates a new API server - start it using Run()
-func New(logger *zap.SugaredLogger, debug bool) (*API, error) {
+func New(conn *grpc.ClientConn, logger *zap.SugaredLogger, debug bool) (*API, error) {
 	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -27,7 +27,7 @@ func New(logger *zap.SugaredLogger, debug bool) (*API, error) {
 
 	a := &API{
 		r: gin.New(), l: logger.Named("api"),
-		c: pinpoint.NewPinpointCoreClient(&grpc.ClientConn{}),
+		c: pinpoint.NewPinpointCoreClient(conn),
 	}
 
 	a.setUpEngine()

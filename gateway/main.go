@@ -6,6 +6,7 @@ import (
 
 	"github.com/ubclaunchpad/pinpoint/gateway/api"
 	"github.com/ubclaunchpad/pinpoint/utils"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -21,8 +22,16 @@ func main() {
 	}
 	defer logger.Sync()
 
+	// Connect to core service
+	conn, err := grpc.Dial(os.Getenv("CORE_HOST") + ":" + os.Getenv("CORE_PORT"))
+	if err != nil {
+		logger.Fatalw("failed to connect to core service",
+			"error", err.Error())
+	}
+	defer conn.Close()
+
 	// Set up api
-	a, err := api.New(logger, dev)
+	a, err := api.New(conn, logger, dev)
 	if err != nil {
 		logger.Fatalw("failed to create app",
 			"error", err.Error())
