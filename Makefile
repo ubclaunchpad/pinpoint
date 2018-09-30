@@ -10,10 +10,23 @@ check:
 .PHONY: deps
 deps:
 	dep ensure
+	( cd frontend ; npm install )
+	( cd cleint ; npm install )
 
 # Execute tests
+.PHONY: test
 test:
-	go test ./...
+	go test -race ./...
+	( cd frontend ; npm run test -- --coverage )
+	( cd client ; npm run test )
+
+# Run linters and checks
+.PHONY: lint
+lint: check
+	go fmt ./...
+	golint `go list ./... | grep -v /vendor/`
+	( cd frontend ; npm run lint )
+	( cd client ; npm run lint )
 
 # Generate protobuf code from definitions
 .PHONY: proto
