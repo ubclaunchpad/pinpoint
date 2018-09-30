@@ -2,8 +2,11 @@ package api
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	pinpoint "github.com/ubclaunchpad/pinpoint/grpc"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -13,7 +16,7 @@ import (
 // service.Service can be accessed.
 type API struct {
 	l *zap.SugaredLogger
-	r *gin.Engine
+	r *chi.Mux
 	c pinpoint.PinpointCoreClient
 }
 
@@ -26,26 +29,29 @@ func New(conn *grpc.ClientConn, logger *zap.SugaredLogger, debug bool) (*API, er
 	}
 
 	a := &API{
-		r: gin.New(), l: logger.Named("api"),
+		r: chi.NewRouter(), l: logger.Named("api"),
 		c: pinpoint.NewPinpointCoreClient(conn),
 	}
 
-	a.setUpEngine()
+	a.setUpRouter()
 	a.registerHandlers()
 
 	return a, nil
 }
 
-func (a *API) setUpEngine() {
-	a.r.Use(zapMiddleware(a.l), gin.Recovery())
+// setUpRouter initializes any middleware or general things the API router
+// might need
+func (a *API) setUpRouter() {
+	a.r.Use(
+		middleware.RequestID,
+		middleware.RealIP,
+		newLoggerMiddleware("router", a.l),
+		middleware.Recoverer)
 }
 
+// registerHandler sets up server routes
 func (a *API) registerHandlers() {
-	a.r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	a.r.Get("/status", a.statusHandler)
 }
 
 // RunOpts defines options for API server startup
@@ -77,7 +83,7 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 
 	addr := host + ":" + port
 	if opts.SSLOpts != nil {
-		return a.r.RunTLS(addr, opts.CertFile, opts.KeyFile)
+		return http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
 	}
-	return a.r.Run(addr)
+	return http.ListenAndServe(addr, a.r)
 }

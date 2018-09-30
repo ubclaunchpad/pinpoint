@@ -3,52 +3,47 @@ package api
 import (
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"net/http"
+
+	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
 )
 
-// zapMiddleware manages logging requests and errors going through gin router
-func zapMiddleware(logger *zap.SugaredLogger) gin.HandlerFunc {
+type loggerMiddleware struct {
+	l *zap.Logger
+}
+
+func newLoggerMiddleware(name string, logger *zap.SugaredLogger) func(next http.Handler) http.Handler {
 	// use faster, default zap.Logger
-	l := logger.Desugar().Named("gin")
-	return func(c *gin.Context) {
+	return loggerMiddleware{logger.Desugar().Named(name)}.Handler
+}
+
+// zapMiddleware manages logging requests and errors going through gin router
+func (z loggerMiddleware) Handler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		c.Next()
+		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+		next.ServeHTTP(ww, r)
+		latency := time.Since(start)
 
-		var (
-			// measure latency
-			latency = time.Since(start)
-
-			// gather metadata
-			status = c.Writer.Status()
-			method = c.Request.Method
-			path   = c.Request.URL.Path
-			query  = c.Request.URL.RawQuery
-			ip     = c.ClientIP()
-			agent  = c.Request.UserAgent()
-		)
-
-		if len(c.Errors) > 0 {
-			// log as error with metadata if there are errors
-			l.Error("error at "+path,
-				zap.Strings("errors", c.Errors.Errors()),
-				zap.Int("status", status),
-				zap.String("method", method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", ip),
-				zap.String("user-agent", agent),
-				zap.Duration("latency", latency))
-		} else {
-			// log as info with metadata by default
-			l.Info("request at "+path,
-				zap.Int("status", status),
-				zap.String("method", method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("ip", ip),
-				zap.String("user-agent", agent),
-				zap.Duration("latency", latency))
+		var requestID string
+		if reqID := r.Context().Value(middleware.RequestIDKey); reqID != nil {
+			requestID = reqID.(string)
 		}
-	}
+		z.l.Info("request completed",
+			// request metadata
+			zap.String("path", r.URL.Path),
+			zap.String("query", r.URL.RawQuery),
+			zap.String("method", r.Method),
+			zap.String("user-agent", r.UserAgent()),
+
+			// response metadata
+			zap.Int("status", ww.Status()),
+			zap.Duration("took", latency),
+
+			// additional metadata
+			zap.String("real-ip", r.RemoteAddr),
+			zap.String("request-id", requestID))
+	},
+	)
 }
