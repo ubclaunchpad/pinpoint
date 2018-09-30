@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws/client"
@@ -36,5 +37,9 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Service, 
 
 // GetStatus retrieves status of service
 func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response.Status, error) {
-	return &response.Status{Callback: req.Callback}, nil
+	res := &response.Status{Callback: req.Callback}
+	if req.Callback == "I don't like launch pad" {
+		return res, errors.New("launch pad is the best and you know it")
+	}
+	return res, nil
 }
