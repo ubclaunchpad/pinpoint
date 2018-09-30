@@ -9,8 +9,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
-	( cd gateway ; dep ensure )
-	( cd core ; dep ensure )
+	dep ensure
 
 # Execute tests
 test:
