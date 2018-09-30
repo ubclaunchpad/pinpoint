@@ -2,9 +2,21 @@
   "extends": "airbnb",
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
+  "plugins": [
+    "jest"
+  ],
   "rules": {
-
+    "arrow-parens": 0,
+    "consistent-return": 0,
+    "strict": 0,
+    "global-require": 0,
+    "no-use-before-define": 0,
+    "no-param-reassign": 0,
+    "object-shorthand": 0,
+    "import/no-dynamic-require": 0,
+    "import/newline-after-import": 0
   }
 }
