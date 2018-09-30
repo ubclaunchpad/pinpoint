@@ -24,6 +24,8 @@ matrix:
     - language: node_js
       node_js:
         - "8.12"
+      env:
+        - TEST="frontend"
       before_install: cd frontend
       install:
         - npm install
@@ -37,6 +39,8 @@ matrix:
     - language: node_js
       node_js:
         - "8.12"
+      env:
+        - TEST="client"
       before_install: cd client
       install:
         - npm install
