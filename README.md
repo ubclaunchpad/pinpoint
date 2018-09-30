@@ -1,4 +1,4 @@
-# 📊 pinpoint [![GoDoc](https://godoc.org/github.com/ubclaunchpad/pinpoint?status.svg)](https://godoc.org/github.com/ubclaunchpad/pinpoint) [![Build Status](https://travis-ci.com/ubclaunchpad/pinpoint.svg?branch=master)](https://travis-ci.com/ubclaunchpad/pinpoint) [![codecov](https://codecov.io/gh/ubclaunchpad/pinpoint/branch/master/graph/badge.svg)](https://codecov.io/gh/ubclaunchpad/pinpoint) [![Go Report Card](https://goreportcard.com/badge/github.com/ubclaunchpad/pinpoint)](https://goreportcard.com/report/github.com/ubclaunchpad/pinpoint)
+# 📊 pinpoint [![Build Status](https://travis-ci.com/ubclaunchpad/pinpoint.svg?branch=master)](https://travis-ci.com/ubclaunchpad/pinpoint) [![codecov](https://codecov.io/gh/ubclaunchpad/pinpoint/branch/master/graph/badge.svg)](https://codecov.io/gh/ubclaunchpad/pinpoint) [![Go Report Card](https://goreportcard.com/badge/github.com/ubclaunchpad/pinpoint)](https://goreportcard.com/report/github.com/ubclaunchpad/pinpoint)
 
 Pinpoint is a membership application management service geared towards helping university clubs and hackathons decide on the best applicants out of their pool of candidates.
 
