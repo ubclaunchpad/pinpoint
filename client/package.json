@@ -4,8 +4,16 @@
   "description": "The Pinpoint API client library",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "jest",
     "lint": "eslint . --ignore-pattern node_modules/"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!**/*.test.js"
+    ]
   },
   "author": "UBC Launch Pad",
   "license": "Apache-2.0",
