@@ -2,6 +2,8 @@
 
 Pinpoint is a membership application management service geared towards helping university clubs and hackathons decide on the best applicants out of their pool of candidates.
 
+See the project outline and minimum viable product in our [wiki](https://github.com/ubclaunchpad/pinpoint/wiki/Project-Outline).
+
 ## Project Structure
 
 The project is structured as follows:
