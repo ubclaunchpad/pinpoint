@@ -22,6 +22,10 @@ test:
 	( cd frontend ; npm run test -- --coverage )
 	( cd client ; npm run test )
 
+# Set up test environment
+testenv:
+	docker-compose -f dev/docker-compose.yml up -d
+
 # Run linters and checks
 .PHONY: lint
 lint: check
