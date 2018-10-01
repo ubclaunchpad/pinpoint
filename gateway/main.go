@@ -39,7 +39,6 @@ func main() {
 	}
 
 	// Let's go!
-	println(os.Getenv("API_HOST"), os.Getenv("API_PORT"))
 	if err = a.Run(os.Getenv("API_HOST"), os.Getenv("API_PORT"), api.RunOpts{
 		SSLOpts: &api.SSLOpts{
 			CertFile: os.Getenv("API_CERT"),

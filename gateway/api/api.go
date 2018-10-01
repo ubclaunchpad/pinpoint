@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	pinpoint "github.com/ubclaunchpad/pinpoint/grpc"
@@ -22,12 +21,6 @@ type API struct {
 
 // New creates a new API server - start it using Run()
 func New(conn *grpc.ClientConn, logger *zap.SugaredLogger, debug bool) (*API, error) {
-	if debug {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	a := &API{
 		r: chi.NewRouter(), l: logger.Named("api"),
 		c: pinpoint.NewPinpointCoreClient(conn),
