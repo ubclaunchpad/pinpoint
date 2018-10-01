@@ -82,7 +82,7 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		"port", port)
 
 	addr := host + ":" + port
-	if opts.SSLOpts != nil {
+	if opts.SSLOpts != nil && opts.CertFile != "" {
 		return http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
 	}
 	return http.ListenAndServe(addr, a.r)

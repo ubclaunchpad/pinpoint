@@ -18,6 +18,5 @@ type ErrResponse struct {
 // Render renders an ErrResponse
 func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	render.Status(r, e.HTTPStatusCode)
-	render.JSON(w, r, e)
 	return nil
 }

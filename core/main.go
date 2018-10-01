@@ -40,7 +40,7 @@ func main() {
 
 	// set up rpc server
 	var (
-		s    = &grpc.Server{}
+		s    = grpc.NewServer()
 		addr = os.Getenv("CORE_HOST") + ":" + os.Getenv("CORE_PORT")
 	)
 
@@ -51,8 +51,12 @@ func main() {
 		logger.Fatalw("failed to start service",
 			"error", err.Error())
 	}
+	logger.Infow("spinning up service",
+		"host", os.Getenv("CORE_HOST"),
+		"core", os.Getenv("CORE_PORT"))
 	if err = s.Serve(listener); err != nil {
-		logger.Fatalw("service shut down",
+		logger.Fatalw("error encountered",
 			"error", err.Error())
 	}
+	logger.Info("service shut down")
 }

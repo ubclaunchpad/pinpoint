@@ -37,6 +37,15 @@ You will need [dep](https://github.com/golang/dep#installation) and [npm](https:
 $> make deps
 ```
 
+### Spinning up Services Locally
+
+Run the following commands in two separate shell sessions:
+
+```
+$> make core
+$> make gateway
+```
+
 ### Updating the Golang gRPC API
 
 `gateway` and `core` uses the Golang API within the `grpc` directory to communicate. If you make changes to the protobuf definitions in the `protobuf` directories, you will need to update this API:

@@ -23,7 +23,8 @@ func main() {
 	defer logger.Sync()
 
 	// Connect to core service
-	conn, err := grpc.Dial(os.Getenv("CORE_HOST") + ":" + os.Getenv("CORE_PORT"))
+	conn, err := grpc.Dial(os.Getenv("CORE_HOST")+":"+os.Getenv("CORE_PORT"),
+		grpc.WithInsecure())
 	if err != nil {
 		logger.Fatalw("failed to connect to core service",
 			"error", err.Error())
@@ -38,6 +39,7 @@ func main() {
 	}
 
 	// Let's go!
+	println(os.Getenv("API_HOST"), os.Getenv("API_PORT"))
 	if err = a.Run(os.Getenv("API_HOST"), os.Getenv("API_PORT"), api.RunOpts{
 		SSLOpts: &api.SSLOpts{
 			CertFile: os.Getenv("API_CERT"),
