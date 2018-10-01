@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
@@ -12,8 +13,8 @@ func AWSConfig(dev bool) (cfg *aws.Config) {
 			// dynamodb-local
 			Endpoint: aws.String("http://localhost:8000"),
 
-			// vocal logs
-			// LogLevel: aws.LogLevel(aws.LogDebug),
+			// static credentials
+			Credentials: credentials.NewStaticCredentials("robert", "wow", "launchpad"),
 
 			// arbitrary region
 			Region: aws.String("us-west-2"),
