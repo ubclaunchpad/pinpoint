@@ -33,7 +33,6 @@ func (db *Database) initTables() error {
 	}
 
 	// init all tables, collecting critical errors on the way
-	tableErrors := make([]error, 0)
 	for _, t := range tables {
 		_, err := db.c.CreateTable(t)
 		if err != nil {
@@ -43,13 +42,9 @@ func (db *Database) initTables() error {
 					"table", *t.TableName,
 					"error", err.Error())
 			} else {
-				tableErrors = append(tableErrors, err)
+				return err
 			}
 		}
-	}
-
-	if len(tableErrors) > 0 {
-		return fmt.Errorf("encountered errors in tables initialization: %v", tableErrors)
 	}
 
 	return nil
