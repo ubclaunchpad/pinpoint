@@ -20,7 +20,7 @@ which consists of a number of tasks and tests run by
 
 Submitting a pull request consists of several steps:
 
-### 1. Creating and Assigning an Issue
+### 1. Create and Assign an Issue
 
 Check if an [Issue](https://github.com/ubclaunchpad/pinpoint/issues)
 (also referred to as 'ticket') exists for the change you want to make - if there
@@ -32,7 +32,7 @@ Relevant issues and pull requests should be included as part a
 [project](https://github.com/ubclaunchpad/pinpoint/projects), which provides us
 with a kanban board with an overview of the project's progress.
 
-### 2. Creating a Branch
+### 2. Create a Branch
 
 Pull requests are made to request permission to merge from one branch into
 another, typically `master`. This applies the changes from the 'source' branch
@@ -79,7 +79,7 @@ Commit messages are very important -
 [this guide](https://chris.beams.io/posts/git-commit/#seven-rules) provides
 a great overview of what makes a good commit message.
 
-#### 3. Submit a Pull Request
+### 3. Submit a Pull Request
 
 To submit a pull request, you must first push you changes onto GitHub:
 
