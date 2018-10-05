@@ -13,7 +13,7 @@ check:
 deps:
 	dep ensure
 	( cd frontend ; npm install )
-	( cd cleint ; npm install )
+	( cd client ; npm install )
 
 # Execute tests
 .PHONY: test
