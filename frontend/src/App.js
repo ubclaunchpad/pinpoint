@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
