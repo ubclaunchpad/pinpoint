@@ -1,5 +1,8 @@
+services:
+  - docker
+
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -F $TEST
 
 matrix:
   include:
@@ -7,6 +10,8 @@ matrix:
     - language: go
       go:
         - "1.11"
+      env:
+        - TEST="golang"
       install:
         - go get -u golang.org/x/lint/golint
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -14,6 +19,7 @@ matrix:
       before_script:
         - go vet ./...
         - go build ./...
+        - make testenv
         - go test -run xxxx ./...
       script:
         - go fmt ./...

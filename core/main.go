@@ -6,8 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/ubclaunchpad/pinpoint/core/service"
 	pinpoint "github.com/ubclaunchpad/pinpoint/grpc"
 	"github.com/ubclaunchpad/pinpoint/utils"
@@ -34,9 +32,11 @@ func main() {
 	defer logger.Sync()
 
 	// Set up AWS credentials
-	awsConfig, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
+	awsConfig, err := utils.AWSSession(utils.AWSConfig(dev))
+	if err != nil {
+		logger.Fatalw("failed to connect to aws",
+			"error", err.Error())
+	}
 
 	// Set up service
 	core, err := service.New(awsConfig, logger)

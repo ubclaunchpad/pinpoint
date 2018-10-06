@@ -14,6 +14,20 @@ type Database struct {
 
 // New creates a new database client
 func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Database, error) {
-	c := dynamodb.New(awsConfig)
-	return &Database{c, logger.Named("db")}, nil
+	db := &Database{dynamodb.New(awsConfig), logger.Named("db")}
+
+	// set up database
+	if err := db.initTables(); err != nil {
+		return nil, err
+	}
+
+	// log current tables
+	tables, err := db.c.ListTables(nil)
+	if err != nil {
+		return nil, err
+	}
+	db.l.Infow("connected to database",
+		"tables", tables.TableNames)
+
+	return db, nil
 }
