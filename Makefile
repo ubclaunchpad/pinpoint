@@ -49,13 +49,23 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
-	go build -o ./bin/pinpoint-core \
-    -ldflags "-w -s -X main.Version=$(VERSION)" \
-    ./core
+	go run core/main.go run --dev
 
-# Runs gateway api server
+# Runs API gateway
 .PHONY: gateway
 gateway:
+	go run gateway/main.go run --dev
+
+# Builds binary for pinpoint-core
+.PHONY: pinpoint-core
+pinpoint-core:
+	go build -o ./bin/pinpoint-core \
+    -ldflags "-X main.Version=$(VERSION)" \
+    ./core
+
+# Builds binary for pinpoint-gateway
+.PHONY: pinpoint-gateway
+pinpoint-gateway:
 	go build -o ./bin/pinpoint-gateway \
-    -ldflags "-w -s -X main.Version=$(VERSION)" \
+    -ldflags "-X main.Version=$(VERSION)" \
     ./gateway
