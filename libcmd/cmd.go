@@ -1,4 +1,4 @@
-package cmdlib
+package libcmd
 
 import (
 	"fmt"

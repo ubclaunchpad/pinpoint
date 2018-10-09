@@ -1,4 +1,4 @@
-package cmdlib
+package libcmd
 
 import "github.com/spf13/cobra"
 

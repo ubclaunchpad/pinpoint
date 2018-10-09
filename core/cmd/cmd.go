@@ -1,18 +1,16 @@
 package cmd
 
-import (
-	"github.com/ubclaunchpad/pinpoint/cmdlib"
-)
+import "github.com/ubclaunchpad/pinpoint/libcmd"
 
 // CoreCommand is the CLI for pinpoint-core
 type CoreCommand struct {
-	*cmdlib.Command
+	*libcmd.Command
 }
 
 // New creates a new CoreCommand
 func New(version string) *CoreCommand {
 	app := &CoreCommand{
-		Command: cmdlib.New("pinpoint-core",
+		Command: libcmd.New("pinpoint-core",
 			"Pinpoint's core service",
 			``,
 			version,

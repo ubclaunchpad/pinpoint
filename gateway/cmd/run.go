@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/ubclaunchpad/pinpoint/cmdlib"
 	"github.com/ubclaunchpad/pinpoint/gateway/api"
+	"github.com/ubclaunchpad/pinpoint/libcmd"
 	"google.golang.org/grpc"
 )
 
@@ -31,7 +31,7 @@ func (g *GatewayCommand) getRunCommand() *cobra.Command {
 func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		// retrieve flags
-		flags, err := cmdlib.GetStringFlags(cmd,
+		flags, err := libcmd.GetStringFlags(cmd,
 			"core.host", "core.port", "ssl.cert", "ssl.key")
 		if err != nil {
 			return err
