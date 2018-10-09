@@ -1,5 +1,6 @@
 VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
+DEV_COMPOSE=docker-compose -f dev/docker-compose.yml
 
 all: check
 
@@ -24,8 +25,19 @@ test:
 	( cd client ; npm run test )
 
 # Set up test environment
+.PHONY: testenv
 testenv:
-	docker-compose -f dev/docker-compose.yml up -d
+	$(DEV_COMPOSE) up -d
+
+# Stop test environment
+.PHONY: testenv-stop
+testenv-stop:
+	$(DEV_COMPOSE) stop
+
+# Clean up stuff
+.PHONY: clean
+clean: testenv-stop
+	$(DEV_COMPOSE) rm -f -s -v
 
 # Run linters and checks
 .PHONY: lint

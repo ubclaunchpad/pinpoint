@@ -41,7 +41,17 @@ $> make deps
 
 ### Spinning up Services Locally
 
-Run the following commands in two separate shell sessions:
+External dependencies, such as the database, can be started and stopped using
+docker-compose, which leverages available Docker containers:
+
+```sh
+$> make testenv       # start up service containers
+$> make testenv-stop  # stop containers
+$> make clean         # remove containers
+```
+
+Pinpoint services can be started up using the following commands in two separate
+shell sessions:
 
 ```sh
 $> make core
