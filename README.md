@@ -39,22 +39,13 @@ You will need [dep](https://github.com/golang/dep#installation) and [npm](https:
 $> make deps
 ```
 
-### Building
-
-To build the Golang components, run the following commands:
-
-```sh
-$> make core
-$> make gateway
-```
-
 ### Spinning up Services Locally
 
 Run the following commands in two separate shell sessions:
 
-```
-$> ./bin/pinpoint-core run --dev
-$> ./bin/pinpoint-gateway run --dev
+```sh
+$> make core
+$> make gateway
 ```
 
 ### Updating the Golang gRPC API
@@ -66,3 +57,14 @@ $> make proto
 ```
 
 You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.
+
+### Building
+
+#### Golang Binaries
+
+To build the Golang components, run the following commands:
+
+```sh
+$> make pinpoint-core
+$> make pinpoint-gateway
+```
