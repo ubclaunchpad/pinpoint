@@ -39,13 +39,22 @@ You will need [dep](https://github.com/golang/dep#installation) and [npm](https:
 $> make deps
 ```
 
+### Building
+
+To build the Golang components, run the following commands:
+
+```sh
+$> make core
+$> make gateway
+```
+
 ### Spinning up Services Locally
 
 Run the following commands in two separate shell sessions:
 
 ```
-$> make core
-$> make gateway
+$> ./bin/pinpoint-core run --dev
+$> ./bin/pinpoint-gateway run --dev
 ```
 
 ### Updating the Golang gRPC API

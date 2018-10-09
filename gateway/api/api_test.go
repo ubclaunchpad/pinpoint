@@ -11,5 +11,5 @@ func TestNew(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, _ = New(nil, l, true)
+	_, _ = New(l)
 }

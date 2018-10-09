@@ -1,3 +1,4 @@
+VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
 
 all: check
@@ -48,9 +49,13 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
-	$(DEV_ENV) ; go run core/main.go
+	go build -o ./bin/pinpoint-core \
+    -ldflags "-w -s -X main.Version=$(VERSION)" \
+    ./core
 
 # Runs gateway api server
 .PHONY: gateway
 gateway:
-	$(DEV_ENV) ; go run gateway/main.go
+	go build -o ./bin/pinpoint-gateway \
+    -ldflags "-w -s -X main.Version=$(VERSION)" \
+    ./gateway
