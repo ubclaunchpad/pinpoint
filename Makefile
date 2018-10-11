@@ -20,7 +20,7 @@ deps:
 # Execute tests
 .PHONY: test
 test:
-	go test -race ./...
+	go test -race -cover ./...
 	( cd frontend ; npm run test -- --coverage )
 	( cd client ; npm run test )
 
