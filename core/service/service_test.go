@@ -4,10 +4,43 @@ import (
 	"context"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/ubclaunchpad/pinpoint/grpc/request"
 	"github.com/ubclaunchpad/pinpoint/grpc/response"
+	"github.com/ubclaunchpad/pinpoint/utils"
 )
+
+func TestService_New(t *testing.T) {
+	l, err := utils.NewLogger(true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	aws, _ := utils.AWSSession(utils.AWSConfig(true))
+	if _, err = New(aws, l); err != nil {
+		t.Error(err)
+		return
+	}
+}
+
+func TestService_Run(t *testing.T) {
+	l, err := utils.NewLogger(true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	aws, _ := utils.AWSSession(utils.AWSConfig(true))
+	s, err := New(aws, l)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// stub run
+	go s.Run("", "")
+	time.Sleep(time.Millisecond)
+}
 
 func TestService_GetStatus(t *testing.T) {
 	type args struct {
