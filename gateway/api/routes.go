@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
-	"github.com/ubclaunchpad/pinpoint/grpc/request"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 )
 
 func (a *API) statusHandler(w http.ResponseWriter, r *http.Request) {

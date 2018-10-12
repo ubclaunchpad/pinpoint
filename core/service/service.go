@@ -9,9 +9,9 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/ubclaunchpad/pinpoint/core/database"
-	pinpoint "github.com/ubclaunchpad/pinpoint/grpc"
-	"github.com/ubclaunchpad/pinpoint/grpc/request"
-	"github.com/ubclaunchpad/pinpoint/grpc/response"
+	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
+	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"google.golang.org/grpc"
 
 	"go.uber.org/zap"
@@ -63,7 +63,7 @@ func (s *Service) Run(host, port string) error {
 			grpc_zap.StreamServerInterceptor(grpcLogger, opts...)))
 
 	// register self
-	pinpoint.RegisterPinpointCoreServer(grpcServer, s)
+	pinpoint.RegisterCoreServer(grpcServer, s)
 
 	// let's gooooo
 	s.l.Infow("spinning up core service",

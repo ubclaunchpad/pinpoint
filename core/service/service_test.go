@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ubclaunchpad/pinpoint/grpc/request"
-	"github.com/ubclaunchpad/pinpoint/grpc/response"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
+	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 

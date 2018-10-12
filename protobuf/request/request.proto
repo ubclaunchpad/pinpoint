@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+// package request defines request datatypes
+package request;
+option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/request";
+
+message Empty {}
+
+message Status {
+  string callback = 1;
+}
