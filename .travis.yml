@@ -6,8 +6,24 @@ after_success:
 
 matrix:
   include:
+    # Check if compiled code is up to date
+    - name: "Protoc Check"
+      language: go
+      go:
+        - "1.11"
+      install:
+        - bash .scripts/install-protoc.sh
+        - go get -u github.com/golang/protobuf/protoc-gen-go
+      script:
+        # generate code and exit with status 1 if diff is detected
+        - make proto
+        - git --no-pager diff protobuf
+        - git diff-index --relative=protobuf --quiet HEAD --
+      after_success: skip
+
     # Go components
-    - language: go
+    - name: "Core and Gateway Tests"
+      language: go
       go:
         - "1.11"
       env:
@@ -27,7 +43,8 @@ matrix:
         - go test -race -coverprofile=coverage.txt ./...
 
     # Frontend
-    - language: node_js
+    - name: "Frontend Tests"
+      language: node_js
       node_js:
         - "8.12"
       env:
@@ -42,7 +59,8 @@ matrix:
         - npm test -- --coverage 
 
     # Client
-    - language: node_js
+    - name: "Client Tests"
+      language: node_js
       node_js:
         - "8.12"
       env:
