@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package response;
-option go_package = "github.com/ubclaunchpad/pinpoint/grpc/response";
-
-message Status {
-  string callback = 1;
-}

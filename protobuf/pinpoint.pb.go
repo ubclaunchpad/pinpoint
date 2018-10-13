@@ -6,8 +6,8 @@ package pinpoint
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	request "github.com/ubclaunchpad/pinpoint/grpc/request"
-	response "github.com/ubclaunchpad/pinpoint/grpc/response"
+	request "github.com/ubclaunchpad/pinpoint/protobuf/request"
+	response "github.com/ubclaunchpad/pinpoint/protobuf/response"
 	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 	math "math"
@@ -27,14 +27,15 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 func init() { proto.RegisterFile("pinpoint.proto", fileDescriptor_cbb17ad260bc57ce) }
 
 var fileDescriptor_cbb17ad260bc57ce = []byte{
-	// 110 bytes of a gzipped FileDescriptorProto
+	// 114 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0xc8, 0xcc, 0x2b,
-	0xc8, 0xcf, 0xcc, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x78,
-	0x8b, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0xa1, 0x12, 0x52, 0x7c, 0x45, 0xa9, 0xc5, 0x05, 0xf9, 0x79,
-	0xc5, 0xa9, 0x10, 0xbe, 0x91, 0x03, 0x17, 0x4f, 0x00, 0x54, 0xa9, 0x73, 0x7e, 0x51, 0xaa, 0x90,
-	0x01, 0x17, 0xa7, 0x7b, 0x6a, 0x49, 0x70, 0x49, 0x62, 0x49, 0x69, 0xb1, 0x10, 0xbf, 0x1e, 0x4c,
-	0x33, 0x44, 0x40, 0x4a, 0x40, 0x0f, 0xae, 0x1d, 0x22, 0xa2, 0xc4, 0x90, 0xc4, 0x06, 0x36, 0xc8,
-	0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xc5, 0x08, 0xbd, 0xe9, 0x83, 0x00, 0x00, 0x00,
+	0xc8, 0xcf, 0xcc, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x44,
+	0x8b, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xf4, 0xa1, 0x34, 0x44, 0x81, 0x94, 0x78, 0x51, 0x6a,
+	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x3e, 0x8c, 0x01, 0x91, 0x30, 0xb2, 0xe0, 0x62, 0x71, 0xce,
+	0x2f, 0x4a, 0x15, 0x32, 0xe0, 0xe2, 0x74, 0x4f, 0x2d, 0x09, 0x2e, 0x49, 0x2c, 0x29, 0x2d, 0x16,
+	0xe2, 0xd7, 0x83, 0xe9, 0x86, 0x08, 0x48, 0x09, 0xe8, 0xc1, 0xb5, 0x41, 0x44, 0x94, 0x18, 0x92,
+	0xd8, 0xc0, 0x06, 0x18, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x5c, 0xe0, 0x31, 0x3f, 0x8c, 0x00,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -45,64 +46,64 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// PinpointCoreClient is the client API for PinpointCore service.
+// CoreClient is the client API for Core service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type PinpointCoreClient interface {
+type CoreClient interface {
 	GetStatus(ctx context.Context, in *request.Status, opts ...grpc.CallOption) (*response.Status, error)
 }
 
-type pinpointCoreClient struct {
+type coreClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewPinpointCoreClient(cc *grpc.ClientConn) PinpointCoreClient {
-	return &pinpointCoreClient{cc}
+func NewCoreClient(cc *grpc.ClientConn) CoreClient {
+	return &coreClient{cc}
 }
 
-func (c *pinpointCoreClient) GetStatus(ctx context.Context, in *request.Status, opts ...grpc.CallOption) (*response.Status, error) {
+func (c *coreClient) GetStatus(ctx context.Context, in *request.Status, opts ...grpc.CallOption) (*response.Status, error) {
 	out := new(response.Status)
-	err := c.cc.Invoke(ctx, "/pinpoint.PinpointCore/GetStatus", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pinpoint.Core/GetStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// PinpointCoreServer is the server API for PinpointCore service.
-type PinpointCoreServer interface {
+// CoreServer is the server API for Core service.
+type CoreServer interface {
 	GetStatus(context.Context, *request.Status) (*response.Status, error)
 }
 
-func RegisterPinpointCoreServer(s *grpc.Server, srv PinpointCoreServer) {
-	s.RegisterService(&_PinpointCore_serviceDesc, srv)
+func RegisterCoreServer(s *grpc.Server, srv CoreServer) {
+	s.RegisterService(&_Core_serviceDesc, srv)
 }
 
-func _PinpointCore_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Core_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(request.Status)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PinpointCoreServer).GetStatus(ctx, in)
+		return srv.(CoreServer).GetStatus(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pinpoint.PinpointCore/GetStatus",
+		FullMethod: "/pinpoint.Core/GetStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PinpointCoreServer).GetStatus(ctx, req.(*request.Status))
+		return srv.(CoreServer).GetStatus(ctx, req.(*request.Status))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _PinpointCore_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "pinpoint.PinpointCore",
-	HandlerType: (*PinpointCoreServer)(nil),
+var _Core_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "pinpoint.Core",
+	HandlerType: (*CoreServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetStatus",
-			Handler:    _PinpointCore_GetStatus_Handler,
+			Handler:    _Core_GetStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	pinpoint "github.com/ubclaunchpad/pinpoint/grpc"
+	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -17,7 +17,7 @@ import (
 type API struct {
 	l *zap.SugaredLogger
 	r *chi.Mux
-	c pinpoint.PinpointCoreClient
+	c pinpoint.CoreClient
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
@@ -81,7 +81,7 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to core service: %s", err.Error())
 	}
-	a.c = pinpoint.NewPinpointCoreClient(conn)
+	a.c = pinpoint.NewCoreClient(conn)
 	defer conn.Close()
 
 	// lets gooooo

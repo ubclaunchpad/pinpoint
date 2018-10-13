@@ -12,8 +12,7 @@ The project is structured as follows:
 - `core` is the primary Pinpoint gRPC-based service, and manages application logic and the database.
 - `frontend` is the Pinpoint web application.
 - `gateway` is an HTTP server that exposes Pinpoint functionality via a RESTful API.
-- `grpc` is a Golang package for Pinpoint Core's gRPC service, generated from protobuf definitions.
-- `protobuf` contains protobuf definitions for Pinpoint Core's gRPC service.
+- `protobuf` contains protobuf definitions for Pinpoint Core's gRPC service as well as the generated Golang API.
 - `utils` is a Golang package that contains utility functions shared by `core` and `gateway`.
 
 ## Development
@@ -60,10 +59,11 @@ $> make gateway
 
 ### Updating the Golang gRPC API
 
-`gateway` and `core` uses the Golang API within the `grpc` directory to communicate. If you make changes to the protobuf definitions in the `protobuf` directories, you will need to update this API:
+`gateway` and `core` uses the Golang API within the `protobuf` directory to communicate. If you make changes to the protobuf definitions in the `protobuf` directories, you will need to update this API:
 
 ```bash
-$> make proto
+$> make proto  # generate new Golang API
+$> make check  # ensure everything compiles
 ```
 
 You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package pinpoint;
 
-import "request.proto";
-import "response.proto";
+import "request/request.proto";
+import "response/response.proto";
 
 // Protobuf definitions for pinpoint's core service
-service PinpointCore {
+service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
 }
