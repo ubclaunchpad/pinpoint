@@ -67,3 +67,14 @@ $> make proto
 ```
 
 You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.
+
+### Building
+
+#### Golang Binaries
+
+To build the Golang components, run the following commands:
+
+```sh
+$> make pinpoint-core
+$> make pinpoint-gateway
+```

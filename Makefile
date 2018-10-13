@@ -1,3 +1,4 @@
+VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
 DEV_COMPOSE=docker-compose -f dev/docker-compose.yml
 
@@ -19,7 +20,7 @@ deps:
 # Execute tests
 .PHONY: test
 test:
-	go test -race ./...
+	go test -race -cover ./...
 	( cd frontend ; npm run test -- --coverage )
 	( cd client ; npm run test )
 
@@ -60,9 +61,23 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
-	$(DEV_ENV) ; go run core/main.go
+	go run core/main.go run --dev
 
-# Runs gateway api server
+# Runs API gateway
 .PHONY: gateway
 gateway:
-	$(DEV_ENV) ; go run gateway/main.go
+	go run gateway/main.go run --dev
+
+# Builds binary for pinpoint-core
+.PHONY: pinpoint-core
+pinpoint-core:
+	go build -o ./bin/pinpoint-core \
+    -ldflags "-X main.Version=$(VERSION)" \
+    ./core
+
+# Builds binary for pinpoint-gateway
+.PHONY: pinpoint-gateway
+pinpoint-gateway:
+	go build -o ./bin/pinpoint-gateway \
+    -ldflags "-X main.Version=$(VERSION)" \
+    ./gateway

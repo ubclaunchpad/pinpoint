@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -19,11 +20,11 @@ type API struct {
 	c pinpoint.PinpointCoreClient
 }
 
-// New creates a new API server - start it using Run()
-func New(conn *grpc.ClientConn, logger *zap.SugaredLogger, debug bool) (*API, error) {
+// New creates a new API server - start it using Run(). Returns a callback to
+// close connection
+func New(logger *zap.SugaredLogger) (*API, error) {
 	a := &API{
 		r: chi.NewRouter(), l: logger.Named("api"),
-		c: pinpoint.NewPinpointCoreClient(conn),
 	}
 
 	a.setUpRouter()
@@ -49,8 +50,8 @@ func (a *API) registerHandlers() {
 
 // RunOpts defines options for API server startup
 type RunOpts struct {
-	*SSLOpts
-	*ServiceOpts
+	SSLOpts
+	CoreOpts
 }
 
 // SSLOpts defines SSL options
@@ -59,8 +60,11 @@ type SSLOpts struct {
 	KeyFile  string
 }
 
-// ServiceOpts defines options for connecting to the pinpoint service
-type ServiceOpts struct {
+// CoreOpts defines options for connecting to pinpoint-core
+type CoreOpts struct {
+	Host        string
+	Port        string
+	DialOptions []grpc.DialOption
 }
 
 // Run spins up the API server
@@ -69,14 +73,35 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		return errors.New("invalid host and port configuration provided")
 	}
 
+	// connect to core server
+	a.l.Infow("connecting to core",
+		"core.host", opts.Host,
+		"core.port", opts.Port)
+	conn, err := grpc.Dial(opts.Host+":"+opts.Port, opts.DialOptions...)
+	if err != nil {
+		return fmt.Errorf("failed to connect to core service: %s", err.Error())
+	}
+	a.c = pinpoint.NewPinpointCoreClient(conn)
+	defer conn.Close()
+
+	// lets gooooo
 	a.l.Infow("spinning up api server",
-		"tls", opts.SSLOpts != nil,
+		"tls", opts.CertFile != "",
 		"host", host,
 		"port", port)
-
 	addr := host + ":" + port
-	if opts.SSLOpts != nil && opts.CertFile != "" {
-		return http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
+	if opts.CertFile != "" {
+		err = http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
+	} else {
+		err = http.ListenAndServe(addr, a.r)
 	}
-	return http.ListenAndServe(addr, a.r)
+	if err != nil {
+		a.l.Errorf("error encountered - service stopped",
+			"error", err)
+		return err
+	}
+
+	// report shutdown
+	a.l.Info("service shut down")
+	return nil
 }
