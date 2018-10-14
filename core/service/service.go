@@ -13,6 +13,7 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -44,25 +45,48 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Service, 
 	}, nil
 }
 
+// RunOpts declares configuration for starting up core service
+type RunOpts struct {
+	TLSOpts
+}
+
+// TLSOpts defines TLS configuration
+type TLSOpts struct {
+	CertFile string
+	KeyFile  string
+}
+
 // Run starts up the service and blocks until exit
-func (s *Service) Run(host, port string) error {
-	// set up server with logging
+func (s *Service) Run(host, port string, opts RunOpts) error {
+	serverOpts := make([]grpc.ServerOption, 0)
+
+	// set up logging params
 	grpcLogger := s.l.Desugar().Named("grpc")
 	grpc_zap.ReplaceGrpcLogger(grpcLogger)
-	opts := []grpc_zap.Option{
+	zapOpts := []grpc_zap.Option{
 		grpc_zap.WithDurationField(func(duration time.Duration) zapcore.Field {
 			return zap.Duration("grpc.duration", duration)
 		}),
 	}
-	grpcServer := grpc.NewServer(
+	serverOpts = append(serverOpts,
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(grpcLogger, opts...)),
+			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...)),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(grpcLogger, opts...)))
+			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...)))
 
-	// register self
+	// set up TLS credentials
+	if opts.TLSOpts.CertFile != "" {
+		creds, err := credentials.NewServerTLSFromFile(opts.TLSOpts.CertFile, opts.TLSOpts.KeyFile)
+		if err != nil {
+			return fmt.Errorf("could not load TLS keys: %s", err)
+		}
+		serverOpts = append(serverOpts, grpc.Creds(creds))
+	}
+
+	// create server
+	grpcServer := grpc.NewServer(serverOpts...)
 	pinpoint.RegisterCoreServer(grpcServer, s)
 
 	// let's gooooo

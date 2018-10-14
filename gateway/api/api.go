@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -8,8 +9,10 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 // API defines the API server. It is primarily a REST interface through which
@@ -50,21 +53,21 @@ func (a *API) registerHandlers() {
 
 // RunOpts defines options for API server startup
 type RunOpts struct {
-	SSLOpts
+	GatewayOpts
 	CoreOpts
 }
 
-// SSLOpts defines SSL options
-type SSLOpts struct {
+// GatewayOpts defines gateway configuration options
+type GatewayOpts struct {
 	CertFile string
 	KeyFile  string
 }
 
 // CoreOpts defines options for connecting to pinpoint-core
 type CoreOpts struct {
-	Host        string
-	Port        string
-	DialOptions []grpc.DialOption
+	Host     string
+	Port     string
+	CertFile string
 }
 
 // Run spins up the API server
@@ -73,25 +76,48 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		return errors.New("invalid host and port configuration provided")
 	}
 
-	// connect to core server
+	// set up parameters
+	dialOpts := make([]grpc.DialOption, 0)
+	if opts.CoreOpts.CertFile != "" {
+		creds, err := credentials.NewClientTLSFromFile(opts.CoreOpts.CertFile, "")
+		if err != nil {
+			return fmt.Errorf("could not load tls cert: %s", err)
+		}
+		dialOpts = append(dialOpts, grpc.WithTransportCredentials(creds))
+	} else {
+		dialOpts = append(dialOpts, grpc.WithInsecure())
+	}
+
+	// connect to core service
 	a.l.Infow("connecting to core",
-		"core.host", opts.Host,
-		"core.port", opts.Port)
-	conn, err := grpc.Dial(opts.Host+":"+opts.Port, opts.DialOptions...)
+		"core.host", opts.CoreOpts.Host,
+		"core.port", opts.CoreOpts.Port,
+		"core.tls", opts.CoreOpts.CertFile != "")
+	conn, err := grpc.Dial(opts.Host+":"+opts.Port, dialOpts...)
 	if err != nil {
 		return fmt.Errorf("failed to connect to core service: %s", err.Error())
 	}
 	a.c = pinpoint.NewCoreClient(conn)
 	defer conn.Close()
 
+	// attempt connection
+	_, err = a.c.GetStatus(context.Background(), &request.Status{})
+	if err != nil {
+		return fmt.Errorf("failed to connect to core service: %s", err.Error())
+	}
+
 	// lets gooooo
 	a.l.Infow("spinning up api server",
-		"tls", opts.CertFile != "",
+		"tls", opts.GatewayOpts.CertFile != "",
 		"host", host,
 		"port", port)
 	addr := host + ":" + port
-	if opts.CertFile != "" {
-		err = http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
+	if opts.GatewayOpts.CertFile != "" {
+		err = http.ListenAndServeTLS(
+			addr,
+			opts.GatewayOpts.CertFile,
+			opts.GatewayOpts.KeyFile,
+			a.r)
 	} else {
 		err = http.ListenAndServe(addr, a.r)
 	}

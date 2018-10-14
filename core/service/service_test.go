@@ -38,7 +38,7 @@ func TestService_Run(t *testing.T) {
 	}
 
 	// stub run
-	go s.Run("", "")
+	go s.Run("", "", RunOpts{})
 	time.Sleep(time.Millisecond)
 }
 
