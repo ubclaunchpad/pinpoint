@@ -108,9 +108,9 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 
 	// lets gooooo
 	a.l.Infow("spinning up api server",
-		"tls", opts.GatewayOpts.CertFile != "",
-		"host", host,
-		"port", port)
+		"gateway.host", host,
+		"gateway.port", port,
+		"gateway.tls", opts.GatewayOpts.CertFile != "")
 	addr := host + ":" + port
 	if opts.GatewayOpts.CertFile != "" {
 		err = http.ListenAndServeTLS(

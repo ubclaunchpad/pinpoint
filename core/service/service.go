@@ -91,8 +91,9 @@ func (s *Service) Run(host, port string, opts RunOpts) error {
 
 	// let's gooooo
 	s.l.Infow("spinning up core service",
-		"host", host,
-		"core", port)
+		"core.host", host,
+		"core.port", port,
+		"core.tls", opts.TLSOpts.CertFile != "")
 	listener, err := net.Listen("tcp", host+":"+port)
 	if err != nil {
 		return err
