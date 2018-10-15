@@ -145,7 +145,7 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	return nil
 }
 
-// Stop shuts down the API server
+// Stop releases resources and shuts down the API server
 func (a *API) Stop() {
 	if a.srv != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
