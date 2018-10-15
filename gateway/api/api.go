@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -24,15 +23,19 @@ type API struct {
 	r *chi.Mux
 	c pinpoint.CoreClient
 
-	srv     *http.Server
-	srvLock sync.Mutex
+	srv *http.Server
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
 // close connection
 func New(logger *zap.SugaredLogger) (*API, error) {
+	router := chi.NewRouter()
 	a := &API{
-		r: chi.NewRouter(), l: logger.Named("api"),
+		l: logger.Named("api"),
+		r: router,
+		srv: &http.Server{
+			Handler: router,
+		},
 	}
 
 	a.setUpRouter()
@@ -81,6 +84,9 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		return errors.New("invalid host and port configuration provided")
 	}
 
+	// set up server
+	a.srv.Addr = host + ":" + port
+
 	// set up parameters
 	dialOpts := make([]grpc.DialOption, 0)
 	if opts.CoreOpts.CertFile != "" {
@@ -115,14 +121,6 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		}
 	}()
 
-	// set up server
-	a.srvLock.Lock()
-	a.srv = &http.Server{
-		Addr:    host + ":" + port,
-		Handler: a.r,
-	}
-	a.srvLock.Unlock()
-
 	// lets gooooo
 	tlsEnabled := opts.GatewayOpts.CertFile != ""
 	a.l.Infow("spinning up api server",
@@ -152,14 +150,10 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 
 // Stop releases resources and shuts down the API server
 func (a *API) Stop() {
-	a.srvLock.Lock()
-	if a.srv != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-		if err := a.srv.Shutdown(ctx); err != nil {
-			a.l.Warnw("error encountered during shutdown",
-				"error", err.Error())
-		}
-		cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	if err := a.srv.Shutdown(ctx); err != nil {
+		a.l.Warnw("error encountered during shutdown",
+			"error", err.Error())
 	}
-	a.srvLock.Unlock()
+	cancel()
 }
