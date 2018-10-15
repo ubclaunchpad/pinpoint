@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -19,10 +20,12 @@ import (
 // API defines the API server. It is primarily a REST interface through which
 // service.Service can be accessed.
 type API struct {
-	l   *zap.SugaredLogger
-	r   *chi.Mux
-	c   pinpoint.CoreClient
-	srv *http.Server
+	l *zap.SugaredLogger
+	r *chi.Mux
+	c pinpoint.CoreClient
+
+	srv     *http.Server
+	srvLock sync.Mutex
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
@@ -113,10 +116,12 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	}()
 
 	// set up server
+	a.srvLock.Lock()
 	a.srv = &http.Server{
 		Addr:    host + ":" + port,
 		Handler: a.r,
 	}
+	a.srvLock.Unlock()
 
 	// lets gooooo
 	tlsEnabled := opts.GatewayOpts.CertFile != ""
@@ -147,9 +152,11 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 
 // Stop releases resources and shuts down the API server
 func (a *API) Stop() {
+	a.srvLock.Lock()
 	if a.srv != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		a.srv.Shutdown(ctx)
 		cancel()
 	}
+	a.srvLock.Unlock()
 }
