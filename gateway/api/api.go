@@ -155,7 +155,10 @@ func (a *API) Stop() {
 	a.srvLock.Lock()
 	if a.srv != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-		a.srv.Shutdown(ctx)
+		if err := a.srv.Shutdown(ctx); err != nil {
+			a.l.Warnw("error encountered during shutdown",
+				"error", err.Error())
+		}
 		cancel()
 	}
 	a.srvLock.Unlock()
