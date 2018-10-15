@@ -17,6 +17,8 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Database,
 	db := &Database{dynamodb.New(awsConfig), logger.Named("db")}
 
 	// set up database
+	logger.Infow("setting up database",
+		"db.client", db.c.ClientInfo)
 	if err := db.initTables(); err != nil {
 		return nil, err
 	}
