@@ -71,6 +71,13 @@ gateway:
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt
 
+.PHONY: gateway-tls
+gateway-tls:
+	go run gateway/main.go run --dev \
+		--core.cert dev/certs/127.0.0.1.crt \
+		--tls.cert dev/certs/127.0.0.1.crt \
+		--tls.key dev/certs/127.0.0.1.key
+
 # Builds binary for pinpoint-core
 .PHONY: pinpoint-core
 pinpoint-core:
