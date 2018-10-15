@@ -21,35 +21,39 @@ func TestAPI_Run(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	api, err := New(l)
-	if err != nil {
-		t.Error(err)
-		return
+
+	type args struct {
+		opts RunOpts
 	}
-
-	// stub run
-	go api.Run("localhost", "8080", RunOpts{})
-	time.Sleep(time.Millisecond)
-	api.Stop()
-
-	// stub run with core tls
-	go api.Run("localhost", "8080", RunOpts{
-		CoreOpts: CoreOpts{
-			Host:     "localhost",
-			Port:     "9111",
-			CertFile: "../../dev/certs/127.0.0.1.crt",
-		},
-	})
-	time.Sleep(time.Millisecond)
-	api.Stop()
-
-	// stub run with gateway tls
-	go api.Run("localhost", "8081", RunOpts{
-		GatewayOpts: GatewayOpts{
-			CertFile: "../../dev/certs/127.0.0.1.crt",
-			KeyFile:  "../../dev/certs/127.0.0.1.key",
-		},
-	})
-	time.Sleep(time.Millisecond)
-	api.Stop()
+	tests := []struct {
+		name string
+		args args
+	}{
+		{"no options", args{RunOpts{}}},
+		{"with core TLS", args{RunOpts{
+			CoreOpts: CoreOpts{
+				Host:     "localhost",
+				Port:     "9111",
+				CertFile: "../../dev/certs/127.0.0.1.crt",
+			},
+		}}},
+		{"with gateway TLS", args{RunOpts{
+			GatewayOpts: GatewayOpts{
+				CertFile: "../../dev/certs/127.0.0.1.crt",
+				KeyFile:  "../../dev/certs/127.0.0.1.key",
+			},
+		}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			api, err := New(l)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			go api.Run("localhost", "8080", tt.args.opts)
+			time.Sleep(time.Millisecond)
+			api.Stop()
+		})
+	}
 }
