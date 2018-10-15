@@ -84,8 +84,8 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 	}
 
 	// create server
-	grpcServer := grpc.NewServer(serverOpts...)
-	pinpoint.RegisterCoreServer(grpcServer, s)
+	s.grpc = grpc.NewServer(serverOpts...)
+	pinpoint.RegisterCoreServer(s.grpc, s)
 
 	// create service
 	return s, nil
@@ -114,7 +114,9 @@ func (s *Service) Run(host, port string) error {
 
 // Stop releases resources and shuts down the service
 func (s *Service) Stop() {
-	s.grpc.GracefulStop()
+	if s.grpc != nil {
+		s.grpc.GracefulStop()
+	}
 }
 
 // GetStatus retrieves status of service
