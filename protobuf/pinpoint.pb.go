@@ -34,7 +34,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// For test use core <-> gateway
+// For ping testing use core <-> gateway
 type PingMessage struct {
 	Greeting string `protobuf:"bytes,1,opt,name=greeting" json:"greeting,omitempty"`
 }
