@@ -1,8 +1,10 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -10,6 +12,8 @@ import (
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	"google.golang.org/grpc/metadata"
 )
 
 // API defines the API server. It is primarily a REST interface through which
@@ -78,11 +82,41 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		"core.host", opts.Host,
 		"core.port", opts.Port)
 	conn, err := grpc.Dial(opts.Host+":"+opts.Port, opts.DialOptions...)
+
 	if err != nil {
 		return fmt.Errorf("failed to connect to core service: %s", err.Error())
 	}
 	a.c = pinpoint.NewCoreClient(conn)
 	defer conn.Close()
+
+	// Authentication Test of Gateway to be sent in context
+	//md := metadata.Pairs("token", "invalid-token") //Test use
+	md := metadata.Pairs("token", "valid-token")
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	// Ping Communication with Core to Authentication First
+	var header, trailer metadata.MD
+	var authflag bool
+	response, err := a.c.SayHello(
+		ctx,
+		&pinpoint.PingMessage{Greeting: "This is a test ping from gateway"},
+		grpc.Header(&header),
+		grpc.Trailer(&trailer))
+
+	if err != nil {
+		log.Fatalf("Error when calling SayHello: %s", err)
+	}
+	for _, value := range header {
+		fmt.Printf("%s =>", value[0])
+		if value[0] == "valid-coretoken" {
+			authflag = true
+		}
+	}
+	if authflag != true {
+		conn.Close()
+	}
+
+	log.Printf("Response from server: %s", response.Greeting)
 
 	// lets gooooo
 	a.l.Infow("spinning up api server",
