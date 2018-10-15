@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/spf13/cobra"
 	"github.com/ubclaunchpad/pinpoint/core/service"
@@ -42,18 +45,27 @@ func runCommand(c *CoreCommand) func(*cobra.Command, []string) error {
 		}
 
 		// Set up service
-		core, err := service.New(awsConfig, c.SugaredLogger)
-		if err != nil {
-			return fmt.Errorf("failed to create service: %s", err.Error())
-		}
-
-		// Serve and block until exit
-		if err = core.Run(c.Host, c.Port, service.RunOpts{
+		core, err := service.New(awsConfig, c.SugaredLogger, service.ServiceOpts{
 			TLSOpts: service.TLSOpts{
 				CertFile: flags["tls.cert"],
 				KeyFile:  flags["tls.key"],
 			},
-		}); err != nil {
+		})
+		if err != nil {
+			return fmt.Errorf("failed to create service: %s", err.Error())
+		}
+
+		// handle graceful shutdown
+		signals := make(chan os.Signal)
+		signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-signals
+			core.Stop()
+			os.Exit(1)
+		}()
+
+		// Serve and block until exit
+		if err = core.Run(c.Host, c.Port); err != nil {
 			return err
 		}
 

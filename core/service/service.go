@@ -26,27 +26,13 @@ import (
 // Service provides core application service functionality. It handles most
 // logic and connections to various backends. It implements an gRPC interface.
 type Service struct {
-	l  *zap.SugaredLogger
-	db *database.Database
+	l    *zap.SugaredLogger
+	db   *database.Database
+	grpc *grpc.Server
 }
 
-// New creates a new Service
-func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Service, error) {
-	// set up database
-	db, err := database.New(awsConfig, logger)
-	if err != nil {
-		return nil, fmt.Errorf("failed to init database: %s", err.Error())
-	}
-
-	// create service
-	return &Service{
-		l:  logger.Named("service"),
-		db: db,
-	}, nil
-}
-
-// RunOpts declares configuration for starting up core service
-type RunOpts struct {
+// ServiceOpts declares configuration for the core service
+type ServiceOpts struct {
 	TLSOpts
 }
 
@@ -56,11 +42,22 @@ type TLSOpts struct {
 	KeyFile  string
 }
 
-// Run starts up the service and blocks until exit
-func (s *Service) Run(host, port string, opts RunOpts) error {
-	serverOpts := make([]grpc.ServerOption, 0)
+// New creates a new Service
+func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts ServiceOpts) (*Service, error) {
+	// set up database
+	db, err := database.New(awsConfig, logger)
+	if err != nil {
+		return nil, fmt.Errorf("failed to init database: %s", err.Error())
+	}
+
+	// create service
+	s := &Service{
+		l:  logger.Named("service"),
+		db: db,
+	}
 
 	// set up logging params
+	serverOpts := make([]grpc.ServerOption, 0)
 	grpcLogger := s.l.Desugar().Named("grpc")
 	grpc_zap.ReplaceGrpcLogger(grpcLogger)
 	zapOpts := []grpc_zap.Option{
@@ -78,9 +75,10 @@ func (s *Service) Run(host, port string, opts RunOpts) error {
 
 	// set up TLS credentials
 	if opts.TLSOpts.CertFile != "" {
+		s.l.Info("setting up TLS")
 		creds, err := credentials.NewServerTLSFromFile(opts.TLSOpts.CertFile, opts.TLSOpts.KeyFile)
 		if err != nil {
-			return fmt.Errorf("could not load TLS keys: %s", err)
+			return nil, fmt.Errorf("could not load TLS keys: %s", err)
 		}
 		serverOpts = append(serverOpts, grpc.Creds(creds))
 	}
@@ -89,16 +87,21 @@ func (s *Service) Run(host, port string, opts RunOpts) error {
 	grpcServer := grpc.NewServer(serverOpts...)
 	pinpoint.RegisterCoreServer(grpcServer, s)
 
+	// create service
+	return s, nil
+}
+
+// Run starts up the service and blocks until exit
+func (s *Service) Run(host, port string) error {
 	// let's gooooo
 	s.l.Infow("spinning up core service",
 		"core.host", host,
-		"core.port", port,
-		"core.tls", opts.TLSOpts.CertFile != "")
+		"core.port", port)
 	listener, err := net.Listen("tcp", host+":"+port)
 	if err != nil {
 		return err
 	}
-	if err = grpcServer.Serve(listener); err != nil {
+	if err = s.grpc.Serve(listener); err != nil {
 		s.l.Errorf("error encountered - service stopped",
 			"error", err)
 		return err
@@ -107,6 +110,11 @@ func (s *Service) Run(host, port string, opts RunOpts) error {
 	// report shutdown
 	s.l.Info("service shut down")
 	return nil
+}
+
+// Stop releases resources and shuts down the service
+func (s *Service) Stop() {
+	s.grpc.GracefulStop()
 }
 
 // GetStatus retrieves status of service
