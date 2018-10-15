@@ -31,8 +31,8 @@ type Service struct {
 	grpc *grpc.Server
 }
 
-// ServiceOpts declares configuration for the core service
-type ServiceOpts struct {
+// Opts declares configuration for the core service
+type Opts struct {
 	TLSOpts
 }
 
@@ -43,7 +43,7 @@ type TLSOpts struct {
 }
 
 // New creates a new Service
-func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts ServiceOpts) (*Service, error) {
+func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) (*Service, error) {
 	// set up database
 	db, err := database.New(awsConfig, logger)
 	if err != nil {

@@ -45,7 +45,7 @@ func runCommand(c *CoreCommand) func(*cobra.Command, []string) error {
 		}
 
 		// Set up service
-		core, err := service.New(awsConfig, c.SugaredLogger, service.ServiceOpts{
+		core, err := service.New(awsConfig, c.SugaredLogger, service.Opts{
 			TLSOpts: service.TLSOpts{
 				CertFile: flags["tls.cert"],
 				KeyFile:  flags["tls.key"],
