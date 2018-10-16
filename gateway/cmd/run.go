@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/spf13/cobra"
 	"github.com/ubclaunchpad/pinpoint/gateway/api"
@@ -42,6 +45,15 @@ func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 		if err != nil {
 			return fmt.Errorf("failed to create app: %s", err.Error())
 		}
+
+		// handle graceful shutdown
+		signals := make(chan os.Signal)
+		signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-signals
+			a.Stop()
+			os.Exit(1)
+		}()
 
 		// Let's go!
 		if err = a.Run(g.Host, g.Port, api.RunOpts{
