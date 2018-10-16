@@ -61,12 +61,15 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
-	go run core/main.go run --dev
+	go run core/main.go run --dev \
+		--tls.cert dev/certs/127.0.0.1.crt \
+		--tls.key dev/certs/127.0.0.1.key
 
 # Runs API gateway
 .PHONY: gateway
 gateway:
-	go run gateway/main.go run --dev
+	go run gateway/main.go run --dev \
+		--core.cert dev/certs/127.0.0.1.crt
 
 # Builds binary for pinpoint-core
 .PHONY: pinpoint-core

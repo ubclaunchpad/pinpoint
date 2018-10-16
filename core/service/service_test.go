@@ -18,9 +18,19 @@ func TestService_New(t *testing.T) {
 		return
 	}
 	aws, _ := utils.AWSSession(utils.AWSConfig(true))
-	if _, err = New(aws, l); err != nil {
+	if _, err = New(aws, l, Opts{}); err != nil {
 		t.Error(err)
 		return
+	}
+
+	// with TLS
+	if _, err = New(aws, l, Opts{
+		TLSOpts: TLSOpts{
+			CertFile: "../../dev/certs/127.0.0.1.crt",
+			KeyFile:  "../../dev/certs/127.0.0.1.key",
+		},
+	}); err != nil {
+		t.Error(err)
 	}
 }
 
@@ -31,7 +41,7 @@ func TestService_Run(t *testing.T) {
 		return
 	}
 	aws, _ := utils.AWSSession(utils.AWSConfig(true))
-	s, err := New(aws, l)
+	s, err := New(aws, l, Opts{})
 	if err != nil {
 		t.Error(err)
 		return
@@ -40,6 +50,7 @@ func TestService_Run(t *testing.T) {
 	// stub run
 	go s.Run("", "")
 	time.Sleep(time.Millisecond)
+	s.Stop()
 }
 
 func TestService_GetStatus(t *testing.T) {

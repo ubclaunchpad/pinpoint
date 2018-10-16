@@ -13,6 +13,7 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -25,12 +26,24 @@ import (
 // Service provides core application service functionality. It handles most
 // logic and connections to various backends. It implements an gRPC interface.
 type Service struct {
-	l  *zap.SugaredLogger
-	db *database.Database
+	l    *zap.SugaredLogger
+	db   *database.Database
+	grpc *grpc.Server
+}
+
+// Opts declares configuration for the core service
+type Opts struct {
+	TLSOpts
+}
+
+// TLSOpts defines TLS configuration
+type TLSOpts struct {
+	CertFile string
+	KeyFile  string
 }
 
 // New creates a new Service
-func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Service, error) {
+func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) (*Service, error) {
 	// set up database
 	db, err := database.New(awsConfig, logger)
 	if err != nil {
@@ -38,42 +51,57 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger) (*Service, 
 	}
 
 	// create service
-	return &Service{
+	s := &Service{
 		l:  logger.Named("service"),
 		db: db,
-	}, nil
-}
+	}
 
-// Run starts up the service and blocks until exit
-func (s *Service) Run(host, port string) error {
-	// set up server with logging
+	// set up logging params
+	serverOpts := make([]grpc.ServerOption, 0)
 	grpcLogger := s.l.Desugar().Named("grpc")
 	grpc_zap.ReplaceGrpcLogger(grpcLogger)
-	opts := []grpc_zap.Option{
+	zapOpts := []grpc_zap.Option{
 		grpc_zap.WithDurationField(func(duration time.Duration) zapcore.Field {
 			return zap.Duration("grpc.duration", duration)
 		}),
 	}
-	grpcServer := grpc.NewServer(
+	serverOpts = append(serverOpts,
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(grpcLogger, opts...)),
+			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...)),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(grpcLogger, opts...)))
+			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...)))
 
-	// register self
-	pinpoint.RegisterCoreServer(grpcServer, s)
+	// set up TLS credentials
+	if opts.TLSOpts.CertFile != "" {
+		s.l.Info("setting up TLS")
+		creds, err := credentials.NewServerTLSFromFile(opts.TLSOpts.CertFile, opts.TLSOpts.KeyFile)
+		if err != nil {
+			return nil, fmt.Errorf("could not load TLS keys: %s", err)
+		}
+		serverOpts = append(serverOpts, grpc.Creds(creds))
+	}
 
+	// create server
+	s.grpc = grpc.NewServer(serverOpts...)
+	pinpoint.RegisterCoreServer(s.grpc, s)
+
+	// create service
+	return s, nil
+}
+
+// Run starts up the service and blocks until exit
+func (s *Service) Run(host, port string) error {
 	// let's gooooo
 	s.l.Infow("spinning up core service",
-		"host", host,
-		"core", port)
+		"core.host", host,
+		"core.port", port)
 	listener, err := net.Listen("tcp", host+":"+port)
 	if err != nil {
 		return err
 	}
-	if err = grpcServer.Serve(listener); err != nil {
+	if err = s.grpc.Serve(listener); err != nil {
 		s.l.Errorf("error encountered - service stopped",
 			"error", err)
 		return err
@@ -82,6 +110,13 @@ func (s *Service) Run(host, port string) error {
 	// report shutdown
 	s.l.Info("service shut down")
 	return nil
+}
+
+// Stop releases resources and shuts down the service
+func (s *Service) Stop() {
+	if s.grpc != nil {
+		s.grpc.GracefulStop()
+	}
 }
 
 // GetStatus retrieves status of service

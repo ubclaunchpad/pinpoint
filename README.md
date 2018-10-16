@@ -49,13 +49,14 @@ $> make testenv-stop  # stop containers
 $> make clean         # remove containers
 ```
 
-Pinpoint services can be started up using the following commands in two separate
-shell sessions:
+Pinpoint services can be started up using the following commands in two separate shell sessions:
 
 ```sh
 $> make core
 $> make gateway
 ```
+
+By default, provided certificates in `dev/certs` are used. These were generated using [certstrap](https://github.com/square/certstrap).
 
 ### Updating the Golang gRPC API
 
