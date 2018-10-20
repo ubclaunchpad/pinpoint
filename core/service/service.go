@@ -14,7 +14,6 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -60,7 +59,7 @@ func (s *Service) Run(host, port string) error {
 	}
 	grpcServer := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
-			AuthUnaryInterceptor,
+			authUnaryInterceptor,
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, opts...)),
 		grpc_middleware.WithStreamServerChain(
@@ -106,20 +105,4 @@ func (s *Service) HandShake(ctx context.Context, req *request.Empty) (*response.
 	// grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "invalid-coretoken"}))
 	grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "valid-coretoken"}))
 	return res, nil
-}
-
-// AuthUnaryInterceptor is for validating authentication interceptor of incoming message from gateway
-func AuthUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	meta, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, grpc.Errorf(codes.Unauthenticated, "missing context metadata")
-	}
-	if len(meta["token"]) != 1 {
-		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
-	}
-	if meta["token"][0] != "valid-token" {
-		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
-	}
-
-	return handler(ctx, req)
 }
