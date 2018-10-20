@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -105,17 +104,16 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// 	grpc.Trailer(&trailer))
 	_, err = a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
 	if err != nil {
-		log.Fatalf("Error when setting up handshake: %s", err)
+		a.l.Errorf("Error when setting up handshake: %s", err)
 	}
 	for _, value := range header {
-		fmt.Printf("%s =>", value[0])
 		if value[0] == "valid-coretoken" {
-			log.Printf("Core passed authentication")
+			a.l.Info("Core passed authentication")
 			authflag = true
 		}
 	}
 	if authflag != true {
-		log.Printf("Core failed authentication, connection closing")
+		a.l.Info("Core failed authentication, connection closing")
 		conn.Close()
 	}
 
