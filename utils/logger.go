@@ -1,6 +1,9 @@
 package utils
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
 
 // NewLogger creates a default "sugared" logger based on dev toggle
 func NewLogger(dev bool) (sugar *zap.SugaredLogger, err error) {
@@ -11,7 +14,10 @@ func NewLogger(dev bool) (sugar *zap.SugaredLogger, err error) {
 		// Errors:      stderr
 		// Sampling:    no
 		// Stacktraces: WarningLevel
-		logger, err = zap.NewDevelopment()
+		// Colors:      capitals
+		config := zap.NewDevelopmentConfig()
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		logger, err = config.Build()
 	} else {
 		// Log:         InfoLevel
 		// Encoder:     json

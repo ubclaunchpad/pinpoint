@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -14,6 +15,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -23,13 +25,20 @@ type API struct {
 	l *zap.SugaredLogger
 	r *chi.Mux
 	c pinpoint.CoreClient
+
+	srv *http.Server
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
 // close connection
 func New(logger *zap.SugaredLogger) (*API, error) {
+	router := chi.NewRouter()
 	a := &API{
-		r: chi.NewRouter(), l: logger.Named("api"),
+		l: logger.Named("api"),
+		r: router,
+		srv: &http.Server{
+			Handler: router,
+		},
 	}
 
 	a.setUpRouter()
@@ -81,21 +90,21 @@ func (a *API) establishConnection() error {
 
 // RunOpts defines options for API server startup
 type RunOpts struct {
-	SSLOpts
+	GatewayOpts
 	CoreOpts
 }
 
-// SSLOpts defines SSL options
-type SSLOpts struct {
+// GatewayOpts defines gateway configuration options
+type GatewayOpts struct {
 	CertFile string
 	KeyFile  string
 }
 
 // CoreOpts defines options for connecting to pinpoint-core
 type CoreOpts struct {
-	Host        string
-	Port        string
-	DialOptions []grpc.DialOption
+	Host     string
+	Port     string
+	CertFile string
 }
 
 // Run spins up the API server
@@ -104,12 +113,27 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		return errors.New("invalid host and port configuration provided")
 	}
 
-	// connect to core server
-	a.l.Infow("connecting to core",
-		"core.host", opts.Host,
-		"core.port", opts.Port)
-	conn, err := grpc.Dial(opts.Host+":"+opts.Port, opts.DialOptions...)
+	// set up server
+	a.srv.Addr = host + ":" + port
 
+	// set up parameters
+	dialOpts := make([]grpc.DialOption, 0)
+	if opts.CoreOpts.CertFile != "" {
+		creds, err := credentials.NewClientTLSFromFile(opts.CoreOpts.CertFile, "")
+		if err != nil {
+			return fmt.Errorf("could not load tls cert: %s", err)
+		}
+		dialOpts = append(dialOpts, grpc.WithTransportCredentials(creds))
+	} else {
+		dialOpts = append(dialOpts, grpc.WithInsecure())
+	}
+
+	// connect to core service
+	a.l.Infow("connecting to core",
+		"core.host", opts.CoreOpts.Host,
+		"core.port", opts.CoreOpts.Port,
+		"core.tls", opts.CoreOpts.CertFile != "")
+	conn, err := grpc.Dial(opts.Host+":"+opts.Port, dialOpts...)
 	if err != nil {
 		return fmt.Errorf("failed to connect to core service: %s", err.Error())
 	}
@@ -121,24 +145,49 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		conn.Close()
 	}
 
+	// attempt connection
+	go func() {
+		if _, err = a.c.GetStatus(context.Background(), &request.Status{}); err != nil {
+			a.l.Errorw("unable to connect to core service",
+				"error", err.Error())
+		} else {
+			a.l.Info("established connection to core")
+		}
+	}()
+
 	// lets gooooo
+	tlsEnabled := opts.GatewayOpts.CertFile != ""
 	a.l.Infow("spinning up api server",
-		"tls", opts.CertFile != "",
-		"host", host,
-		"port", port)
-	addr := host + ":" + port
-	if opts.CertFile != "" {
-		err = http.ListenAndServeTLS(addr, opts.CertFile, opts.KeyFile, a.r)
+		"gateway.host", host,
+		"gateway.port", port,
+		"gateway.tls", tlsEnabled)
+	if tlsEnabled {
+		if err := a.srv.ListenAndServeTLS(
+			opts.GatewayOpts.CertFile, opts.GatewayOpts.KeyFile,
+		); err != nil && err != http.ErrServerClosed {
+			a.l.Warnw("error encountered - service stopped",
+				"error", err)
+			return err
+		}
 	} else {
-		err = http.ListenAndServe(addr, a.r)
-	}
-	if err != nil {
-		a.l.Errorf("error encountered - service stopped",
-			"error", err)
-		return err
+		if err := a.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			a.l.Warnw("error encountered - service stopped",
+				"error", err)
+			return err
+		}
 	}
 
 	// report shutdown
 	a.l.Info("service shut down")
 	return nil
+}
+
+// Stop releases resources and shuts down the API server
+func (a *API) Stop() {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	if err := a.srv.Shutdown(ctx); err != nil {
+		a.l.Warnw("error encountered during shutdown",
+			"error", err.Error())
+	}
+	cancel()
 }
