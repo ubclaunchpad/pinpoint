@@ -102,8 +102,6 @@ type CoreOpts struct {
 
 // Run spins up the API server
 func (a *API) Run(host, port string, opts RunOpts) error {
-
-	print("testew;lkfj;walkejf    ", os.Getenv("port"), " sfsafasdfas ")
 	// connect to core server
 	a.l.Infow("connecting to core",
 		"core.host", opts.Host,
