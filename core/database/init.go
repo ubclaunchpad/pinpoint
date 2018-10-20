@@ -30,6 +30,33 @@ func (db *Database) initTables() error {
 				WriteCapacityUnits: aws.Int64(10),
 			},
 		},
+		{
+			TableName: aws.String("Clubusers"),
+			AttributeDefinitions: []*dynamodb.AttributeDefinition{
+				{
+					AttributeName: aws.String("pk"),
+					AttributeType: aws.String("S"),
+				},
+				{
+					AttributeName: aws.String("sk"),
+					AttributeType: aws.String("S"),
+				},
+			},
+			KeySchema: []*dynamodb.KeySchemaElement{
+				{
+					AttributeName: aws.String("pk"),
+					KeyType:       aws.String("HASH"),
+				},
+				{
+					AttributeName: aws.String("sk"),
+					KeyType:       aws.String("RANGE"),
+				},
+			},
+			ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+				ReadCapacityUnits:  aws.Int64(10),
+				WriteCapacityUnits: aws.Int64(10),
+			},
+		},
 	}
 
 	// init all tables, collecting critical errors on the way
