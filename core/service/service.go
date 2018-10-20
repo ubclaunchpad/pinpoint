@@ -98,7 +98,7 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 }
 
 // SayHello generates response to a Ping request (For Initial Auth Purpose)
-func (s *Service) HandShake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
+func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
 	s.l.Info("Received handshake request from gateway")
 	res := &response.Empty{}
 	//// Send over server side authentication to client for mutual handshake

@@ -61,7 +61,7 @@ func (a *API) establishConnection() error {
 	//Authenticate with core first
 	var header, trailer metadata.MD
 	var authflag bool
-	_, err := a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
+	_, err := a.c.Handshake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
 	if err != nil {
 		a.l.Errorf("Error when setting up handshake: %s", err)
 	}

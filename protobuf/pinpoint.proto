@@ -8,5 +8,5 @@ import "response/response.proto";
 // Protobuf definitions for pinpoint's core service
 service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
-  rpc HandShake(request.Empty) returns (response.Empty) {}
+  rpc Handshake(request.Empty) returns (response.Empty) {}
 }

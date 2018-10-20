@@ -61,11 +61,13 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
+	env PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
 	go run core/main.go run --dev
 
 # Runs API gateway
 .PHONY: gateway
 gateway:
+	env PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
 	go run gateway/main.go run --dev
 
 # Builds binary for pinpoint-core

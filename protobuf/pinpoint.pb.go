@@ -45,7 +45,7 @@ const _ = grpc.SupportPackageIsVersion4
 
 type CoreClient interface {
 	GetStatus(ctx context.Context, in *request.Status, opts ...grpc.CallOption) (*response.Status, error)
-	HandShake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error)
+	Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error)
 }
 
 type coreClient struct {
@@ -65,9 +65,9 @@ func (c *coreClient) GetStatus(ctx context.Context, in *request.Status, opts ...
 	return out, nil
 }
 
-func (c *coreClient) HandShake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error) {
+func (c *coreClient) Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error) {
 	out := new(response.Empty)
-	err := grpc.Invoke(ctx, "/pinpoint.Core/HandShake", in, out, c.cc, opts...)
+	err := grpc.Invoke(ctx, "/pinpoint.Core/Handshake", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (c *coreClient) HandShake(ctx context.Context, in *request.Empty, opts ...g
 
 type CoreServer interface {
 	GetStatus(context.Context, *request.Status) (*response.Status, error)
-	HandShake(context.Context, *request.Empty) (*response.Empty, error)
+	Handshake(context.Context, *request.Empty) (*response.Empty, error)
 }
 
 func RegisterCoreServer(s *grpc.Server, srv CoreServer) {
@@ -103,20 +103,20 @@ func _Core_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Core_HandShake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Core_Handshake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(request.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoreServer).HandShake(ctx, in)
+		return srv.(CoreServer).Handshake(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pinpoint.Core/HandShake",
+		FullMethod: "/pinpoint.Core/Handshake",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServer).HandShake(ctx, req.(*request.Empty))
+		return srv.(CoreServer).Handshake(ctx, req.(*request.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -130,8 +130,8 @@ var _Core_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Core_GetStatus_Handler,
 		},
 		{
-			MethodName: "HandShake",
-			Handler:    _Core_HandShake_Handler,
+			MethodName: "Handshake",
+			Handler:    _Core_Handshake_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -148,7 +148,7 @@ var fileDescriptor0 = []byte{
 	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x3e, 0x8c, 0x01, 0x91, 0x30, 0xca, 0xe0, 0x62, 0x71, 0xce,
 	0x2f, 0x4a, 0x15, 0x32, 0xe0, 0xe2, 0x74, 0x4f, 0x2d, 0x09, 0x2e, 0x49, 0x2c, 0x29, 0x2d, 0x16,
 	0xe2, 0xd7, 0x83, 0xe9, 0x86, 0x08, 0x48, 0x09, 0xe8, 0xc1, 0xb5, 0x41, 0x44, 0x94, 0x18, 0x84,
-	0xf4, 0xb8, 0x38, 0x3d, 0x12, 0xf3, 0x52, 0x82, 0x33, 0x12, 0xb3, 0x53, 0x85, 0xf8, 0xe0, 0x3a,
+	0xf4, 0xb8, 0x38, 0x3d, 0x12, 0xf3, 0x52, 0x8a, 0x33, 0x12, 0xb3, 0x53, 0x85, 0xf8, 0xe0, 0x3a,
 	0x5c, 0x73, 0x0b, 0x4a, 0x2a, 0xa5, 0xf8, 0x11, 0x1a, 0xc0, 0x02, 0x4a, 0x0c, 0x49, 0x6c, 0x60,
-	0x0b, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x7a, 0x49, 0xe4, 0x20, 0xbc, 0x00, 0x00, 0x00,
+	0x0b, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xfe, 0xcb, 0x1d, 0xfb, 0xbc, 0x00, 0x00, 0x00,
 }
