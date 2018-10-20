@@ -74,6 +74,7 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...)),
 		grpc_middleware.WithStreamServerChain(
+			authStreamingInterceptor,
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...)))
 

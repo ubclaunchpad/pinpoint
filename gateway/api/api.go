@@ -62,9 +62,9 @@ func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
 }
 
-// Runs Core and Gateway Connection Handshake
+// runs Core and Gateway Connection Handshake
 func (a *API) establishConnection(ctx context.Context) error {
-	//Authenticate with core first
+	//authenticate with core first
 	var header, trailer metadata.MD
 	var authflag bool
 	_, err := a.c.Handshake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
