@@ -9,6 +9,7 @@ import (
 // AWSConfig generates an AWS session Configuration
 func AWSConfig(dev bool) (cfg *aws.Config) {
 	if dev {
+		ll := aws.LogDebug
 		cfg = &aws.Config{
 			// dynamodb-local
 			Endpoint: aws.String("http://localhost:8000"),
@@ -18,6 +19,8 @@ func AWSConfig(dev bool) (cfg *aws.Config) {
 
 			// arbitrary region
 			Region: aws.String("us-west-2"),
+
+			LogLevel: &ll,
 		}
 	} else {
 		// todo: production aws setup

@@ -40,7 +40,8 @@ matrix:
       script:
         - go fmt ./...
         - golint $(go list ./... | grep -v /vendor/) # golint doesn't ignore vendor
-        - go test -race -coverprofile=coverage.txt ./...
+        - go test -race -timeout 5m -coverprofile=coverage.txt ./...
+        - docker logs dev_dynamodb_1
 
     # Frontend
     - name: "Frontend Tests"
