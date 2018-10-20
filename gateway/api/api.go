@@ -55,12 +55,10 @@ func (a *API) registerHandlers() {
 
 // Runs Core and Gateway Connection Handshake
 func (a *API) establishConnection() error {
-	// Authentication Test of Gateway to be sent in context
-	//md := metadata.Pairs("token", "invalid-token") //Test use
-	md := metadata.Pairs("coretoken", os.Getenv("PINPOINT_CORE_TOKEN"))
+	md := metadata.Pairs("token", os.Getenv("PINPOINT_CORE_TOKEN"))
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
-	// Ping Communication with Core to Authentication First
+	//Authenticate with core first
 	var header, trailer metadata.MD
 	var authflag bool
 	_, err := a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
@@ -102,6 +100,10 @@ type CoreOpts struct {
 
 // Run spins up the API server
 func (a *API) Run(host, port string, opts RunOpts) error {
+	if host == "" && port == "" {
+		return errors.New("invalid host and port configuration provided")
+	}
+
 	// connect to core server
 	a.l.Infow("connecting to core",
 		"core.host", opts.Host,
