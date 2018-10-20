@@ -52,6 +52,34 @@ func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
 }
 
+// Runs Core and Gateway Connection Handshake
+func (a *API) establishConnection() error {
+	// Authentication Test of Gateway to be sent in context
+	//md := metadata.Pairs("token", "invalid-token") //Test use
+	md := metadata.Pairs("token", "valid-token")
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	// Ping Communication with Core to Authentication First
+	var header, trailer metadata.MD
+	var authflag bool
+	_, err := a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
+	if err != nil {
+		a.l.Errorf("Error when setting up handshake: %s", err)
+	}
+	for _, value := range header {
+		if value[0] == "valid-coretoken" {
+			a.l.Info("Core passed authentication")
+			authflag = true
+		}
+	}
+	if authflag != true {
+		a.l.Info("Core failed authentication, connection closing")
+		err = errors.New("Core failed authentication, connection closing")
+	}
+
+	return err
+}
+
 // RunOpts defines options for API server startup
 type RunOpts struct {
 	SSLOpts
@@ -89,31 +117,8 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	a.c = pinpoint.NewCoreClient(conn)
 	defer conn.Close()
 
-	// Authentication Test of Gateway to be sent in context
-	//md := metadata.Pairs("token", "invalid-token") //Test use
-	md := metadata.Pairs("token", "valid-token")
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
-
-	// Ping Communication with Core to Authentication First
-	var header, trailer metadata.MD
-	var authflag bool
-	// response, err := a.c.SayHello(
-	// 	ctx,
-	// 	&pinpoint.PingMessage{Greeting: "This is a test ping from gateway"},
-	// 	grpc.Header(&header),
-	// 	grpc.Trailer(&trailer))
-	_, err = a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
-	if err != nil {
-		a.l.Errorf("Error when setting up handshake: %s", err)
-	}
-	for _, value := range header {
-		if value[0] == "valid-coretoken" {
-			a.l.Info("Core passed authentication")
-			authflag = true
-		}
-	}
-	if authflag != true {
-		a.l.Info("Core failed authentication, connection closing")
+	// Exchange auth tokens with core
+	if err := a.establishConnection(); err != nil {
 		conn.Close()
 	}
 
