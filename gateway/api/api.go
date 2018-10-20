@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -56,7 +57,7 @@ func (a *API) registerHandlers() {
 func (a *API) establishConnection() error {
 	// Authentication Test of Gateway to be sent in context
 	//md := metadata.Pairs("token", "invalid-token") //Test use
-	md := metadata.Pairs("token", "valid-token")
+	md := metadata.Pairs("coretoken", os.Getenv("PINPOINT_CORE_TOKEN"))
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	// Ping Communication with Core to Authentication First
@@ -67,7 +68,7 @@ func (a *API) establishConnection() error {
 		a.l.Errorf("Error when setting up handshake: %s", err)
 	}
 	for _, value := range header {
-		if value[0] == "valid-coretoken" {
+		if value[0] == os.Getenv("PINPOINT_GATEWAY_TOKEN") {
 			a.l.Info("Core passed authentication")
 			authflag = true
 		}
@@ -101,10 +102,8 @@ type CoreOpts struct {
 
 // Run spins up the API server
 func (a *API) Run(host, port string, opts RunOpts) error {
-	if host == "" && port == "" {
-		return errors.New("invalid host and port configuration provided")
-	}
 
+	print("testew;lkfj;walkejf    ", os.Getenv("port"), " sfsafasdfas ")
 	// connect to core server
 	a.l.Infow("connecting to core",
 		"core.host", opts.Host,

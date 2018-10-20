@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -17,7 +18,7 @@ func authUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.Unary
 	if len(meta["token"]) != 1 {
 		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
 	}
-	if meta["token"][0] != "valid-token" {
+	if meta["token"][0] != os.Getenv("PINPOINT_CORE_TOKEN") {
 		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
 	}
 

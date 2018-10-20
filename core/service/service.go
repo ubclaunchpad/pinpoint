@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/client"
@@ -102,6 +103,6 @@ func (s *Service) HandShake(ctx context.Context, req *request.Empty) (*response.
 	res := &response.Empty{}
 	//// Send over server side authentication to client for mutual handshake
 	// grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "invalid-coretoken"}))
-	grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "valid-coretoken"}))
+	grpc.SendHeader(ctx, metadata.New(map[string]string{"gatewaytoken": os.Getenv("PINPOINT_GATEWAY_TOKEN")}))
 	return res, nil
 }
