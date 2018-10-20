@@ -63,10 +63,7 @@ func (a *API) registerHandlers() {
 }
 
 // Runs Core and Gateway Connection Handshake
-func (a *API) establishConnection() error {
-	md := metadata.Pairs("token", os.Getenv("PINPOINT_CORE_TOKEN"))
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
-
+func (a *API) establishConnection(ctx context.Context) error {
 	//Authenticate with core first
 	var header, trailer metadata.MD
 	var authflag bool
@@ -116,6 +113,10 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// set up server
 	a.srv.Addr = host + ":" + port
 
+	// set up ctx for future communication
+	md := metadata.Pairs("token", os.Getenv("PINPOINT_CORE_TOKEN"))
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
 	// set up parameters
 	dialOpts := make([]grpc.DialOption, 0)
 	if opts.CoreOpts.CertFile != "" {
@@ -141,13 +142,14 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	defer conn.Close()
 
 	// Exchange auth tokens with core
-	if err := a.establishConnection(); err != nil {
+	if err := a.establishConnection(ctx); err != nil {
+		a.l.Infow("Closing connection")
 		conn.Close()
 	}
 
 	// attempt connection
 	go func() {
-		if _, err = a.c.GetStatus(context.Background(), &request.Status{}); err != nil {
+		if _, err = a.c.GetStatus(ctx, &request.Status{}); err != nil {
 			a.l.Errorw("unable to connect to core service",
 				"error", err.Error())
 		} else {
