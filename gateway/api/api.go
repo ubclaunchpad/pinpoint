@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
@@ -113,10 +114,6 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// set up server
 	a.srv.Addr = host + ":" + port
 
-	// set up ctx for future communication
-	md := metadata.Pairs("token", os.Getenv("PINPOINT_CORE_TOKEN"))
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
-
 	// set up parameters
 	dialOpts := make([]grpc.DialOption, 0)
 	if opts.CoreOpts.CertFile != "" {
@@ -142,14 +139,14 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	defer conn.Close()
 
 	// Exchange auth tokens with core
-	if err := a.establishConnection(ctx); err != nil {
+	if err := a.establishConnection(utils.SecureContext(context.Background())); err != nil {
 		a.l.Infow("Closing connection")
 		conn.Close()
 	}
 
 	// attempt connection
 	go func() {
-		if _, err = a.c.GetStatus(ctx, &request.Status{}); err != nil {
+		if _, err = a.c.GetStatus(utils.SecureContext(context.Background()), &request.Status{}); err != nil {
 			a.l.Errorw("unable to connect to core service",
 				"error", err.Error())
 		} else {
