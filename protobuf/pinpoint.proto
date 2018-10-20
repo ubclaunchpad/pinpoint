@@ -5,13 +5,8 @@ package pinpoint;
 import "request/request.proto";
 import "response/response.proto";
 
-// For ping testing use core <-> gateway
-message PingMessage {
-  string greeting = 1;
-}
-
 // Protobuf definitions for pinpoint's core service
 service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
-  rpc SayHello(PingMessage) returns (PingMessage) {}
+  rpc HandShake(request.Empty) returns (response.Empty) {}
 }

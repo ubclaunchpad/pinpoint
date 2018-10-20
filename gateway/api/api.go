@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -97,26 +98,26 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// Ping Communication with Core to Authentication First
 	var header, trailer metadata.MD
 	var authflag bool
-	response, err := a.c.SayHello(
-		ctx,
-		&pinpoint.PingMessage{Greeting: "This is a test ping from gateway"},
-		grpc.Header(&header),
-		grpc.Trailer(&trailer))
-
+	// response, err := a.c.SayHello(
+	// 	ctx,
+	// 	&pinpoint.PingMessage{Greeting: "This is a test ping from gateway"},
+	// 	grpc.Header(&header),
+	// 	grpc.Trailer(&trailer))
+	_, err = a.c.HandShake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
 	if err != nil {
-		log.Fatalf("Error when calling SayHello: %s", err)
+		log.Fatalf("Error when setting up handshake: %s", err)
 	}
 	for _, value := range header {
 		fmt.Printf("%s =>", value[0])
 		if value[0] == "valid-coretoken" {
+			log.Printf("Core passed authentication")
 			authflag = true
 		}
 	}
 	if authflag != true {
+		log.Printf("Core failed authentication, connection closing")
 		conn.Close()
 	}
-
-	log.Printf("Response from server: %s", response.Greeting)
 
 	// lets gooooo
 	a.l.Infow("spinning up api server",

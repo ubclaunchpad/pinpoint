@@ -99,13 +99,13 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 }
 
 // SayHello generates response to a Ping request (For Initial Auth Purpose)
-func (s *Service) SayHello(ctx context.Context, in *pinpoint.PingMessage) (*pinpoint.PingMessage, error) {
-	log.Printf("Receive message %s", in.Greeting)
-
-	// Send over server side authentication to client for mutual handshake
+func (s *Service) HandShake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
+	log.Printf("Received handshake request from gateway")
+	res := &response.Empty{}
+	//// Send over server side authentication to client for mutual handshake
 	// grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "invalid-coretoken"}))
 	grpc.SendHeader(ctx, metadata.New(map[string]string{"coretoken": "valid-coretoken"}))
-	return &pinpoint.PingMessage{Greeting: "This is a response from the core"}, nil
+	return res, nil
 }
 
 // AuthUnaryInterceptor is for validating authentication interceptor of incoming message from gateway
