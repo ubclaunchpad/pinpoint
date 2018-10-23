@@ -31,7 +31,7 @@ matrix:
       install:
         - go get -u golang.org/x/lint/golint
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-        - make deps
+        - dep ensure -v
       before_script:
         - go vet ./...
         - go build ./...
