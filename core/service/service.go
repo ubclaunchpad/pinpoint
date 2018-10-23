@@ -127,3 +127,13 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 	}
 	return res, nil
 }
+
+// Verify sends an email verification email
+func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Bool, error) {
+	b := req.Email == "ubclaunchpad@gmail.com"
+	res := &response.Bool{Bool: b}
+	if !b {
+		return res, errors.New("Unexpected email")
+	}
+	return res, nil
+}

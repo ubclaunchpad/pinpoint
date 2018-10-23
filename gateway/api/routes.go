@@ -17,3 +17,13 @@ func (a *API) statusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, r, resp)
 }
+
+func (a *API) verifyHandler(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	resp, err := a.c.Verify(context.Background(), &request.Verify{Email: email})
+	if err != nil {
+		render.Render(w, r, res.ErrInternalServer(r, err))
+		return
+	}
+	render.JSON(w, r, resp)
+}
