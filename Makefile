@@ -27,6 +27,7 @@ test:
 # Set up test environment
 .PHONY: testenv
 testenv:
+	mkdir -p tmp/data
 	$(DEV_COMPOSE) up -d
 
 # Stop test environment
@@ -38,6 +39,7 @@ testenv-stop:
 .PHONY: clean
 clean: testenv-stop
 	$(DEV_COMPOSE) rm -f -s -v
+	rm -rf tmp
 
 # Run linters and checks
 .PHONY: lint
