@@ -78,6 +78,11 @@ gateway-tls:
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key
 
+# Runs web app
+.PHONY: web
+web:
+	( cd frontend ; npm start )
+
 # Builds binary for pinpoint-core
 .PHONY: pinpoint-core
 pinpoint-core:
