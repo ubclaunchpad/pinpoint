@@ -79,7 +79,8 @@ func TestAPI_establishConnection(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		//insert tests here
+
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

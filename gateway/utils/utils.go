@@ -17,7 +17,6 @@ func FirstString(strs []string) string {
 
 // SecureContext takes in a context and then adds in authentication token to it
 func SecureContext(ctx context.Context) context.Context {
-	// set up ctx for future communication
 	md := metadata.Pairs("token", os.Getenv("PINPOINT_CORE_TOKEN"))
 	ctxnew := metadata.NewOutgoingContext(ctx, md)
 
