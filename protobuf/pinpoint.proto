@@ -8,4 +8,5 @@ import "response/response.proto";
 // Protobuf definitions for pinpoint's core service
 service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
+  rpc Verify(request.Verify) returns (response.Bool) {}
 }

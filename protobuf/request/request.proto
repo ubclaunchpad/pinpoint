@@ -9,3 +9,7 @@ message Empty {}
 message Status {
   string callback = 1;
 }
+
+message Verify {
+  string email = 1;
+}
