@@ -63,7 +63,7 @@ proto-pkg:
 # Runs core service
 .PHONY: core
 core:
-	export env PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
+	export PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
 	go run core/main.go run --dev \
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key
@@ -71,7 +71,7 @@ core:
 # Runs API gateway
 .PHONY: gateway
 gateway:
-	export env PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
+	export PINPOINT_CORE_TOKEN=valid_token PINPOINT_GATEWAY_TOKEN=valid_token
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt
 
