@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/ubclaunchpad/pinpoint/core/database"
+	"github.com/ubclaunchpad/pinpoint/core/mailer"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
@@ -130,10 +131,26 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 
 // Verify sends an email verification email
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Bool, error) {
-	b := req.Email == "ubclaunchpad@gmail.com"
-	res := &response.Bool{Bool: b}
-	if !b {
-		return res, errors.New("Unexpected email")
+	res := &response.Bool{Bool: false}
+
+	hash, err := mailer.NewVerifier(req.Email).Init()
+	if err != nil {
+		return res, err
 	}
+
+	// Construct verification email
+	// TODO: Change to get email address from user session
+	mailer, err := mailer.NewMailer(req.Email, "Title", hash)
+	if err != nil {
+		return res, err
+	}
+
+	// Send email
+	if err := mailer.Send(); err != nil {
+		return res, err
+	}
+
+	// If no error, respond true. TODO: Change this to utilize response codes
+	res = &response.Bool{Bool: true}
 	return res, nil
 }
