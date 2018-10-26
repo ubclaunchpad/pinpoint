@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/ubclaunchpad/pinpoint/core/database"
 	"github.com/ubclaunchpad/pinpoint/core/mailer"
+	"github.com/ubclaunchpad/pinpoint/core/verifier"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
@@ -131,7 +132,7 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 
 // CreateAccount sends an email verification email. TODO: Actually create account
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
-	hash, err := mailer.NewVerifier(req.Email).Init()
+	hash, err := verifier.NewVerifier(req.Email).Init()
 	if err != nil {
 		return &response.Status{Callback: "error: email hashing went wrong"}, err
 	}
@@ -154,7 +155,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 
 // Verify looks up the given hash, and verifies the hash matching email
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
-	err := mailer.Verify(req.Hash)
+	err := verifier.Verify(req.Hash)
 	if err != nil {
 		return &response.Status{Callback: "error: unable to verify email"}, err
 	}

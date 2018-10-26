@@ -1,4 +1,4 @@
-package mailer
+package verifier
 
 import (
 	"crypto/sha1"
