@@ -134,19 +134,19 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
 	hash, err := verifier.Init(req.Email)
 	if err != nil {
-		return &response.Status{Callback: "error: email hashing went wrong"}, err
+		return nil, fmt.Errorf("failed to hash email: %s", err.Error())
 	}
 
 	// Construct verification email
 	// TODO: Change to get email address from user session
 	mailer, err := mailer.NewMailer(req.Email, "Welcome to Pinpoint!", "Visit localhost:8081/user/verify?hash="+hash+" to verify your email.")
 	if err != nil {
-		return &response.Status{Callback: "error: mailer setup went wrong"}, err
+		return nil, fmt.Errorf("failed to setup mailer: %s", err.Error())
 	}
 
 	// Send email
 	if err := mailer.Send(); err != nil {
-		return &response.Status{Callback: "error: sending email went wrong"}, err
+		return nil, fmt.Errorf("failed to send email: %s", err.Error())
 	}
 
 	// If no error, respond success. TODO: Change this to utilize response codes
@@ -157,7 +157,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
 	err := verifier.Verify(req.Hash)
 	if err != nil {
-		return &response.Status{Callback: "error: unable to verify email"}, err
+		return nil, fmt.Errorf("failed to verify email: %s", err.Error())
 	}
 
 	return &response.Status{Callback: "success"}, nil
