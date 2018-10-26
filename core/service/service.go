@@ -132,14 +132,14 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 
 // CreateAccount sends an email verification email. TODO: Actually create account
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
-	hash, err := verifier.NewVerifier(req.Email).Init()
+	hash, err := verifier.Init(req.Email)
 	if err != nil {
 		return &response.Status{Callback: "error: email hashing went wrong"}, err
 	}
 
 	// Construct verification email
 	// TODO: Change to get email address from user session
-	mailer, err := mailer.NewMailer(req.Email, "Title", hash)
+	mailer, err := mailer.NewMailer(req.Email, "Welcome to Pinpoint!", "Visit localhost:8081/user/verify?hash="+hash+" to verify your email.")
 	if err != nil {
 		return &response.Status{Callback: "error: mailer setup went wrong"}, err
 	}

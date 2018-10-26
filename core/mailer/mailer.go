@@ -2,11 +2,10 @@ package mailer
 
 import (
 	"errors"
+	"fmt"
 	"net/smtp"
 	"os"
 	"regexp"
-
-	"github.com/joho/godotenv"
 )
 
 // Mailer contains context required to send a mail
@@ -26,22 +25,15 @@ func NewMailer(email, title, body string) (*Mailer, error) {
 
 // Send attempts to send a email to the target email using struct information
 func (m *Mailer) Send() error {
-	if err := godotenv.Load(); err != nil {
-		return err
-	}
+	from := os.Getenv("MAILER_USER")
+	pass := os.Getenv("MAILER_PASS")
+	to := m.toEmail
 
-	FROM := os.Getenv("MAILER_USER")
-	PASS := os.Getenv("MAILER_PASS")
-	TO := m.toEmail
-
-	MSG := "From: " + FROM + "\n" +
-		"To: " + TO + "\n" +
-		"Subject: " + m.title + "\n\n" +
-		m.body
+	msg := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", from, to, m.title, m.body)
 
 	err := smtp.SendMail("smtp.gmail.com:587",
-		smtp.PlainAuth("", FROM, PASS, "smtp.gmail.com"),
-		FROM, []string{TO}, []byte(MSG))
+		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
+		from, []string{to}, []byte(msg))
 	if err != nil {
 		return err
 	}

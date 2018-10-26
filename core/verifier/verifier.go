@@ -12,30 +12,18 @@ import (
 	"time"
 )
 
-// Verifier contains context required verify email
-type Verifier struct {
-	email     string
-	createdAt time.Time
-}
-
 type verify struct {
 	email, hash, createdAt string
 }
 
-// NewVerifier returns a new Verifier using parameter email
-func NewVerifier(email string) *Verifier {
-	createdAt := time.Now()
-	return &Verifier{email, createdAt}
-}
-
-// Init sets up verification on the passed email address
-func (v *Verifier) Init() (string, error) {
-	hash, err := v.generateHash()
+// Init sets up verification on passed email address
+func Init(email string) (string, error) {
+	hash, err := generateHash(email)
 	if err != nil {
 		return "", err
 	}
 
-	err = writeCSV(v.email, hash, v.createdAt.Unix())
+	err = writeCSV(email, hash, time.Now().Unix())
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +33,7 @@ func (v *Verifier) Init() (string, error) {
 
 // Verify looks up given hash and sets verified to true for the matching email
 func Verify(hash string) error {
-	path, err := filepath.Abs("./tmp/to_be_verifies.csv")
+	path, err := filepath.Abs("./tmp/to_be_verified_accounts.csv")
 	csvfile, err := os.Open(path)
 	if err != nil {
 		return err
@@ -66,7 +54,7 @@ func Verify(hash string) error {
 	csvfile.Close()
 
 	if toBeVerified != (verify{}) {
-		path, err = filepath.Abs("./tmp/verifies.csv")
+		path, err = filepath.Abs("./tmp/verified_accounts.csv")
 		csvfile, err = os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 		if err != nil {
 			return err
@@ -85,15 +73,17 @@ func Verify(hash string) error {
 }
 
 // generateHash generates a hash used for verifying
-func (v *Verifier) generateHash() (string, error) {
+func generateHash(email string) (string, error) {
 	hasher := sha1.New()
-	hasher.Write([]byte(v.email))
+	hasher.Write([]byte(email))
 	sha := base64.URLEncoding.EncodeToString(hasher.Sum([]byte{}))
 	return sha, nil
 }
 
+// writeCSV writes the to-be verified email into a CSV
 func writeCSV(email, hash string, createdAt int64) error {
-	path, err := filepath.Abs("./tmp/to_be_verifies.csv")
+	// TODO: Replace tmp files with database
+	path, err := filepath.Abs("./tmp/to_be_verified_accounts.csv")
 	csvfile, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return err
