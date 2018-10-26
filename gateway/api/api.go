@@ -57,7 +57,7 @@ func (a *API) setUpRouter() {
 // registerHandler sets up server routes
 func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
-	a.r.Get("/verify", a.verifyHandler)
+	a.r.Get("/create_account", a.createAccountHandler)
 }
 
 // RunOpts defines options for API server startup

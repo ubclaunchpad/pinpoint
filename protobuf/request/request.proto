@@ -10,6 +10,6 @@ message Status {
   string callback = 1;
 }
 
-message Verify {
+message CreateAccount{
   string email = 1;
 }

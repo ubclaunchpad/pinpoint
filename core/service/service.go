@@ -129,28 +129,25 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 	return res, nil
 }
 
-// Verify sends an email verification email
-func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Bool, error) {
-	res := &response.Bool{Bool: false}
-
+// CreateAccount sends an email verification email. TODO: Actually create account
+func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
 	hash, err := mailer.NewVerifier(req.Email).Init()
 	if err != nil {
-		return res, err
+		return &response.Status{Callback: "error: email hashing went wrong"}, err
 	}
 
 	// Construct verification email
 	// TODO: Change to get email address from user session
 	mailer, err := mailer.NewMailer(req.Email, "Title", hash)
 	if err != nil {
-		return res, err
+		return &response.Status{Callback: "error: mailer setup went wrong"}, err
 	}
 
 	// Send email
 	if err := mailer.Send(); err != nil {
-		return res, err
+		return &response.Status{Callback: "error: sending email went wrong"}, err
 	}
 
-	// If no error, respond true. TODO: Change this to utilize response codes
-	res = &response.Bool{Bool: true}
-	return res, nil
+	// If no error, respond success. TODO: Change this to utilize response codes
+	return &response.Status{Callback: "success"}, nil
 }
