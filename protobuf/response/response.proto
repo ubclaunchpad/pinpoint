@@ -9,7 +9,3 @@ message Empty {}
 message Status {
   string callback = 1;
 }
-
-message Bool {
-  bool bool = 1;
-}
