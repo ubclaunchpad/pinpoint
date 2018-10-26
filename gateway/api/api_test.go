@@ -2,14 +2,16 @@ package api
 
 import (
 	"context"
-	"net/http"
+	"os"
 	"testing"
 	"time"
 
-	"github.com/go-chi/chi"
+	gateutil "github.com/ubclaunchpad/pinpoint/gateway/utils"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/utils"
-	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 func TestAPI_New(t *testing.T) {
@@ -64,35 +66,94 @@ func TestAPI_Run(t *testing.T) {
 }
 
 func TestAPI_establishConnection(t *testing.T) {
-	type fields struct {
-		l   *zap.SugaredLogger
-		r   *chi.Mux
-		c   pinpoint.CoreClient
-		srv *http.Server
+	l, err := utils.NewLogger(true)
+	if err != nil {
+		t.Error(err)
+		return
 	}
-	type args struct {
-		ctx context.Context
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		//insert tests here
 
+	type args struct {
+		opts RunOpts
 	}
+
+	testopts := args{RunOpts{
+		GatewayOpts: GatewayOpts{
+			CertFile: "../../dev/certs/127.0.0.1.crt",
+			KeyFile:  "../../dev/certs/127.0.0.1.key",
+		},
+	}}
+
+	md := metadata.Pairs("token", "WRONG_TOKEN")
+	wrongctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	tests := []struct {
+		name          string
+		ctx           context.Context
+		args          args
+		errorexpected bool
+	}{
+		{"Blank Context", context.Background(), testopts, true},
+		{"Incorrect Token Used", wrongctx, testopts, true},
+		{"Token Inserted", gateutil.SecureContext(context.Background()), testopts, false},
+	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &API{
-				l:   tt.fields.l,
-				r:   tt.fields.r,
-				c:   tt.fields.c,
-				srv: tt.fields.srv,
+
+			os.Setenv("PINPOINT_CORE_TOKEN", "valid_token")
+			os.Setenv("PINPOINT_GATEWAY_TOKEN", "valid_token")
+
+			a, err := New(l)
+			if err != nil {
+				t.Error(err)
+				return
 			}
-			if err := a.establishConnection(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("API.establishConnection() error = %v, wantErr %v", err, tt.wantErr)
+
+			// opts := tt.args.opts
+
+			// set up server
+			a.srv.Addr = "localhost" + ":" + "9111"
+			// set up parameters
+			dialOpts := make([]grpc.DialOption, 0)
+
+			creds, err := credentials.NewClientTLSFromFile("../../dev/certs/127.0.0.1.crt", "")
+			if err != nil {
+				t.Error(err)
+				return
 			}
+			dialOpts = append(dialOpts, grpc.WithTransportCredentials(creds))
+
+			// connect to core service
+			a.l.Infow("connecting to core",
+				"core.host", "localhost",
+				"core.port", "9111",
+				"core.tls", "../../dev/certs/127.0.0.1.crt" != "")
+			conn, err := grpc.Dial("localhost"+":"+"9111", dialOpts...)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			a.c = pinpoint.NewCoreClient(conn)
+			defer conn.Close()
+
+			// Exchange auth tokens with core
+			if err := a.establishConnection(tt.ctx); err != nil {
+				a.l.Infow("Closing connection")
+				conn.Close()
+
+				// Should not have gotten error
+				if !tt.errorexpected {
+					t.Error(err)
+				}
+				return
+			}
+
+			// Should have gotten error
+			if tt.errorexpected {
+				t.Error(err)
+			}
+			return
 		})
 	}
 }
