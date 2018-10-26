@@ -151,3 +151,13 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	// If no error, respond success. TODO: Change this to utilize response codes
 	return &response.Status{Callback: "success"}, nil
 }
+
+// Verify looks up the given hash, and verifies the hash matching email
+func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
+	err := mailer.Verify(req.Hash)
+	if err != nil {
+		return &response.Status{Callback: "error: unable to verify email"}, err
+	}
+
+	return &response.Status{Callback: "success"}, nil
+}

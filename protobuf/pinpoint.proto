@@ -9,4 +9,5 @@ import "response/response.proto";
 service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
   rpc CreateAccount(request.CreateAccount) returns (response.Status) {}
+  rpc Verify(request.Verify) returns (response.Status) {}
 }
