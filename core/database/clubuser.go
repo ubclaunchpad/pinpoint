@@ -30,8 +30,7 @@ func (db *Database) AddNewUser(u *model.User) error {
 		},
 		TableName: aws.String(clubsAndUsersTable),
 	}
-	_, err := db.c.PutItem(input)
-	if err != nil {
+	if _, err := db.c.PutItem(input); err != nil {
 		return err
 	}
 	return nil
@@ -75,8 +74,7 @@ func (db *Database) DeleteUser(email string) error {
 			},
 		},
 	}
-	_, err := db.c.DeleteItem(input)
-	if err != nil {
+	if _, err := db.c.DeleteItem(input); err != nil {
 		return err
 	}
 	return nil
@@ -129,8 +127,7 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.ClubUser) error {
 			},
 		},
 	}
-	_, err := db.c.BatchWriteItem(input)
-	if err != nil {
+	if _, err := db.c.BatchWriteItem(input); err != nil {
 		return err
 	}
 	return nil
@@ -221,8 +218,7 @@ func (db *Database) DeleteClub(id string) error {
 			clubsAndUsersTable: batch,
 		},
 	}
-	_, err = db.c.BatchWriteItem(batchInput)
-	if err != nil {
+	if _, err = db.c.BatchWriteItem(batchInput); err != nil {
 		return err
 	}
 	return nil
