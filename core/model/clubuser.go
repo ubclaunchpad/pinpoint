@@ -5,7 +5,6 @@ type Club struct {
 	ID          string `json:"pk"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	ClubTable   string `json:"ct"`
 }
 
 // User info

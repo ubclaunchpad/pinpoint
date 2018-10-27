@@ -43,7 +43,6 @@ func TestClubUser(t *testing.T) {
 		ID:          "1234",
 		Name:        "Launchpad",
 		Description: "1337 h4x0r",
-		ClubTable:   "table-1234",
 	}
 	cu := &model.ClubUser{
 		ClubID:   "1234",
