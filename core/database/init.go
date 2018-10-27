@@ -31,7 +31,7 @@ func (db *Database) initTables() error {
 			},
 		},
 		{
-			TableName: aws.String("Clubusers"),
+			TableName: aws.String("ClubsAndUsers"),
 			AttributeDefinitions: []*dynamodb.AttributeDefinition{
 				{
 					AttributeName: aws.String("pk"),

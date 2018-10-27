@@ -1,23 +1,25 @@
 package database
 
 import (
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/ubclaunchpad/pinpoint/core/model"
 )
 
-const clubuserTable string = "Clubusers"
+const clubsAndUsersTable string = "ClubsAndUsers"
 
 // AddNewUser creates a new user in the database
 func (db *Database) AddNewUser(u *model.User) error {
 	input := &dynamodb.PutItemInput{
 		Item: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String("User-" + u.Email),
+				S: prefixUserEmail(u.Email),
 			},
 			"sk": {
-				S: aws.String("User-" + u.Email),
+				S: prefixUserEmail(u.Email),
 			},
 			"name": {
 				S: aws.String(u.Name),
@@ -26,7 +28,7 @@ func (db *Database) AddNewUser(u *model.User) error {
 				S: aws.String(u.Salt),
 			},
 		},
-		TableName: aws.String(clubuserTable),
+		TableName: aws.String(clubsAndUsersTable),
 	}
 	_, err := db.c.PutItem(input)
 	if err != nil {
@@ -38,13 +40,13 @@ func (db *Database) AddNewUser(u *model.User) error {
 // GetUser returns a user from the database with the given email
 func (db *Database) GetUser(email string) (*model.User, error) {
 	input := &dynamodb.GetItemInput{
-		TableName: aws.String(clubuserTable),
+		TableName: aws.String(clubsAndUsersTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String("User-" + email),
+				S: prefixUserEmail(email),
 			},
 			"sk": {
-				S: aws.String("User-" + email),
+				S: prefixUserEmail(email),
 			},
 		},
 	}
@@ -56,23 +58,43 @@ func (db *Database) GetUser(email string) (*model.User, error) {
 	if err := dynamodbattribute.UnmarshalMap(result.Item, user); err != nil {
 		return nil, err
 	}
-	user.Email = user.Email[5:] // remove 'User-' prefix
+	user.Email = removePrefix(user.Email) // remove 'User-' prefix
 	return user, nil
 }
 
+// DeleteUser deletes a user from the database with the given email
+func (db *Database) DeleteUser(email string) error {
+	input := &dynamodb.DeleteItemInput{
+		TableName: aws.String(clubsAndUsersTable),
+		Key: map[string]*dynamodb.AttributeValue{
+			"pk": {
+				S: prefixUserEmail(email),
+			},
+			"sk": {
+				S: prefixUserEmail(email),
+			},
+		},
+	}
+	_, err := db.c.DeleteItem(input)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // AddNewClub creates a new club in the database with a user (creator) associated to it
-func (db *Database) AddNewClub(c *model.Club, cu *model.Clubuser) error {
+func (db *Database) AddNewClub(c *model.Club, cu *model.ClubUser) error {
 	input := &dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]*dynamodb.WriteRequest{
-			clubuserTable: {
+			clubsAndUsersTable: {
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]*dynamodb.AttributeValue{
 							"pk": {
-								S: aws.String("Club-" + c.ID),
+								S: prefixClubID(c.ID),
 							},
 							"sk": {
-								S: aws.String("Club-" + c.ID),
+								S: prefixClubID(c.ID),
 							},
 							"name": {
 								S: aws.String(c.Name),
@@ -80,8 +102,8 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.Clubuser) error {
 							"description": {
 								S: aws.String(c.Description),
 							},
-							"periods": {
-								SS: aws.StringSlice(c.Periods),
+							"ct": {
+								S: aws.String(c.ClubTable),
 							},
 						},
 					},
@@ -90,10 +112,10 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.Clubuser) error {
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]*dynamodb.AttributeValue{
 							"pk": {
-								S: aws.String("Club-" + cu.ClubID),
+								S: prefixClubID(cu.ClubID),
 							},
 							"sk": {
-								S: aws.String("User-" + cu.Email),
+								S: prefixUserEmail(cu.Email),
 							},
 							"name": {
 								S: aws.String(cu.UserName),
@@ -117,13 +139,13 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.Clubuser) error {
 // GetClub returns a club with the given id
 func (db *Database) GetClub(id string) (*model.Club, error) {
 	input := &dynamodb.GetItemInput{
-		TableName: aws.String(clubuserTable),
+		TableName: aws.String(clubsAndUsersTable),
 		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String("Club-" + id),
+				S: prefixClubID(id),
 			},
 			"sk": {
-				S: aws.String("Club-" + id),
+				S: prefixClubID(id),
 			},
 		},
 	}
@@ -135,36 +157,85 @@ func (db *Database) GetClub(id string) (*model.Club, error) {
 	if err := dynamodbattribute.UnmarshalMap(result.Item, club); err != nil {
 		return nil, err
 	}
-	club.ID = club.ID[5:] // remove 'Club-' prefix
+	club.ID = removePrefix(club.ID) // remove 'Club-' prefix
 	return club, nil
 }
 
-// GetAllClubusers returns a list of Clubusers associated with a club
-func (db *Database) GetAllClubusers(id string) (*[]*model.Clubuser, error) {
+// GetAllClubUsers returns a list of ClubUsers associated with a club
+func (db *Database) GetAllClubUsers(id string) ([]*model.ClubUser, error) {
 	input := &dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":id": {
-				S: aws.String("Club-" + id),
+				S: prefixClubID(id),
 			},
 			":u": {
-				S: aws.String("User-"),
+				S: prefixUserEmail(""),
 			},
 		},
 		KeyConditionExpression: aws.String("pk = :id AND begins_with(sk, :u)"),
-		TableName:              aws.String(clubuserTable),
+		TableName:              aws.String(clubsAndUsersTable),
 	}
 
 	result, err := db.c.Query(input)
 	if err != nil {
 		return nil, err
 	}
-	cus := make([]*model.Clubuser, *result.Count)
+	cus := make([]*model.ClubUser, *result.Count)
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &cus); err != nil {
 		return nil, err
 	}
 	for _, cu := range cus {
-		cu.ClubID = cu.ClubID[5:] // remove 'Club-' prefix
-		cu.Email = cu.Email[5:]   // remove 'User-' prefix
+		cu.ClubID = removePrefix(cu.ClubID) // remove 'Club-' prefix
+		cu.Email = removePrefix(cu.Email)   // remove 'User-' prefix
 	}
-	return &cus, nil
+	return cus, nil
+}
+
+// DeleteClub deletes a club from the database with the given id
+func (db *Database) DeleteClub(id string) error {
+	input := &dynamodb.QueryInput{
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":id": {
+				S: prefixClubID(id),
+			},
+		},
+		KeyConditionExpression: aws.String("pk = :id"),
+		ProjectionExpression:   aws.String("pk, sk"),
+		TableName:              aws.String(clubsAndUsersTable),
+	}
+	result, err := db.c.Query(input)
+	if err != nil {
+		return err
+	}
+
+	var batch []*dynamodb.WriteRequest
+	for _, item := range result.Items {
+		batch = append(batch, &dynamodb.WriteRequest{
+			DeleteRequest: &dynamodb.DeleteRequest{
+				Key: item,
+			},
+		})
+	}
+	batchInput := &dynamodb.BatchWriteItemInput{
+		RequestItems: map[string][]*dynamodb.WriteRequest{
+			clubsAndUsersTable: batch,
+		},
+	}
+	_, err = db.c.BatchWriteItem(batchInput)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func prefixClubID(id string) *string {
+	return aws.String("Club-" + id)
+}
+
+func prefixUserEmail(email string) *string {
+	return aws.String("User-" + email)
+}
+
+func removePrefix(str string) string {
+	return strings.SplitN(str, "-", 2)[1]
 }

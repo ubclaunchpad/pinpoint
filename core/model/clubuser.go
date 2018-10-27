@@ -2,10 +2,10 @@ package model
 
 // Club info
 type Club struct {
-	ID          string   `json:"pk"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Periods     []string `json:"periods"`
+	ID          string `json:"pk"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	ClubTable   string `json:"ct"`
 }
 
 // User info
@@ -15,8 +15,8 @@ type User struct {
 	Salt  string `json:"salt"`
 }
 
-// Clubuser manages the relationship of a club to a user
-type Clubuser struct {
+// ClubUser manages the relationship of a club to a user
+type ClubUser struct {
 	ClubID   string `json:"pk"`
 	Email    string `json:"sk"`
 	UserName string `json:"name"`
