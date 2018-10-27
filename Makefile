@@ -13,6 +13,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
+	go install github.com/golang/mock/mockgen
 	dep ensure
 	( cd frontend ; npm install )
 	( cd client ; npm install )
@@ -91,6 +92,11 @@ pinpoint-core:
 	go build -o ./bin/pinpoint-core \
     -ldflags "-X main.Version=$(VERSION)" \
     ./core
+
+# Generate mock
+.PHONY: mock
+mock:
+	$(GOPATH)/bin/mockgen -source=protobuf/pinpoint.pb.go -package=mocks -destination=protobuf/mocks/mock_pinpoint.pb.go CoreClient
 
 # Builds binary for pinpoint-gateway
 .PHONY: pinpoint-gateway
