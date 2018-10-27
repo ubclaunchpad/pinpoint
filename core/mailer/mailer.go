@@ -4,39 +4,42 @@ import (
 	"errors"
 	"fmt"
 	"net/smtp"
-	"os"
 	"regexp"
 )
 
 // Mailer contains context required to send a mail
 type Mailer struct {
-	toEmail, title, body string
+	from, fromPass string
 }
 
-// NewMailer returns a new Mailer using parameter target email, title, and body
-func NewMailer(email, title, body string) (*Mailer, error) {
-	emailFormat := regexp.MustCompile(`^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$`)
-	if !emailFormat.MatchString(email) {
+// NewMailer returns a new Mailer using parameter email, password
+func NewMailer(email, password string) (*Mailer, error) {
+	if !emailFormat(email) {
 		return nil, errors.New("mail: misformatted source email address")
 	}
 
-	return &Mailer{email, title, body}, nil
+	return &Mailer{email, password}, nil
 }
 
 // Send attempts to send a email to the target email using struct information
-func (m *Mailer) Send() error {
-	from := os.Getenv("MAILER_USER")
-	pass := os.Getenv("MAILER_PASS")
-	to := m.toEmail
+func (m *Mailer) Send(to, title, body string) error {
+	if !emailFormat(to) {
+		return errors.New("mail: misformatted target email address")
+	}
 
-	msg := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", from, to, m.title, m.body)
+	msg := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", m.from, to, title, body)
 
 	err := smtp.SendMail("smtp.gmail.com:587",
-		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
-		from, []string{to}, []byte(msg))
+		smtp.PlainAuth("", m.from, m.fromPass, "smtp.gmail.com"),
+		m.from, []string{to}, []byte(msg))
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func emailFormat(email string) bool {
+	regex := regexp.MustCompile(`^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$`)
+	return regex.MatchString(email)
 }

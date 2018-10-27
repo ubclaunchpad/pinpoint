@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/client"
@@ -142,14 +143,16 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	}
 
 	// Construct verification email
-	// TODO: Change to get email address from user session
-	mailer, err := mailer.NewMailer(req.Email, "Welcome to Pinpoint!", "Visit localhost:8081/user/verify?hash="+hash+" to verify your email.")
+	mailer, err := mailer.NewMailer(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to setup mailer: %s", err.Error())
 	}
 
 	// Send email
-	if err := mailer.Send(); err != nil {
+	// TODO: Change to get email address from user session
+	title := "Welcome to Pinpoint!"
+	body := "Visit localhost:8081/user/verify?hash=" + hash + " to verify your email."
+	if err := mailer.Send(req.Email, title, body); err != nil {
 		return nil, fmt.Errorf("failed to send email: %s", err.Error())
 	}
 
