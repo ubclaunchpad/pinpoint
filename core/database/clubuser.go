@@ -128,7 +128,7 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.ClubUser) error {
 		return err
 	}
 	t := &dynamodb.CreateTableInput{
-		TableName: aws.String("Table-" + c.ID),
+		TableName: aws.String("ClubData-" + c.ID),
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{
 				AttributeName: aws.String("pk"),
@@ -249,7 +249,7 @@ func (db *Database) DeleteClub(id string) error {
 		return err
 	}
 	t := &dynamodb.DeleteTableInput{
-		TableName: aws.String("Table-" + id),
+		TableName: aws.String("ClubData-" + id),
 	}
 	if _, err = db.c.DeleteTable(t); err != nil {
 		return err
