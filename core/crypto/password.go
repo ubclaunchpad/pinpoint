@@ -2,33 +2,30 @@ package crypto
 
 import (
 	"errors"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 var (
-	errSameUsernamePassword = errors.New("Username and password must be different")
-	errInvalidUsername      = errors.New("Username must be at least 3 characters. Only alphanumeric characters, underscores, and dashes are allowed")
-	errInvalidPassword      = errors.New("Password must be at least 5 characters. Only alphanumeric characters, and symbols are alowed")
+	errSameUsernamePassword = errors.New("username and password must be different")
+	errInvalidUsername      = errors.New("username must be at least 3 characters. only alphanumeric, underscores, and dashes are allowed")
+	errInvalidPassword      = errors.New("password must be at least 5 characters. only alphanumeric and symbols are alowed")
 )
 
-// hashAndSalt hashes and salts the given user password 
+// hashAndSalt hashes and salts the given user password
 func hashAndSalt(password string) (string, error) {
-
 	bytePwd := []byte(password)
-    hash, err := bcrypt.GenerateFromPassword(bytePwd, bcrypt.DefaultCost)
-	
+	hash, err := bcrypt.GenerateFromPassword(bytePwd, bcrypt.DefaultCost)
 	if err != nil {
-		return "", errors.New("Password hashing unsuccessful: " + err.Error())
-    }
-    return string(hash), nil
+		return "", errors.New("password hashing unsuccessful: " + err.Error())
+	}
+	return string(hash), nil
 }
 
 // comparePasswords checks if given password maps correctly to the given hash
 func comparePasswords(hashedPassword string, password string) bool {
-	
 	byteHash := []byte(hashedPassword)
 	bytePwd := []byte(password)
-	
 	return bcrypt.CompareHashAndPassword(byteHash, bytePwd) == nil
 }
 
