@@ -5,10 +5,6 @@ import (
 	"encoding/base64"
 )
 
-type verify struct {
-	email, hash, createdAt string
-}
-
 // Init sets up verification on passed email address
 func Init(email string) (string, error) {
 	hash, err := generateHash(email)
