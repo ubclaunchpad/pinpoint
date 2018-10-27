@@ -100,9 +100,6 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.ClubUser) error {
 							"description": {
 								S: aws.String(c.Description),
 							},
-							"ct": {
-								S: aws.String(c.ClubTable),
-							},
 						},
 					},
 				},
@@ -128,6 +125,36 @@ func (db *Database) AddNewClub(c *model.Club, cu *model.ClubUser) error {
 		},
 	}
 	if _, err := db.c.BatchWriteItem(input); err != nil {
+		return err
+	}
+	t := &dynamodb.CreateTableInput{
+		TableName: aws.String("ClubData-" + c.ID),
+		AttributeDefinitions: []*dynamodb.AttributeDefinition{
+			{
+				AttributeName: aws.String("pk"),
+				AttributeType: aws.String("S"),
+			},
+			{
+				AttributeName: aws.String("sk"),
+				AttributeType: aws.String("S"),
+			},
+		},
+		KeySchema: []*dynamodb.KeySchemaElement{
+			{
+				AttributeName: aws.String("pk"),
+				KeyType:       aws.String("HASH"),
+			},
+			{
+				AttributeName: aws.String("sk"),
+				KeyType:       aws.String("RANGE"),
+			},
+		},
+		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+			ReadCapacityUnits:  aws.Int64(10),
+			WriteCapacityUnits: aws.Int64(10),
+		},
+	}
+	if _, err := db.c.CreateTable(t); err != nil {
 		return err
 	}
 	return nil
@@ -219,6 +246,12 @@ func (db *Database) DeleteClub(id string) error {
 		},
 	}
 	if _, err = db.c.BatchWriteItem(batchInput); err != nil {
+		return err
+	}
+	t := &dynamodb.DeleteTableInput{
+		TableName: aws.String("ClubData-" + id),
+	}
+	if _, err = db.c.DeleteTable(t); err != nil {
 		return err
 	}
 	return nil
