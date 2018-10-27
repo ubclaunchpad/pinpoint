@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:cfddb9132d39dff54cf09b998b425945e1d34bb6603f734375c424a5cca190ec"
+  digest = "1:33e005f5eceb3278548f6cdf76279e7e5c45912b5ca0fa2bd51a20d1500bbf42"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -34,6 +34,7 @@
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/dynamodb",
+    "service/dynamodb/dynamodbattribute",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -268,6 +269,7 @@
     "github.com/aws/aws-sdk-go/aws/credentials",
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/dynamodb",
+    "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
     "github.com/go-chi/chi",
     "github.com/go-chi/chi/middleware",
     "github.com/go-chi/render",
@@ -282,6 +284,7 @@
     "go.uber.org/zap/zaptest/observer",
     "golang.org/x/net/context",
     "google.golang.org/grpc",
+    "google.golang.org/grpc/credentials",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -150,6 +150,7 @@ module.exports = {
               cacheDirectory: true,
             },
           },
+          // Process SCSS
           {
             test: /\.scss$/,
             include: paths.appSrc,

@@ -31,16 +31,17 @@ matrix:
       install:
         - go get -u golang.org/x/lint/golint
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-        - make deps
+        - dep ensure -v
       before_script:
         - go vet ./...
         - go build ./...
-        - make testenv
+        # don't use development dynamodb setup, due to file permission issues
+        - docker run -d -p 8000:8000 amazon/dynamodb-local
         - go test -run xxxx ./...
       script:
         - go fmt ./...
         - golint $(go list ./... | grep -v /vendor/) # golint doesn't ignore vendor
-        - go test -race -coverprofile=coverage.txt ./...
+        - go test -race -timeout 5m -coverprofile=coverage.txt ./...
 
     # Frontend
     - name: "Frontend Tests"

@@ -27,6 +27,7 @@ test:
 # Set up test environment
 .PHONY: testenv
 testenv:
+	mkdir -p tmp/data
 	$(DEV_COMPOSE) up -d
 
 # Stop test environment
@@ -38,6 +39,7 @@ testenv-stop:
 .PHONY: clean
 clean: testenv-stop
 	$(DEV_COMPOSE) rm -f -s -v
+	rm -rf tmp
 
 # Run linters and checks
 .PHONY: lint
@@ -77,6 +79,11 @@ gateway-tls:
 		--core.cert dev/certs/127.0.0.1.crt \
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key
+
+# Runs web app
+.PHONY: web
+web:
+	( cd frontend ; npm start )
 
 # Builds binary for pinpoint-core
 .PHONY: pinpoint-core
