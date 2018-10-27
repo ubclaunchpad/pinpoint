@@ -44,6 +44,9 @@ type TLSOpts struct {
 	KeyFile  string
 }
 
+// GHash is a temporary variable to store hash
+var GHash string // TODO: Replace with db once in place.
+
 // New creates a new Service
 func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) (*Service, error) {
 	// set up database
@@ -133,6 +136,7 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 // CreateAccount sends an email verification email. TODO: Actually create account
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
 	hash, err := verifier.Init(req.Email)
+	GHash = hash // Temporary in-memory store
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash email: %s", err.Error())
 	}
@@ -155,9 +159,9 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 
 // Verify looks up the given hash, and verifies the hash matching email
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
-	err := verifier.Verify(req.Hash)
-	if err != nil {
-		return nil, fmt.Errorf("failed to verify email: %s", err.Error())
+	// TODO: replace with Verifier method in future
+	if req.Hash != GHash {
+		return nil, fmt.Errorf("failed to verify email: no matching hash")
 	}
 
 	return &response.Status{Callback: "success"}, nil
