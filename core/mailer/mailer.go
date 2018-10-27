@@ -12,8 +12,8 @@ type Mailer struct {
 	from, fromPass string
 }
 
-// NewMailer returns a new Mailer using parameter email, password
-func NewMailer(email, password string) (*Mailer, error) {
+// New returns a new Mailer using parameter email, password
+func New(email, password string) (*Mailer, error) {
 	if !emailFormat(email) {
 		return nil, errors.New("mail: misformatted source email address")
 	}

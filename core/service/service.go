@@ -143,7 +143,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	}
 
 	// Construct verification email
-	mailer, err := mailer.NewMailer(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
+	mailer, err := mailer.New(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to setup mailer: %s", err.Error())
 	}
