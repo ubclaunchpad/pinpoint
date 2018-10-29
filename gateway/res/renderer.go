@@ -26,3 +26,11 @@ func ErrInternalServer(r *http.Request, err error, msg ...string) render.Rendere
 		RequestID:      utils.RequestID(r),
 	}
 }
+
+func Message(r *http.Request, msg ...string) render.Renderer {
+	return &MsgResponse{
+		HTTPStatusCode: http.StatusCreated,
+		StatusText:     utils.FirstString(msg),
+		RequestID:      utils.RequestID(r),
+	}
+}
