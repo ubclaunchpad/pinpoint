@@ -7,13 +7,14 @@ after_success:
 matrix:
   include:
     # Check if compiled code is up to date
-    - name: "Protoc Check"
+    - name: "Codegen Check"
       language: go
       go:
         - "1.11"
       install:
         - bash .scripts/install-protoc.sh
         - go get -u github.com/golang/protobuf/protoc-gen-go
+        - go get -u github.com/golang/mock/mockgen
       script:
         # generate code and exit with status 1 if diff is detected
         - make proto
