@@ -13,7 +13,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
-	go install github.com/golang/mock/mockgen
+	go get -u github.com/golang/mock/mockgen
 	dep ensure
 	( cd frontend ; npm install )
 	( cd client ; npm install )
