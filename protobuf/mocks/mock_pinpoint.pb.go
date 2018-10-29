@@ -54,6 +54,42 @@ func (mr *MockCoreClientMockRecorder) GetStatus(ctx, in interface{}, opts ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatus", reflect.TypeOf((*MockCoreClient)(nil).GetStatus), varargs...)
 }
 
+// CreateAccount mocks base method
+func (m *MockCoreClient) CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Status, error) {
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateAccount", varargs...)
+	ret0, _ := ret[0].(*response.Status)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAccount indicates an expected call of CreateAccount
+func (mr *MockCoreClientMockRecorder) CreateAccount(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockCoreClient)(nil).CreateAccount), varargs...)
+}
+
+// Verify mocks base method
+func (m *MockCoreClient) Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Status, error) {
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Verify", varargs...)
+	ret0, _ := ret[0].(*response.Status)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Verify indicates an expected call of Verify
+func (mr *MockCoreClientMockRecorder) Verify(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockCoreClient)(nil).Verify), varargs...)
+}
+
 // MockCoreServer is a mock of CoreServer interface
 type MockCoreServer struct {
 	ctrl     *gomock.Controller
@@ -88,4 +124,30 @@ func (m *MockCoreServer) GetStatus(arg0 context.Context, arg1 *request.Status) (
 // GetStatus indicates an expected call of GetStatus
 func (mr *MockCoreServerMockRecorder) GetStatus(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatus", reflect.TypeOf((*MockCoreServer)(nil).GetStatus), arg0, arg1)
+}
+
+// CreateAccount mocks base method
+func (m *MockCoreServer) CreateAccount(arg0 context.Context, arg1 *request.CreateAccount) (*response.Status, error) {
+	ret := m.ctrl.Call(m, "CreateAccount", arg0, arg1)
+	ret0, _ := ret[0].(*response.Status)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAccount indicates an expected call of CreateAccount
+func (mr *MockCoreServerMockRecorder) CreateAccount(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockCoreServer)(nil).CreateAccount), arg0, arg1)
+}
+
+// Verify mocks base method
+func (m *MockCoreServer) Verify(arg0 context.Context, arg1 *request.Verify) (*response.Status, error) {
+	ret := m.ctrl.Call(m, "Verify", arg0, arg1)
+	ret0, _ := ret[0].(*response.Status)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Verify indicates an expected call of Verify
+func (mr *MockCoreServerMockRecorder) Verify(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockCoreServer)(nil).Verify), arg0, arg1)
 }
