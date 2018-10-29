@@ -54,6 +54,11 @@ lint: check
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
+	$(GOPATH)/bin/mockgen \
+		-package=mocks \
+		-source=protobuf/pinpoint.pb.go \
+		-destination=protobuf/mocks/mock_pinpoint.pb.go \
+		CoreClient
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
 
@@ -92,11 +97,6 @@ pinpoint-core:
 	go build -o ./bin/pinpoint-core \
     -ldflags "-X main.Version=$(VERSION)" \
     ./core
-
-# Generate mock
-.PHONY: mock
-mock:
-	$(GOPATH)/bin/mockgen -source=protobuf/pinpoint.pb.go -package=mocks -destination=protobuf/mocks/mock_pinpoint.pb.go CoreClient
 
 # Builds binary for pinpoint-gateway
 .PHONY: pinpoint-gateway
