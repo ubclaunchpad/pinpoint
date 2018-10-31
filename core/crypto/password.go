@@ -59,7 +59,7 @@ func IsLegalUserName(username string) bool {
 // Only alphanumeric characters and symbols are alowed. These correspond to 33-126 range in ASCII table
 func IsLegalPassword(password string) bool {
 	for _, c := range password {
-		if (c < 33 || c > 126) {
+		if c < 33 || c > 126 {
 			return false
 		}
 	}
