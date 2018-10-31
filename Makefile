@@ -44,9 +44,10 @@ clean: testenv-stop
 
 # Run linters and checks
 .PHONY: lint
+lint: SHELL:=bash
 lint: check
-	go fmt ./...
-	golint `go list ./... | grep -v /vendor/`
+	diff -u <(echo -n) <(gofmt -d -s `find . -type f -name '*.go' -not -path "./vendor/*"`)
+	diff -u <(echo -n) <(golint `go list ./... | grep -v /vendor/`)
 	( cd frontend ; npm run lint )
 	( cd client ; npm run lint )
 
