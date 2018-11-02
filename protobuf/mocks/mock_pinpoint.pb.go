@@ -5,13 +5,12 @@
 package mocks
 
 import (
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
 	request "github.com/ubclaunchpad/pinpoint/protobuf/request"
 	response "github.com/ubclaunchpad/pinpoint/protobuf/response"
 	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
+	reflect "reflect"
 )
 
 // MockCoreClient is a mock of CoreClient interface
@@ -53,6 +52,24 @@ func (m *MockCoreClient) GetStatus(ctx context.Context, in *request.Status, opts
 func (mr *MockCoreClientMockRecorder) GetStatus(ctx, in interface{}, opts ...interface{}) *gomock.Call {
 	varargs := append([]interface{}{ctx, in}, opts...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatus", reflect.TypeOf((*MockCoreClient)(nil).GetStatus), varargs...)
+}
+
+// Handshake mocks base method
+func (m *MockCoreClient) Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error) {
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Handshake", varargs...)
+	ret0, _ := ret[0].(*response.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Handshake indicates an expected call of Handshake
+func (mr *MockCoreClientMockRecorder) Handshake(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Handshake", reflect.TypeOf((*MockCoreClient)(nil).Handshake), varargs...)
 }
 
 // CreateAccount mocks base method
@@ -125,6 +142,19 @@ func (m *MockCoreServer) GetStatus(arg0 context.Context, arg1 *request.Status) (
 // GetStatus indicates an expected call of GetStatus
 func (mr *MockCoreServerMockRecorder) GetStatus(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatus", reflect.TypeOf((*MockCoreServer)(nil).GetStatus), arg0, arg1)
+}
+
+// Handshake mocks base method
+func (m *MockCoreServer) Handshake(arg0 context.Context, arg1 *request.Empty) (*response.Empty, error) {
+	ret := m.ctrl.Call(m, "Handshake", arg0, arg1)
+	ret0, _ := ret[0].(*response.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Handshake indicates an expected call of Handshake
+func (mr *MockCoreServerMockRecorder) Handshake(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Handshake", reflect.TypeOf((*MockCoreServer)(nil).Handshake), arg0, arg1)
 }
 
 // CreateAccount mocks base method
