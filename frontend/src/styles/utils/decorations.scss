@@ -1,0 +1,27 @@
+/////////////////////////
+// ELEMENT DECORATIONS //
+/////////////////////////
+
+.shadow {
+  box-shadow: 0px 4px 6px $shadow
+}
+
+// opacity declarations
+.opacity {
+  &-0  { opacity: 0 }
+  &-20 { opacity: 0.2 }
+  &-40 { opacity: 0.4 }
+  &-60 { opacity: 0.6 }
+}
+
+// visibility declarations
+.display {
+  &-none { display: none }
+}
+
+// overflow modes
+.overflow {
+  &-hidden { overflow: hidden }
+}
+
+// todo

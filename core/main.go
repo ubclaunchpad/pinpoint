@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/ubclaunchpad/pinpoint/core/cmd"
 )
 
@@ -12,6 +13,11 @@ var (
 )
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		println(err.Error())
+	}
+
 	app := cmd.New(Version)
 	defer app.Sync()
 

@@ -41,7 +41,11 @@ func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 		}
 
 		// Set up api
-		a, err := api.New(g.SugaredLogger)
+		a, err := api.New(g.SugaredLogger, api.CoreOpts{
+			Host:     flags["core.host"],
+			Port:     flags["core.port"],
+			CertFile: flags["core.cert"],
+		})
 		if err != nil {
 			return fmt.Errorf("failed to create app: %s", err.Error())
 		}
@@ -57,16 +61,10 @@ func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 
 		// Let's go!
 		if err = a.Run(g.Host, g.Port, api.RunOpts{
-			GatewayOpts: api.GatewayOpts{
-				CertFile: flags["tls.cert"],
-				KeyFile:  flags["tls.key"],
-			},
-			CoreOpts: api.CoreOpts{
-				Host:     flags["core.host"],
-				Port:     flags["core.port"],
-				CertFile: flags["core.cert"],
-			},
-		}); err != nil {
+			CertFile: flags["tls.cert"],
+			KeyFile:  flags["tls.key"],
+		},
+		); err != nil {
 			return err
 		}
 		return nil

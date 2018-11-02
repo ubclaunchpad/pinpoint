@@ -1,0 +1,41 @@
+/////////////////////////
+//     BREAKPOINTS     //
+/////////////////////////
+
+$desktop-l: 1900px;
+$desktop:   1300px;
+$laptop:    1080px;
+$tablet:     900px;
+$phablet:    760px;
+$mobile:     480px;
+$mobile-s:   320px;
+
+//////////////////////////
+//   SCALING CLASSES    //
+//////////////////////////
+
+.scale {
+  &-pad {
+    &-sides {
+      &-tablet {
+        @media screen and (max-width: $tablet) {
+          padding-right: 0 !important;
+          padding-left: 0 !important;
+        }
+      }
+    }
+  }
+
+  &-margin {
+    &-sides {    
+      &-tablet {
+        @media screen and (max-width: $tablet) {
+          margin-right: 0 !important;
+          margin-left: 0 !important;
+        }
+      }
+    }
+  }
+
+  // todo
+}

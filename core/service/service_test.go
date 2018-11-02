@@ -91,3 +91,76 @@ func TestService_GetStatus(t *testing.T) {
 		})
 	}
 }
+
+func TestService_CreateAccount(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		req *request.CreateAccount
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *response.Status
+		wantErr bool
+	}{
+		{
+			"get error",
+			args{nil, &request.CreateAccount{Email: "test@pinpoint.com"}},
+			nil,
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &Service{}
+			got, err := s.CreateAccount(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Service.CreateAccount() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestService_Verify(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		req *request.Verify
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *response.Status
+		wantErr bool
+	}{
+		{
+			"get success given expected hash",
+			args{nil, &request.Verify{Hash: "NmSdjumzjHOF7IAnafAK74LAPug="}},
+			&response.Status{Callback: "success"},
+			false,
+		},
+		{
+			"get error",
+			args{nil, &request.Verify{Hash: "incorrect hash"}},
+			nil,
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &Service{}
+			GHash = "NmSdjumzjHOF7IAnafAK74LAPug="
+			got, err := s.Verify(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.Verify() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Service.Verify() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
