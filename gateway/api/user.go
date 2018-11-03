@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// UserRouter routes too all user endpoints
 type UserRouter struct {
 	l *zap.SugaredLogger
 	c pinpoint.CoreClient
@@ -23,9 +24,7 @@ func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
 	router := chi.NewRouter()
 	u := &UserRouter{l, c, router}
 	router.Post("/create_user", u.createUser)
-	// router.Get("/getUser/{userID}",getUser)
 	return &UserRouter{l.Named("users"), c, router}
-	// store email, name, and password, create a new schema package to store the user information model
 }
 
 func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
