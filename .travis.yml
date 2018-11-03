@@ -50,7 +50,7 @@ matrix:
       node_js:
         - "8.12"
       env:
-        - TEST="frontend"
+        - TEST="frontend" CI=false
       before_install: cd frontend
       install:
         - npm install
