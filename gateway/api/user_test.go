@@ -21,7 +21,7 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 
 	type args struct {
-		u *schema.User
+		u *schema.CreateUser
 	}
 	tests := []struct {
 		name     string
@@ -29,7 +29,7 @@ func TestUserRouter_createUser(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
-		{"successfully create user", args{&schema.User{
+		{"successfully create user", args{&schema.CreateUser{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",

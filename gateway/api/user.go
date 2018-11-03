@@ -34,12 +34,13 @@ func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	// parse request data
-	var userData schema.User
+	var userData schema.CreateUser
 	if err := decoder.Decode(&userData); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
-	// create user with data
-	schema.NewUser(userData.Name, userData.Email, userData.Password)
+
+	// TODO: create user in core
+
 	render.Render(w, r, res.Message(r, "User created sucessfully", http.StatusCreated))
 }
