@@ -1,14 +1,15 @@
 package api
 
 import (
-	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"testing"
+
+	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 )
 
 func TestCreateUser(t *testing.T) {
-	user := &schema.User{
-		Name: "Create"
-		Email: "user@test.com"
-		Password: "password"
+	_ := &schema.User{
+		Name:     "Create",
+		Email:    "user@test.com",
+		Password: "password",
 	}
 }

@@ -1,0 +1,65 @@
+/////////////////////////
+//   SPACING CLASSES   //
+/////////////////////////
+
+/*
+$spacing-xxs:  4px;
+$spacing-xs:   8px;
+$spacing-s:   16px;
+$spacing-m:   24px;
+$spacing-l:   32px;
+$spacing-xl:  40px;
+$spacing-xxl: 48px;
+*/
+
+// todo - more classes, replace 1 with variables
+
+.pad {
+  // navbar
+  &-nav { padding-top: 1 }
+
+  // left padding
+  &-left, &-sides {
+    &-m { padding-left: 1 }
+  }
+
+  // right padding
+  &-right, &-sides {
+    &-m { padding-right: 1 }
+  }
+
+  // top margin
+  &-top, &-ends {
+    &-m { padding-top: 1 }
+  }
+
+  // bottom margin
+  &-bot, &-ends {
+    &-m { padding-bottom: 1 }
+  }
+}
+
+.magin {
+  // navbar
+  &-nav { margin-top: 1 }
+
+  // left margin
+  &-left, &-sides {
+    &-m { margin-left: 1 }
+  }
+
+  // right margin
+  &-right, &-sides {
+    &-m { margin-left: 1 }
+  }
+
+  // top margin
+  &-top, &-ends {
+    &-m { margin-top: 1 }
+  }
+
+  // bottom margin
+  &-bot, &-ends {
+    &-m { margin-bottom: 1 }
+  }
+}
