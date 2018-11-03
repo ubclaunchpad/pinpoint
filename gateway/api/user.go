@@ -37,13 +37,10 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	// parse request data
 	var userData schema.User
 	if err := decoder.Decode(&userData); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
 	// create user with data
 	schema.NewUser(userData.Name, userData.Email, userData.Password)
-	w.WriteHeader(http.StatusCreated)
-	render.JSON(w, r, map[string]string{
-		"msg": "user created",
-	})
+	render.Render(w, r, res.Message(r, "User created sucessfully", http.StatusCreated))
 }

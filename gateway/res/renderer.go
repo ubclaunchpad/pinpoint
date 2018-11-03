@@ -37,10 +37,11 @@ func ErrBadRequest(r *http.Request, err error, msg string) render.Renderer {
 	}
 }
 
-func Message(r *http.Request, msg ...string) render.Renderer {
+// Message is a shortcut for non-error statuses
+func Message(r *http.Request, msg string, code int) render.Renderer {
 	return &MsgResponse{
-		HTTPStatusCode: http.StatusCreated,
-		StatusText:     utils.FirstString(msg),
+		HTTPStatusCode: code,
+		StatusText:     msg,
 		RequestID:      utils.RequestID(r),
 	}
 }

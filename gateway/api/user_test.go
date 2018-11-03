@@ -64,7 +64,7 @@ func TestUserRouter_createUser(t *testing.T) {
 			// Record responses
 			recorder := httptest.NewRecorder()
 
-			// serve request
+			// Serve request
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
