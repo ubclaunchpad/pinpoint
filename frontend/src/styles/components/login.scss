@@ -1,0 +1,39 @@
+.login {
+    font-family: sans-serif;
+    color: black;
+    text-align: center;
+    margin-top: 100px;
+
+    .title{
+        font-size: 40px
+    }
+
+    .fields{
+        display: inline-grid;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        input{
+            width: 200px;
+            height: 30px;
+            border-radius: 5px;
+            margin: 2px;
+        }
+    }
+
+    .submit{
+        height: 30px;
+        width: 100px;
+        background-color: white;
+        margin-top: 5px;
+        border-radius: 10px;
+    }
+
+    .loginhelp{
+        margin: 10px;
+    }
+
+    a{
+      text-decoration: none;
+      color: darkblue;
+    }
+}
