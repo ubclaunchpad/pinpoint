@@ -5,10 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/ubclaunchpad/pinpoint/core/database"
+	"github.com/ubclaunchpad/pinpoint/core/mailer"
+	"github.com/ubclaunchpad/pinpoint/core/verifier"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
@@ -41,6 +44,9 @@ type TLSOpts struct {
 	CertFile string
 	KeyFile  string
 }
+
+// GHash is a temporary variable to store hash
+var GHash string // TODO: Replace with db once in place.
 
 // New creates a new Service
 func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) (*Service, error) {
@@ -126,4 +132,40 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 		return res, errors.New("launch pad is the best and you know it")
 	}
 	return res, nil
+}
+
+// CreateAccount sends an email verification email. TODO: Actually create account
+func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
+	hash, err := verifier.Init(req.Email)
+	GHash = hash // Temporary in-memory store
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash email: %s", err.Error())
+	}
+
+	// Construct verification email
+	mailer, err := mailer.New(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
+	if err != nil {
+		return nil, fmt.Errorf("failed to setup mailer: %s", err.Error())
+	}
+
+	// Send email
+	// TODO: Change to get email address from user session
+	title := "Welcome to Pinpoint!"
+	body := "Visit localhost:8081/user/verify?hash=" + hash + " to verify your email."
+	if err := mailer.Send(req.Email, title, body); err != nil {
+		return nil, fmt.Errorf("failed to send email: %s", err.Error())
+	}
+
+	// If no error, respond success. TODO: Change this to utilize response codes
+	return &response.Status{Callback: "success"}, nil
+}
+
+// Verify looks up the given hash, and verifies the hash matching email
+func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
+	// TODO: replace with Verifier method in future
+	if req.Hash != GHash {
+		return nil, fmt.Errorf("failed to verify email: no matching hash")
+	}
+
+	return &response.Status{Callback: "success"}, nil
 }

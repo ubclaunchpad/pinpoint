@@ -5,3 +5,6 @@ services:
     image: amazon/dynamodb-local
     ports:
       - 8000:8000
+    command: -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -dbPath ./data
+    volumes:
+      - ${PWD}/tmp/data:/home/dynamodblocal/data

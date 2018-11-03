@@ -9,3 +9,11 @@ message Empty {}
 message Status {
   string callback = 1;
 }
+
+message CreateAccount {
+  string email = 1;
+}
+
+message Verify {
+  string hash = 1;
+}

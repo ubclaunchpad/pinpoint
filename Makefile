@@ -13,6 +13,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
+	go get -u github.com/golang/mock/mockgen
 	dep ensure
 	( cd frontend ; npm install )
 	( cd client ; npm install )
@@ -27,6 +28,7 @@ test:
 # Set up test environment
 .PHONY: testenv
 testenv:
+	mkdir -p tmp/data
 	$(DEV_COMPOSE) up -d
 
 # Stop test environment
@@ -38,12 +40,14 @@ testenv-stop:
 .PHONY: clean
 clean: testenv-stop
 	$(DEV_COMPOSE) rm -f -s -v
+	rm -rf tmp
 
 # Run linters and checks
 .PHONY: lint
+lint: SHELL:=bash
 lint: check
-	go fmt ./...
-	golint `go list ./... | grep -v /vendor/`
+	diff -u <(echo -n) <(gofmt -d -s `find . -type f -name '*.go' -not -path "./vendor/*"`)
+	diff -u <(echo -n) <(golint `go list ./... | grep -v /vendor/`)
 	( cd frontend ; npm run lint )
 	( cd client ; npm run lint )
 
@@ -51,6 +55,11 @@ lint: check
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
+	$(GOPATH)/bin/mockgen \
+		-package=mocks \
+		-source=protobuf/pinpoint.pb.go \
+		-destination=protobuf/mocks/mock_pinpoint.pb.go \
+		CoreClient
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
 
@@ -77,6 +86,11 @@ gateway-tls:
 		--core.cert dev/certs/127.0.0.1.crt \
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key
+
+# Runs web app
+.PHONY: web
+web:
+	( cd frontend ; npm start )
 
 # Builds binary for pinpoint-core
 .PHONY: pinpoint-core

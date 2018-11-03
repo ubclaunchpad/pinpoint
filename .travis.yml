@@ -7,13 +7,14 @@ after_success:
 matrix:
   include:
     # Check if compiled code is up to date
-    - name: "Protoc Check"
+    - name: "Codegen Check"
       language: go
       go:
         - "1.11"
       install:
         - bash .scripts/install-protoc.sh
         - go get -u github.com/golang/protobuf/protoc-gen-go
+        - go get -u github.com/golang/mock/mockgen
       script:
         # generate code and exit with status 1 if diff is detected
         - make proto
@@ -31,16 +32,17 @@ matrix:
       install:
         - go get -u golang.org/x/lint/golint
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-        - make deps
+        - dep ensure -v
       before_script:
         - go vet ./...
         - go build ./...
-        - make testenv
+        # don't use development dynamodb setup, due to file permission issues
+        - docker run -d -p 8000:8000 amazon/dynamodb-local
         - go test -run xxxx ./...
       script:
-        - go fmt ./...
-        - golint $(go list ./... | grep -v /vendor/) # golint doesn't ignore vendor
-        - go test -race -coverprofile=coverage.txt ./...
+        - diff -u <(echo -n) <(gofmt -d -s `find . -type f -name '*.go' -not -path "./vendor/*"`)
+        - diff -u <(echo -n) <(golint `go list ./... | grep -v /vendor/`)
+        - go test -race -timeout 5m -coverprofile=coverage.txt ./...
 
     # Frontend
     - name: "Frontend Tests"
