@@ -7,13 +7,21 @@ class Reset extends Component {
       email: '',
     };
     this.updatetextfields = this.updatetextfields.bind(this);
+    this.attemptSendReset = this.attemptSendReset.bind(this);
   }
 
   updatetextfields(e) {
     const { email } = this.state;
     console.log(email);
-    const loginfield = e.target.getAttribute('type');
-    this.setState({ [loginfield]: e.target.value });
+    const infoField = e.target.getAttribute('type');
+    this.setState({ [infoField]: e.target.value });
+  }
+
+  // TODO, Currently does nothing
+  attemptSendReset(e) {
+    const { email } = this.state;
+    console.log(email);
+    console.log(e);
   }
 
   render() {
@@ -26,7 +34,7 @@ class Reset extends Component {
           <input type="email" placeholder="E-mail address" onChange={this.updatetextfields} />
         </div>
         <div>
-          <button className="submit" type="submit">Send reset link</button>
+          <button className="submit" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
         </div>
         <div className="loginhelp">
           <a href="/login">Back to login</a>
