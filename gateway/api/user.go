@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -10,7 +9,6 @@ import (
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf"
-	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 )
 
@@ -30,22 +28,22 @@ func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
 	// store email, name, and password, create a new schema package to store the user information model
 }
 
+func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	u.mux.ServeHTTP(w, r)
+}
+
 func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	// parse request data
 	var userData schema.User
-	err := decoder.Decode(&userData)
-	if err != nil {
-		panic(err)
+	if err := decoder.Decode(&userData); err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "invalid input"))
+		return
 	}
 	// create user with data
 	schema.NewUser(userData.Name, userData.Email, userData.Password)
-
-	resp, err := u.c.GetStatus(context.Background(), &request.Status{Callback: "User Created"})
-	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
-		return
-	}
-	render.JSON(w, r, resp)
-
+	w.WriteHeader(http.StatusCreated)
+	render.JSON(w, r, map[string]string{
+		"msg": "user created",
+	})
 }

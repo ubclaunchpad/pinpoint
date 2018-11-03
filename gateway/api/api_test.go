@@ -5,9 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
-
 	"github.com/golang/mock/gomock"
+	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
 	"github.com/ubclaunchpad/pinpoint/utils"
 	"go.uber.org/zap"
 )
