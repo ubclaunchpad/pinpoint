@@ -107,7 +107,6 @@ func TestAPI_Run(t *testing.T) {
 							return nil, errors.New("oh no")
 						}).
 						Times(1)
-
 				} else {
 					// expect exactly one call to GetStatus && Handshake with anything
 					mock.EXPECT().
