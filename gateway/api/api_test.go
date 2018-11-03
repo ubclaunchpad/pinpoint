@@ -1,15 +1,18 @@
 package api
 
 import (
+	"context"
 	"errors"
+	"os"
 	"testing"
 	"time"
 
-	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
-
 	"github.com/golang/mock/gomock"
+	gateutil "github.com/ubclaunchpad/pinpoint/gateway/utils"
+	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
 	"github.com/ubclaunchpad/pinpoint/utils"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/metadata"
 )
 
 // NewMockAPI is used to create an API with a mocked client for use in tests
@@ -82,6 +85,7 @@ func TestAPI_Run(t *testing.T) {
 			KeyFile:  "../../dev/certs/127.0.0.1.key",
 		}}, false},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// set up mock controller
@@ -97,10 +101,20 @@ func TestAPI_Run(t *testing.T) {
 							return nil, errors.New("oh no")
 						}).
 						Times(1)
+					mock.EXPECT().
+						Handshake(gomock.Any(), gomock.Any(), gomock.Any()).
+						DoAndReturn(func(...interface{}) (interface{}, error) {
+							return nil, errors.New("oh no")
+						}).
+						Times(1)
+
 				} else {
-					// expect exactly one call to GetStatus with anything
+					// expect exactly one call to GetStatus && Handshake with anything
 					mock.EXPECT().
 						GetStatus(gomock.Any(), gomock.Any(), gomock.Any()).
+						Times(1)
+					mock.EXPECT().
+						Handshake(gomock.Any(), gomock.Any(), gomock.Any()).
 						Times(1)
 				}
 			}
@@ -109,6 +123,125 @@ func TestAPI_Run(t *testing.T) {
 			go api.Run(tt.args.host, "", tt.args.opts)
 			time.Sleep(time.Millisecond)
 			api.Stop()
+		})
+	}
+}
+
+//Check if gateway is properly sending token set to core
+func TestAuthentication(t *testing.T) {
+	l, err := utils.NewLogger(true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	type args struct {
+		host      string
+		gatetoken string
+		coretoken string
+		opts      RunOpts
+	}
+	tests := []struct {
+		name       string
+		args       args
+		clientFail bool
+	}{
+		{"no tokens", args{"localhost",
+			"",
+			"",
+			RunOpts{}},
+			false},
+		{"valid tokens", args{"localhost",
+			"valid_token",
+			"valid_token",
+			RunOpts{}},
+			false},
+		{"invalid tokens", args{"localhost",
+			"invalid_token",
+			"invalid_token",
+			RunOpts{}},
+			false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Assign token values
+			os.Setenv("PINPOINT_CORE_TOKEN", tt.args.coretoken)
+			os.Setenv("PINPOINT_GATEWAY_TOKEN", tt.args.gatetoken)
+
+			// set up mock controller
+			api, mock, ctrl := NewMockAPI(l, t)
+			defer ctrl.Finish()
+
+			if tt.args.host != "" {
+				if !tt.clientFail {
+					// set client to fail
+					mock.EXPECT().
+						GetStatus(gomock.Any(), gomock.Any(), gomock.Any()).
+						DoAndReturn(func(...interface{}) (interface{}, error) {
+							return nil, errors.New("oh no")
+						}).
+						Times(1)
+					mock.EXPECT().
+						Handshake(gateutil.SecureContext(context.Background()), gomock.Any(), gomock.Any()).
+						DoAndReturn(func(...interface{}) (interface{}, error) {
+							return nil, errors.New("oh no")
+						}).
+						Times(1)
+				} else {
+					t.Errorf("Tokens not being properly sent to core")
+					return
+				}
+			}
+
+			// run the server!
+			go api.Run(tt.args.host, "", tt.args.opts)
+			time.Sleep(time.Millisecond)
+			api.Stop()
+		})
+	}
+}
+
+//Check if gateway is properly adding token to context
+func TestSecureContext(t *testing.T) {
+	type args struct {
+		host       string
+		context    context.Context
+		setcontext bool
+		opts       RunOpts
+	}
+	tests := []struct {
+		name       string
+		args       args
+		clientFail bool
+	}{
+		{"Secure Context", args{"localhost",
+			context.Background(), true,
+			RunOpts{}},
+			false},
+		{"Original Context", args{"localhost",
+			context.Background(), false,
+			RunOpts{}},
+			true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Assign token values
+			os.Setenv("PINPOINT_CORE_TOKEN", "valid_token")
+			os.Setenv("PINPOINT_GATEWAY_TOKEN", "valid_token")
+			ctx := tt.args.context
+			if tt.args.setcontext {
+				ctx = gateutil.SecureContext(ctx)
+			}
+			meta, ok := metadata.FromOutgoingContext(ctx)
+			if !ok && !tt.clientFail {
+				t.Errorf("missing context metadata")
+				return
+			}
+			if len(meta["token"]) != 1 && !tt.clientFail {
+				t.Errorf("invalid token")
+				return
+			}
 		})
 	}
 }

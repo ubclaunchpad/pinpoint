@@ -155,6 +155,16 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 		}
 	}()
 
+	// initial validation
+	go func() {
+		if err := a.establishConnection(utils.SecureContext(context.Background())); err != nil {
+			a.l.Errorw("unable to connect to core service",
+				"error", err.Error())
+		} else {
+			a.l.Info("Passed authentication")
+		}
+	}()
+
 	// lets gooooo
 	tlsEnabled := opts.CertFile != ""
 	a.l.Infow("spinning up api server",
