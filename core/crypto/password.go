@@ -9,7 +9,7 @@ import (
 var (
 	errSameUsernamePassword = errors.New("username and password must be different")
 	errInvalidUsername      = errors.New("username must be at least 3 characters. only alphanumeric, underscores, and dashes are allowed")
-	errInvalidPassword      = errors.New("password must be at least 5 characters. only alphanumeric and symbols are alowed")
+	errInvalidPassword      = errors.New("password must be at least 5 characters. only alphanumeric and symbols are allowed")
 )
 
 // hashAndSalt hashes and salts the given user password
@@ -56,7 +56,7 @@ func IsLegalUserName(username string) bool {
 }
 
 // IsLegalPassword returns true if the chosen password does not contain illegal characters
-// Only alphanumeric characters and symbols are alowed. These correspond to 33-126 range in ASCII table
+// Only alphanumeric characters and symbols are allowed. These correspond to 33-126 range in ASCII table
 func IsLegalPassword(password string) bool {
 	for _, c := range password {
 		if c < 33 || c > 126 {
