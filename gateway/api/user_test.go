@@ -30,9 +30,11 @@ func TestUserRouter_createUser(t *testing.T) {
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
 		{"successfully create user", args{&schema.CreateUser{
-			Name:     "Create",
-			Email:    "user@test.com",
-			Password: "password",
+			Name:      "Create",
+			Email:     "user@test.com",
+			Password:  "password",
+			CPassword: "cpassword",
+			ESub:      true,
 		}}, http.StatusCreated},
 	}
 	for _, tt := range tests {
@@ -40,6 +42,9 @@ func TestUserRouter_createUser(t *testing.T) {
 			// set up mock controller
 			ctrl := gomock.NewController(t)
 			mock := mocks.NewMockCoreClient(ctrl)
+
+			// set up mock CreateAccount
+			mock.EXPECT().CreateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return()
 			defer ctrl.Finish()
 
 			// create user router
