@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/ubclaunchpad/pinpoint/core/crypto"
 	"github.com/ubclaunchpad/pinpoint/core/database"
 	"github.com/ubclaunchpad/pinpoint/core/mailer"
+	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/core/verifier"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -136,6 +138,23 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 
 // CreateAccount sends an email verification email. TODO: Actually create account
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
+	// Validate password matching
+	if !crypto.ConfirmPassword(req.Password, req.ConfirmPassword) {
+		return nil, errors.New("passwords do not match")
+	}
+
+	// Validate email and password
+	if err := crypto.ValidateCredentialValues([]string{req.Email, req.Name}, req.Password); err != nil {
+		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
+	}
+
+	// Generate password salt
+	salt, err := crypto.HashAndSalt(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to salt password: %s", err.Error())
+	}
+
+	// Send verification email
 	hash, err := verifier.Init(req.Email)
 	GHash = hash // Temporary in-memory store
 	if err != nil {
@@ -154,6 +173,10 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	body := "Visit localhost:8081/user/verify?hash=" + hash + " to verify your email."
 	if err := mailer.Send(req.Email, title, body); err != nil {
 		return nil, fmt.Errorf("failed to send email: %s", err.Error())
+	}
+
+	if err := s.db.AddNewUser(&model.User{Email: req.Email, Name: req.Name, Salt: salt}); err != nil {
+		return nil, fmt.Errorf("failed to insert user into db: %s", err.Error())
 	}
 
 	// If no error, respond success. TODO: Change this to utilize response codes
