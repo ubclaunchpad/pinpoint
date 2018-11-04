@@ -12,11 +12,10 @@ import (
 	"go.uber.org/zap"
 )
 
-// UserRouter routes too all user endpoints
+// UserRouter routes to all user endpoints
 type UserRouter struct {
-	l *zap.SugaredLogger
-	c pinpoint.CoreClient
-
+	l   *zap.SugaredLogger
+	c   pinpoint.CoreClient
 	mux *chi.Mux
 }
 
