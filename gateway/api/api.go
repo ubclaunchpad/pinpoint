@@ -100,8 +100,6 @@ func (a *API) setUpRouter() {
 func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
 	a.r.Mount("/user", newUserRouter(a.l, a.c))
-	a.r.Post("/user/create_account", a.createAccountHandler)
-	a.r.Post("/user/verify", a.verifyHandler)
 }
 
 // RunOpts defines options for API server startup

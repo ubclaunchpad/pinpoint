@@ -44,7 +44,7 @@ func TestUserRouter_createUser(t *testing.T) {
 			mock := mocks.NewMockCoreClient(ctrl)
 
 			// set up mock CreateAccount
-			mock.EXPECT().CreateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return()
+			mock.EXPECT().CreateAccount(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 			defer ctrl.Finish()
 
 			// create user router
