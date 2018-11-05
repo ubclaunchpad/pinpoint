@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 
@@ -20,7 +20,7 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 
 	type args struct {
-		u *schema.CreateUser
+		u *request.CreateAccount
 	}
 	tests := []struct {
 		name     string
@@ -28,7 +28,7 @@ func TestUserRouter_createUser(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
-		{"successfully create user", args{&schema.CreateUser{
+		{"successfully create user", args{&request.CreateAccount{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",
@@ -37,6 +37,9 @@ func TestUserRouter_createUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
+
+			// set up mock CreateAccount
+			fake.CreateAccount(nil, nil, nil)
 
 			// create user router
 			u := newUserRouter(l, fake)

@@ -10,6 +10,8 @@ message Status {}
 
 message CreateAccount {
   string email = 1;
+  string name = 2;
+  string password = 3;
 }
 
 message Verify {

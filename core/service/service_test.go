@@ -129,8 +129,29 @@ func TestService_CreateAccount(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"get error",
-			args{nil, &request.CreateAccount{Email: "test@pinpoint.com"}},
+			"get mailer error",
+			args{nil, &request.CreateAccount{
+				Email:    "test@pinpoint.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			nil,
+			true,
+		},
+		{
+			"get password requirement error",
+			args{nil, &request.CreateAccount{
+				Email:    "test@pinpoint.com",
+				Name:     "test",
+				Password: "1234"}},
+			nil,
+			true,
+		},
+		{
+			"get email requirement error",
+			args{nil, &request.CreateAccount{
+				Email:    "test",
+				Name:     "test",
+				Password: "1234pass."}},
 			nil,
 			true,
 		},
