@@ -13,7 +13,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
-	go get -u github.com/golang/mock/mockgen
+	go get -u github.com/maxbrunsfeld/counterfeiter
 	dep ensure
 	( cd frontend ; npm install )
 	( cd client ; npm install )
@@ -55,13 +55,10 @@ lint: check
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
-	$(GOPATH)/bin/mockgen \
-		-package=mocks \
-		-source=protobuf/pinpoint.pb.go \
-		-destination=protobuf/mocks/mock_pinpoint.pb.go \
-		CoreClient
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
+	counterfeiter -o ./protobuf/fakes/pinpoint.pb.go \
+		./protobuf/pinpoint.pb.go CoreClient
 
 .PHONY: proto-pkg
 proto-pkg:

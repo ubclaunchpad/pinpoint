@@ -47,8 +47,7 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 		Name:            userData.Name,
 		Password:        userData.Password,
 		ConfirmPassword: userData.CPassword,
-		// does the payload give a bool for this field?
-		EmailSubscribe: userData.ESub,
+		EmailSubscribe:  userData.ESub,
 	})
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(r, err))

@@ -69,6 +69,8 @@ $> make check  # ensure everything compiles
 
 You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.
 
+The script also uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to generate mocks.
+
 ### Building
 
 #### Golang Binaries
