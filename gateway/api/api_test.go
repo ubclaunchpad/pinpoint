@@ -79,6 +79,7 @@ func TestAPI_Run(t *testing.T) {
 			KeyFile:  "../../dev/certs/127.0.0.1.key",
 		}}, false},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// set up mock controller
@@ -87,6 +88,7 @@ func TestAPI_Run(t *testing.T) {
 			if tt.clientFail {
 				// set client to fail
 				fake.GetStatusReturns(nil, errors.New("oh no"))
+				fake.HandshakeReturns(nil, errors.New("oh no"))
 			}
 
 			// run the server!

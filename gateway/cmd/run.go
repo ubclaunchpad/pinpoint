@@ -40,11 +40,20 @@ func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 			return err
 		}
 
+		// set up tokens
+		coreToken := os.Getenv("PINPOINT_CORE_TOKEN")
+		gatewayToken := os.Getenv("PINPOINT_GATEWAY_TOKEN")
+		if g.Dev && coreToken == "" && gatewayToken == "" {
+			coreToken = "valid_token"
+			gatewayToken = "valid_token"
+		}
+
 		// Set up api
 		a, err := api.New(g.SugaredLogger, api.CoreOpts{
 			Host:     flags["core.host"],
 			Port:     flags["core.port"],
 			CertFile: flags["core.cert"],
+			Token:    coreToken,
 		})
 		if err != nil {
 			return fmt.Errorf("failed to create app: %s", err.Error())
@@ -63,6 +72,7 @@ func runCommand(g *GatewayCommand) func(*cobra.Command, []string) error {
 		if err = a.Run(g.Host, g.Port, api.RunOpts{
 			CertFile: flags["tls.cert"],
 			KeyFile:  flags["tls.key"],
+			Token:    gatewayToken,
 		},
 		); err != nil {
 			return err

@@ -9,11 +9,14 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 // API defines the API server. It is primarily a REST interface through which
@@ -32,6 +35,7 @@ type CoreOpts struct {
 	Host     string
 	Port     string
 	CertFile string
+	Token    string
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
@@ -67,7 +71,9 @@ func (a *API) setUpCoreClient(opts CoreOpts) error {
 		if err != nil {
 			return fmt.Errorf("could not load tls cert: %s", err)
 		}
-		dialOpts = append(dialOpts, grpc.WithTransportCredentials(creds))
+		dialOpts = append(dialOpts,
+			grpc.WithTransportCredentials(creds),
+			grpc.WithPerRPCCredentials(utils.NewCredentials(opts.Token)))
 	} else {
 		dialOpts = append(dialOpts, grpc.WithInsecure())
 	}
@@ -103,10 +109,24 @@ func (a *API) registerHandlers() {
 	a.r.Post("/user/verify", a.verifyHandler)
 }
 
+// runs Core and Gateway connection handshake
+func (a *API) establishConnection(ctx context.Context, token string) error {
+	var header metadata.MD
+	if _, err := a.c.Handshake(ctx, &request.Empty{},
+		grpc.Header(&header)); err != nil {
+		return fmt.Errorf("error during handshake: %s", err.Error())
+	}
+	if tokens := header.Get("authorization"); tokens == nil || len(tokens) == 0 || tokens[0] != token {
+		return errors.New("core provided invalid authentication")
+	}
+	return nil
+}
+
 // RunOpts defines options for API server startup
 type RunOpts struct {
 	CertFile string
 	KeyFile  string
+	Token    string
 }
 
 // Run spins up the API server
@@ -118,13 +138,13 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// set up server
 	a.srv.Addr = host + ":" + port
 
-	// attempt connection
+	// initial validation
 	go func() {
-		if _, err := a.c.GetStatus(context.Background(), &request.Status{}); err != nil {
+		if err := a.establishConnection(context.Background(), opts.Token); err != nil {
 			a.l.Errorw("unable to connect to core service",
 				"error", err.Error())
 		} else {
-			a.l.Info("established connection to core")
+			a.l.Info("successfully connected to core service")
 		}
 	}()
 
