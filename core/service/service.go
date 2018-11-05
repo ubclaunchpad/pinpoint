@@ -33,17 +33,26 @@ type Service struct {
 	l    *zap.SugaredLogger
 	db   *database.Database
 	grpc *grpc.Server
+
+	gateway GatewayOpts
 }
 
 // Opts declares configuration for the core service
 type Opts struct {
+	Token string
 	TLSOpts
+	GatewayOpts
 }
 
 // TLSOpts defines TLS configuration
 type TLSOpts struct {
 	CertFile string
 	KeyFile  string
+}
+
+// GatewayOpts declares gateway configuration
+type GatewayOpts struct {
+	Token string
 }
 
 // GHash is a temporary variable to store hash
@@ -59,8 +68,9 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 
 	// create service
 	s := &Service{
-		l:  logger.Named("service"),
-		db: db,
+		l:       logger.Named("service"),
+		db:      db,
+		gateway: opts.GatewayOpts,
 	}
 
 	// set up logging params
@@ -72,15 +82,20 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 			return zap.Duration("grpc.duration", duration)
 		}),
 	}
+
+	// set up interceptors
+	authUnaryInterceptor, authStreamingInterceptor := newAuthInterceptors(opts.Token)
+
+	// instantiate server options
 	serverOpts = append(serverOpts,
 		grpc_middleware.WithUnaryServerChain(
-			authUnaryInterceptor,
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...)),
+			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+			authUnaryInterceptor),
 		grpc_middleware.WithStreamServerChain(
-			authStreamingInterceptor,
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...)))
+			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+			authStreamingInterceptor))
 
 	// set up TLS credentials
 	if opts.TLSOpts.CertFile != "" {
@@ -137,7 +152,7 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
 	s.l.Info("received handshake request from gateway")
 	grpc.SendHeader(ctx, metadata.New(map[string]string{
-		"gateway_token": os.Getenv("PINPOINT_GATEWAY_TOKEN"),
+		"authorization": s.gateway.Token,
 	}))
 	return &response.Empty{}, nil
 }

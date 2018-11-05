@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -36,6 +35,7 @@ type CoreOpts struct {
 	Host     string
 	Port     string
 	CertFile string
+	Token    string
 }
 
 // New creates a new API server - start it using Run(). Returns a callback to
@@ -71,7 +71,9 @@ func (a *API) setUpCoreClient(opts CoreOpts) error {
 		if err != nil {
 			return fmt.Errorf("could not load tls cert: %s", err)
 		}
-		dialOpts = append(dialOpts, grpc.WithTransportCredentials(creds))
+		dialOpts = append(dialOpts,
+			grpc.WithTransportCredentials(creds),
+			grpc.WithPerRPCCredentials(utils.NewCredentials(opts.Token)))
 	} else {
 		dialOpts = append(dialOpts, grpc.WithInsecure())
 	}
@@ -108,17 +110,15 @@ func (a *API) registerHandlers() {
 }
 
 // runs Core and Gateway connection handshake
-func (a *API) establishConnection(ctx context.Context) error {
-	var header, trailer metadata.MD
+func (a *API) establishConnection(ctx context.Context, token string) error {
+	var header metadata.MD
 	if _, err := a.c.Handshake(ctx, &request.Empty{},
-		grpc.Header(&header), grpc.Trailer(&trailer)); err != nil {
-		return fmt.Errorf("Error when setting up handshake: %s", err.Error())
+		grpc.Header(&header)); err != nil {
+		return fmt.Errorf("error during handshake: %s", err.Error())
 	}
-	if tokens := header.Get("gateway_token"); tokens != nil || tokens[0] != os.Getenv("PINPOINT_GATEWAY_TOKEN") {
-		a.l.Info("Core failed authentication, connection closing")
-		return errors.New("Core failed authentication, connection closing")
+	if tokens := header.Get("authorization"); tokens == nil || len(tokens) == 0 || tokens[0] != token {
+		return errors.New("core provided invalid authentication")
 	}
-	a.l.Info("Core authenticationed")
 	return nil
 }
 
@@ -126,6 +126,7 @@ func (a *API) establishConnection(ctx context.Context) error {
 type RunOpts struct {
 	CertFile string
 	KeyFile  string
+	Token    string
 }
 
 // Run spins up the API server
@@ -137,23 +138,13 @@ func (a *API) Run(host, port string, opts RunOpts) error {
 	// set up server
 	a.srv.Addr = host + ":" + port
 
-	// attempt connection
-	go func() {
-		if _, err := a.c.GetStatus(utils.SecureContext(context.Background()), &request.Status{}); err != nil {
-			a.l.Errorw("unable to connect to core service",
-				"error", err.Error())
-		} else {
-			a.l.Info("established connection to core")
-		}
-	}()
-
 	// initial validation
 	go func() {
-		if err := a.establishConnection(utils.SecureContext(context.Background())); err != nil {
+		if err := a.establishConnection(context.Background(), opts.Token); err != nil {
 			a.l.Errorw("unable to connect to core service",
 				"error", err.Error())
 		} else {
-			a.l.Info("Passed authentication")
+			a.l.Info("successfully connected to core service")
 		}
 	}()
 
