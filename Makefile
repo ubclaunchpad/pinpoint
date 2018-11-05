@@ -55,10 +55,10 @@ lint: check
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
-	counterfeiter -o ./protobuf/fakes/pinpoint.pb.go \
-		./protobuf/pinpoint.pb.go CoreClient
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
+	counterfeiter -o ./protobuf/fakes/pinpoint.pb.go \
+		./protobuf/pinpoint.pb.go CoreClient
 
 .PHONY: proto-pkg
 proto-pkg:
