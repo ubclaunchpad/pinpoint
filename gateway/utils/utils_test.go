@@ -2,8 +2,10 @@ package utils
 
 import (
 	"context"
-	"reflect"
+	"os"
 	"testing"
+
+	"google.golang.org/grpc/metadata"
 )
 
 func TestFirstString(t *testing.T) {
@@ -30,19 +32,40 @@ func TestFirstString(t *testing.T) {
 
 func TestSecureContext(t *testing.T) {
 	type args struct {
-		ctx context.Context
+		host       string
+		context    context.Context
+		setcontext bool
 	}
 	tests := []struct {
-		name string
-		args args
-		want context.Context
+		name       string
+		args       args
+		clientFail bool
 	}{
-		// TODO: Add test cases.
+		{"Secure Context", args{"localhost",
+			context.Background(), true},
+			false},
+		{"Original Context", args{"localhost",
+			context.Background(), false},
+			true},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SecureContext(tt.args.ctx); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SecureContext() = %v, want %v", got, tt.want)
+			// Assign token values
+			os.Setenv("PINPOINT_CORE_TOKEN", "valid_token")
+			os.Setenv("PINPOINT_GATEWAY_TOKEN", "valid_token")
+			ctx := tt.args.context
+			if tt.args.setcontext {
+				ctx = SecureContext(ctx)
+			}
+			meta, ok := metadata.FromOutgoingContext(ctx)
+			if !ok && !tt.clientFail {
+				t.Errorf("missing context metadata")
+				return
+			}
+			if len(meta["token"]) != 1 && !tt.clientFail {
+				t.Errorf("invalid token")
+				return
 			}
 		})
 	}
