@@ -66,15 +66,9 @@ func TestService_GetStatus(t *testing.T) {
 	}{
 		{
 			"get callback",
-			args{nil, &request.Status{Callback: "hi"}},
-			&response.Status{Callback: "hi"},
+			args{nil, &request.Status{}},
+			&response.Status{},
 			false,
-		},
-		{
-			"get error",
-			args{nil, &request.Status{Callback: "I don't like launch pad"}},
-			&response.Status{Callback: "I don't like launch pad"},
-			true,
 		},
 	}
 	for _, tt := range tests {
@@ -133,13 +127,13 @@ func TestService_Verify(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Status
+		want    *response.Message
 		wantErr bool
 	}{
 		{
 			"get success given expected hash",
 			args{nil, &request.Verify{Hash: "NmSdjumzjHOF7IAnafAK74LAPug="}},
-			&response.Status{Callback: "success"},
+			&response.Message{Message: "success"},
 			false,
 		},
 		{

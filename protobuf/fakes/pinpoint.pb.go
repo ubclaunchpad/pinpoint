@@ -12,7 +12,7 @@ import (
 )
 
 type FakeCoreClient struct {
-	CreateAccountStub        func(context.Context, *request.CreateAccount, ...grpc.CallOption) (*response.Status, error)
+	CreateAccountStub        func(context.Context, *request.CreateAccount, ...grpc.CallOption) (*response.Message, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
 		arg1 context.Context
@@ -20,11 +20,11 @@ type FakeCoreClient struct {
 		arg3 []grpc.CallOption
 	}
 	createAccountReturns struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}
 	createAccountReturnsOnCall map[int]struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}
 	GetStatusStub        func(context.Context, *request.Status, ...grpc.CallOption) (*response.Status, error)
@@ -57,7 +57,7 @@ type FakeCoreClient struct {
 		result1 *response.Empty
 		result2 error
 	}
-	VerifyStub        func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Status, error)
+	VerifyStub        func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Message, error)
 	verifyMutex       sync.RWMutex
 	verifyArgsForCall []struct {
 		arg1 context.Context
@@ -65,18 +65,18 @@ type FakeCoreClient struct {
 		arg3 []grpc.CallOption
 	}
 	verifyReturns struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}
 	verifyReturnsOnCall map[int]struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeCoreClient) CreateAccount(arg1 context.Context, arg2 *request.CreateAccount, arg3 ...grpc.CallOption) (*response.Status, error) {
+func (fake *FakeCoreClient) CreateAccount(arg1 context.Context, arg2 *request.CreateAccount, arg3 ...grpc.CallOption) (*response.Message, error) {
 	fake.createAccountMutex.Lock()
 	ret, specificReturn := fake.createAccountReturnsOnCall[len(fake.createAccountArgsForCall)]
 	fake.createAccountArgsForCall = append(fake.createAccountArgsForCall, struct {
@@ -102,7 +102,7 @@ func (fake *FakeCoreClient) CreateAccountCallCount() int {
 	return len(fake.createAccountArgsForCall)
 }
 
-func (fake *FakeCoreClient) CreateAccountCalls(stub func(context.Context, *request.CreateAccount, ...grpc.CallOption) (*response.Status, error)) {
+func (fake *FakeCoreClient) CreateAccountCalls(stub func(context.Context, *request.CreateAccount, ...grpc.CallOption) (*response.Message, error)) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = stub
@@ -115,28 +115,28 @@ func (fake *FakeCoreClient) CreateAccountArgsForCall(i int) (context.Context, *r
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
-func (fake *FakeCoreClient) CreateAccountReturns(result1 *response.Status, result2 error) {
+func (fake *FakeCoreClient) CreateAccountReturns(result1 *response.Message, result2 error) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = nil
 	fake.createAccountReturns = struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeCoreClient) CreateAccountReturnsOnCall(i int, result1 *response.Status, result2 error) {
+func (fake *FakeCoreClient) CreateAccountReturnsOnCall(i int, result1 *response.Message, result2 error) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = nil
 	if fake.createAccountReturnsOnCall == nil {
 		fake.createAccountReturnsOnCall = make(map[int]struct {
-			result1 *response.Status
+			result1 *response.Message
 			result2 error
 		})
 	}
 	fake.createAccountReturnsOnCall[i] = struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}{result1, result2}
 }
@@ -271,7 +271,7 @@ func (fake *FakeCoreClient) HandshakeReturnsOnCall(i int, result1 *response.Empt
 	}{result1, result2}
 }
 
-func (fake *FakeCoreClient) Verify(arg1 context.Context, arg2 *request.Verify, arg3 ...grpc.CallOption) (*response.Status, error) {
+func (fake *FakeCoreClient) Verify(arg1 context.Context, arg2 *request.Verify, arg3 ...grpc.CallOption) (*response.Message, error) {
 	fake.verifyMutex.Lock()
 	ret, specificReturn := fake.verifyReturnsOnCall[len(fake.verifyArgsForCall)]
 	fake.verifyArgsForCall = append(fake.verifyArgsForCall, struct {
@@ -297,7 +297,7 @@ func (fake *FakeCoreClient) VerifyCallCount() int {
 	return len(fake.verifyArgsForCall)
 }
 
-func (fake *FakeCoreClient) VerifyCalls(stub func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Status, error)) {
+func (fake *FakeCoreClient) VerifyCalls(stub func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Message, error)) {
 	fake.verifyMutex.Lock()
 	defer fake.verifyMutex.Unlock()
 	fake.VerifyStub = stub
@@ -310,28 +310,28 @@ func (fake *FakeCoreClient) VerifyArgsForCall(i int) (context.Context, *request.
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
-func (fake *FakeCoreClient) VerifyReturns(result1 *response.Status, result2 error) {
+func (fake *FakeCoreClient) VerifyReturns(result1 *response.Message, result2 error) {
 	fake.verifyMutex.Lock()
 	defer fake.verifyMutex.Unlock()
 	fake.VerifyStub = nil
 	fake.verifyReturns = struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeCoreClient) VerifyReturnsOnCall(i int, result1 *response.Status, result2 error) {
+func (fake *FakeCoreClient) VerifyReturnsOnCall(i int, result1 *response.Message, result2 error) {
 	fake.verifyMutex.Lock()
 	defer fake.verifyMutex.Unlock()
 	fake.VerifyStub = nil
 	if fake.verifyReturnsOnCall == nil {
 		fake.verifyReturnsOnCall = make(map[int]struct {
-			result1 *response.Status
+			result1 *response.Message
 			result2 error
 		})
 	}
 	fake.verifyReturnsOnCall[i] = struct {
-		result1 *response.Status
+		result1 *response.Message
 		result2 error
 	}{result1, result2}
 }

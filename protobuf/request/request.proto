@@ -6,9 +6,7 @@ option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/request";
 
 message Empty {}
 
-message Status {
-  string callback = 1;
-}
+message Status {}
 
 message CreateAccount {
   string email = 1;

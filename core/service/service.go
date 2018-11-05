@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -131,23 +130,18 @@ func (s *Service) Stop() {
 
 // GetStatus retrieves status of service
 func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response.Status, error) {
-	res := &response.Status{Callback: req.Callback}
-	if req.Callback == "I don't like launch pad" {
-		return res, errors.New("launch pad is the best and you know it")
-	}
-	return res, nil
+	return &response.Status{}, nil
 }
 
 // Handshake generates response to a Ping request (For Initial Auth Purpose)
 func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
-	s.l.Info("Received handshake request from gateway")
-	res := &response.Empty{}
+	s.l.Info("received handshake request from gateway")
 	grpc.SendHeader(ctx, metadata.New(map[string]string{"gatewaytoken": os.Getenv("PINPOINT_GATEWAY_TOKEN")}))
-	return res, nil
+	return &response.Empty{}, nil
 }
 
 // CreateAccount sends an email verification email. TODO: Actually create account
-func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
+func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
 	hash, err := verifier.Init(req.Email)
 	GHash = hash // Temporary in-memory store
 	if err != nil {
@@ -169,15 +163,15 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	}
 
 	// If no error, respond success. TODO: Change this to utilize response codes
-	return &response.Status{Callback: "success"}, nil
+	return &response.Message{Message: "success"}, nil
 }
 
 // Verify looks up the given hash, and verifies the hash matching email
-func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
+func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
 	// TODO: replace with Verifier method in future
 	if req.Hash != GHash {
 		return nil, fmt.Errorf("failed to verify email: no matching hash")
 	}
 
-	return &response.Status{Callback: "success"}, nil
+	return &response.Message{Message: "success"}, nil
 }
