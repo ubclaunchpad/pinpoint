@@ -7,9 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
-	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
+	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 
@@ -37,13 +36,10 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// set up mock controller
-			ctrl := gomock.NewController(t)
-			mock := mocks.NewMockCoreClient(ctrl)
-			defer ctrl.Finish()
+			fake := &fakes.FakeCoreClient{}
 
 			// create user router
-			u := newUserRouter(l, mock)
+			u := newUserRouter(l, fake)
 
 			// create request
 			var b []byte

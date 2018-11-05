@@ -5,22 +5,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
-	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
+	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
 	"github.com/ubclaunchpad/pinpoint/utils"
 	"go.uber.org/zap"
 )
 
 // NewMockAPI is used to create an API with a mocked client for use in tests
-func NewMockAPI(l *zap.SugaredLogger, t *testing.T) (*API, *mocks.MockCoreClient, *gomock.Controller) {
-	ctrl := gomock.NewController(t)
-	mock := mocks.NewMockCoreClient(ctrl)
+func NewMockAPI(l *zap.SugaredLogger, t *testing.T) (*API, *fakes.FakeCoreClient) {
+	fake := &fakes.FakeCoreClient{}
 	a, err := New(l, CoreOpts{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	a.c = mock
-	return a, mock, ctrl
+	a.c = fake
+	return a, fake
 }
 
 func TestNew(t *testing.T) {
@@ -84,24 +82,11 @@ func TestAPI_Run(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// set up mock controller
-			api, mock, ctrl := NewMockAPI(l, t)
-			defer ctrl.Finish()
+			api, fake := NewMockAPI(l, t)
 
-			if tt.args.host != "" {
-				if tt.clientFail {
-					// set client to fail
-					mock.EXPECT().
-						GetStatus(gomock.Any(), gomock.Any(), gomock.Any()).
-						DoAndReturn(func(...interface{}) (interface{}, error) {
-							return nil, errors.New("oh no")
-						}).
-						Times(1)
-				} else {
-					// expect exactly one call to GetStatus with anything
-					mock.EXPECT().
-						GetStatus(gomock.Any(), gomock.Any(), gomock.Any()).
-						Times(1)
-				}
+			if tt.clientFail {
+				// set client to fail
+				fake.GetStatusReturns(nil, errors.New("oh no"))
 			}
 
 			// run the server!
