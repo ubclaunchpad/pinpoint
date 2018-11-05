@@ -51,11 +51,6 @@ func ValidateCredentialValues(usernames []string, password string) error {
 	return nil
 }
 
-// ConfirmPassword verifies if the password and repeated passwords are the same.
-func ConfirmPassword(pass, repeatPass string) bool {
-	return pass != repeatPass
-}
-
 // isLegalUserName returns true if the chosen username only contains characters [A-Z], [a-z], or '_' or '-'
 func isLegalUserName(username string) bool {
 	for _, c := range username {

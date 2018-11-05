@@ -14,8 +14,6 @@ message CreateAccount {
   string email = 1;
   string name = 2;
   string password = 3;
-  string confirm_password = 4;
-  bool email_subscribe = 5;
 }
 
 message Verify {

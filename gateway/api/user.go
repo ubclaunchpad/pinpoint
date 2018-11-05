@@ -8,7 +8,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
-	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
@@ -37,18 +36,12 @@ func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	// parse request data
-	var userData schema.CreateUser
+	var userData request.CreateAccount
 	if err := decoder.Decode(&userData); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
-	resp, err := u.c.CreateAccount(context.Background(), &request.CreateAccount{
-		Email:           userData.Email,
-		Name:            userData.Name,
-		Password:        userData.Password,
-		ConfirmPassword: userData.CPassword,
-		EmailSubscribe:  userData.ESub,
-	})
+	resp, err := u.c.CreateAccount(context.Background(), &userData)
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(r, err))
 		return

@@ -138,11 +138,6 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 
 // CreateAccount sends an email verification email. TODO: Actually create account
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
-	// Validate password matching
-	if !crypto.ConfirmPassword(req.Password, req.ConfirmPassword) {
-		return nil, errors.New("passwords do not match")
-	}
-
 	// Validate email and password
 	if err := crypto.ValidateCredentialValues([]string{req.Email, req.Name}, req.Password); err != nil {
 		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
