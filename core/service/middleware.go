@@ -9,19 +9,16 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// AuthUnaryInterceptor is for validating authentication interceptor of incoming message from gateway
 func authUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	meta, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return nil, grpc.Errorf(codes.Unauthenticated, "missing context metadata")
 	}
-	if len(meta["token"]) != 1 {
-		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
-	}
-	if meta["token"][0] != os.Getenv("PINPOINT_CORE_TOKEN") {
-		return nil, grpc.Errorf(codes.Unauthenticated, "invalid token")
+	if err := validate(meta, os.Getenv("PINPOINT_CORE_TOKEN")); err != nil {
+		return nil, err
 	}
 
+	// continue
 	return handler(ctx, req)
 }
 
@@ -30,13 +27,23 @@ func authStreamingInterceptor(srv interface{}, stream grpc.ServerStream, info *g
 	if !ok {
 		return grpc.Errorf(codes.Unauthenticated, "missing context metadata")
 	}
-	if len(meta["token"]) != 1 {
-		return grpc.Errorf(codes.Unauthenticated, "invalid token")
-	}
-	if meta["token"][0] != os.Getenv("PINPOINT_CORE_TOKEN") {
-		return grpc.Errorf(codes.Unauthenticated, "invalid token")
+	if err := validate(meta, os.Getenv("PINPOINT_CORE_TOKEN")); err != nil {
+		return err
 	}
 
-	err := handler(srv, stream)
-	return err
+	// continue
+	return handler(srv, stream)
+}
+
+// validate checks given metadata for key and returns an appropriate gRPC error
+// if anything goes wrong
+func validate(meta metadata.MD, key string) error {
+	keys, ok := meta["key"]
+	if !ok || len(meta["key"]) == 0 {
+		return grpc.Errorf(codes.Unauthenticated, "no key provided")
+	}
+	if keys[0] != key {
+		return grpc.Errorf(codes.Unauthenticated, "invalid key")
+	}
+	return nil
 }
