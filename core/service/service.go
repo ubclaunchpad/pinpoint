@@ -136,7 +136,9 @@ func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response
 // Handshake generates response to a Ping request (For Initial Auth Purpose)
 func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
 	s.l.Info("received handshake request from gateway")
-	grpc.SendHeader(ctx, metadata.New(map[string]string{"gatewaytoken": os.Getenv("PINPOINT_GATEWAY_TOKEN")}))
+	grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"gateway_token": os.Getenv("PINPOINT_GATEWAY_TOKEN"),
+	}))
 	return &response.Empty{}, nil
 }
 

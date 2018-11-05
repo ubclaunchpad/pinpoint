@@ -107,27 +107,19 @@ func (a *API) registerHandlers() {
 	a.r.Post("/user/verify", a.verifyHandler)
 }
 
-// runs Core and Gateway Connection Handshake
+// runs Core and Gateway connection handshake
 func (a *API) establishConnection(ctx context.Context) error {
-	//authenticate with core first
 	var header, trailer metadata.MD
-	var authflag bool
-	_, err := a.c.Handshake(ctx, &request.Empty{}, grpc.Header(&header), grpc.Trailer(&trailer))
-	if err != nil {
-		a.l.Errorf("Error when setting up handshake: %s", err)
+	if _, err := a.c.Handshake(ctx, &request.Empty{},
+		grpc.Header(&header), grpc.Trailer(&trailer)); err != nil {
+		return fmt.Errorf("Error when setting up handshake: %s", err.Error())
 	}
-	for _, value := range header {
-		if value[0] == os.Getenv("PINPOINT_GATEWAY_TOKEN") {
-			a.l.Info("Core passed authentication")
-			authflag = true
-		}
-	}
-	if authflag != true {
+	if tokens := header.Get("gateway_token"); tokens != nil || tokens[0] != os.Getenv("PINPOINT_GATEWAY_TOKEN") {
 		a.l.Info("Core failed authentication, connection closing")
-		err = errors.New("Core failed authentication, connection closing")
+		return errors.New("Core failed authentication, connection closing")
 	}
-
-	return err
+	a.l.Info("Core authenticationed")
+	return nil
 }
 
 // RunOpts defines options for API server startup
