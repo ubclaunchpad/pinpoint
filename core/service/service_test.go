@@ -86,6 +86,37 @@ func TestService_GetStatus(t *testing.T) {
 	}
 }
 
+func TestService_Handshake(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"background context", args{nil}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l, err := utils.NewLogger(true)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			s := &Service{l: l}
+			if tt.args.ctx == nil {
+				tt.args.ctx = context.Background()
+			}
+			_, err = s.Handshake(tt.args.ctx, &request.Empty{})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.Handshake() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestService_CreateAccount(t *testing.T) {
 	type args struct {
 		ctx context.Context
