@@ -139,12 +139,9 @@ func TestService_CreateAccount(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &Service{}
-			got, err := s.CreateAccount(tt.args.ctx, tt.args.req)
+			_, err := s.CreateAccount(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Service.CreateAccount() = %v, want %v", got, tt.want)
 			}
 		})
 	}
