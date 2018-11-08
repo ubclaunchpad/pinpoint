@@ -12,7 +12,8 @@
     "collectCoverageFrom": [
       "**/*.js",
       "!**/node_modules/**",
-      "!**/*.test.js"
+      "!**/*.test.js",
+      "!**/coverage/**"
     ]
   },
   "author": "UBC Launch Pad",
@@ -28,6 +29,7 @@
     "eslint-plugin-jsx-a11y": "6.1.1",
     "eslint-plugin-react": "7.11.1",
     "jest": "23.6.0",
-    "moxios": "0.4.0"
+    "moxios": "0.4.0",
+    "sinon": "^7.1.1"
   }
 }

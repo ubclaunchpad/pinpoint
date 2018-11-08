@@ -4,7 +4,7 @@ class API {
     this.req = req;
   }
 
-  status() {
+  getStatus() {
     return this.req.get('/status');
   }
 }
