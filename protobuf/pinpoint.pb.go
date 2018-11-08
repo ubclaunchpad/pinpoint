@@ -4,11 +4,11 @@
 package pinpoint
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	request "github.com/ubclaunchpad/pinpoint/protobuf/request"
 	response "github.com/ubclaunchpad/pinpoint/protobuf/response"
-	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 	math "math"
 )
