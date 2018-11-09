@@ -39,18 +39,13 @@ $spacing-xxl: 48px;
   }
 }
 
-.magin {
+.margin {
   // navbar
   &-nav { margin-top: 1 }
 
   &-title { 
     margin-top: $spacing-xxl;
     margin-bottom: $spacing-s;
-  }
-
-  &-form { 
-    margin-top: $spacing-xs;
-    margin-bottom: $spacing-xs;
   }
 
   // left margin
@@ -65,11 +60,11 @@ $spacing-xxl: 48px;
 
   // top margin
   &-top, &-ends {
-    &-m { margin-top: 1 }
+    &-m { margin-top: $spacing-xs }
   }
 
   // bottom margin
   &-bot, &-ends {
-    &-m { margin-bottom: 1 }
+    &-m { margin-bottom: $spacing-xs }
   }
 }
