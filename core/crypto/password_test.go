@@ -18,7 +18,7 @@ func TestValidateCredentialValues(t *testing.T) {
 		{"valid case", args{"robert", "pinpoint@LP2018"}, false, nil},
 		{"valid case", args{"robert_lp", "pinpoint@LP$2018"}, false, nil},
 		{"valid case", args{"robert-lp", "#pinpoint@LP$2018"}, false, nil},
-		{"same user password", args{"mojave", "mojave"}, true, errSameUsernamePassword},
+		{"same user password", args{"mojave", "mojave"}, true, errPasswordContainsUsername},
 		{"invalid username", args{"robert ", "pinpoint@LP2018"}, true, errInvalidUsername},
 		{"invalid username", args{"robert@lp", "pinpoint@LP2018"}, true, errInvalidUsername},
 		{"invalid username", args{"ROBERT.lp", "pinpoint@f$T#4%7"}, true, errInvalidUsername},
@@ -27,7 +27,7 @@ func TestValidateCredentialValues(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			if err = ValidateCredentialValues(tt.args.username, tt.args.password); (err != nil) != tt.wantErr {
+			if err = ValidateCredentialValues([]string{tt.args.username}, tt.args.password); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateCredentialValues() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if tt.wantErr && tt.wantedErr != nil {
@@ -53,16 +53,16 @@ func Test_hashAndSalt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hash, err := hashAndSalt(tt.args.password)
+			hash, err := HashAndSalt(tt.args.password)
 			if hash == tt.args.password {
-				t.Errorf("hashAndSalt() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("HashAndSalt() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if (err != nil) != tt.wantErr {
-				t.Errorf("hashAndSalt() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("HashAndSalt() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if err != tt.wantedErr {
-				t.Errorf("hashAndSalt() = %v, want %v", err, tt.wantErr)
+				t.Errorf("HashAndSalt() = %v, want %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -80,13 +80,13 @@ func Test_comparePasswords(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hashed, err := hashAndSalt(tt.args.password)
-			diffHash, err2 := hashAndSalt("Hxt-f$T%7")
-			if result := comparePasswords(hashed, tt.args.password); result != true {
-				t.Errorf("comparePasswords() = %v, error %v", result, err)
+			hashed, err := HashAndSalt(tt.args.password)
+			diffHash, err2 := HashAndSalt("Hxt-f$T%7")
+			if result := ComparePasswords(hashed, tt.args.password); result != true {
+				t.Errorf("ComparePasswords() = %v, error %v", result, err)
 			}
-			if result := comparePasswords(diffHash, tt.args.password); result != false {
-				t.Errorf("comparePasswords() = %v, error %v", result, err2)
+			if result := ComparePasswords(diffHash, tt.args.password); result != false {
+				t.Errorf("ComparePasswords() = %v, error %v", result, err2)
 			}
 		})
 	}

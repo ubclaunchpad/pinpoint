@@ -66,15 +66,9 @@ func TestService_GetStatus(t *testing.T) {
 	}{
 		{
 			"get callback",
-			args{nil, &request.Status{Callback: "hi"}},
-			&response.Status{Callback: "hi"},
+			args{nil, &request.Status{}},
+			&response.Status{},
 			false,
-		},
-		{
-			"get error",
-			args{nil, &request.Status{Callback: "I don't like launch pad"}},
-			&response.Status{Callback: "I don't like launch pad"},
-			true,
 		},
 	}
 	for _, tt := range tests {
@@ -92,6 +86,37 @@ func TestService_GetStatus(t *testing.T) {
 	}
 }
 
+func TestService_Handshake(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"background context", args{nil}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l, err := utils.NewLogger(true)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			s := &Service{l: l}
+			if tt.args.ctx == nil {
+				tt.args.ctx = context.Background()
+			}
+			_, err = s.Handshake(tt.args.ctx, &request.Empty{})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.Handshake() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
 func TestService_CreateAccount(t *testing.T) {
 	type args struct {
 		ctx context.Context
@@ -104,8 +129,29 @@ func TestService_CreateAccount(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"get error",
-			args{nil, &request.CreateAccount{Email: "test@pinpoint.com"}},
+			"get mailer error",
+			args{nil, &request.CreateAccount{
+				Email:    "test@pinpoint.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			nil,
+			true,
+		},
+		{
+			"get password requirement error",
+			args{nil, &request.CreateAccount{
+				Email:    "test@pinpoint.com",
+				Name:     "test",
+				Password: "1234"}},
+			nil,
+			true,
+		},
+		{
+			"get email requirement error",
+			args{nil, &request.CreateAccount{
+				Email:    "test",
+				Name:     "test",
+				Password: "1234pass."}},
 			nil,
 			true,
 		},
@@ -114,12 +160,9 @@ func TestService_CreateAccount(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &Service{}
-			got, err := s.CreateAccount(tt.args.ctx, tt.args.req)
+			_, err := s.CreateAccount(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Service.CreateAccount() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -133,13 +176,13 @@ func TestService_Verify(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Status
+		want    *response.Message
 		wantErr bool
 	}{
 		{
 			"get success given expected hash",
 			args{nil, &request.Verify{Hash: "NmSdjumzjHOF7IAnafAK74LAPug="}},
-			&response.Status{Callback: "success"},
+			&response.Message{Message: "success"},
 			false,
 		},
 		{

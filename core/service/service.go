@@ -2,15 +2,16 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/ubclaunchpad/pinpoint/core/crypto"
 	"github.com/ubclaunchpad/pinpoint/core/database"
 	"github.com/ubclaunchpad/pinpoint/core/mailer"
+	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/core/verifier"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -24,6 +25,8 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+
+	"google.golang.org/grpc/metadata"
 )
 
 // Service provides core application service functionality. It handles most
@@ -32,17 +35,26 @@ type Service struct {
 	l    *zap.SugaredLogger
 	db   *database.Database
 	grpc *grpc.Server
+
+	gateway GatewayOpts
 }
 
 // Opts declares configuration for the core service
 type Opts struct {
+	Token string
 	TLSOpts
+	GatewayOpts
 }
 
 // TLSOpts defines TLS configuration
 type TLSOpts struct {
 	CertFile string
 	KeyFile  string
+}
+
+// GatewayOpts declares gateway configuration
+type GatewayOpts struct {
+	Token string
 }
 
 // GHash is a temporary variable to store hash
@@ -58,8 +70,9 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 
 	// create service
 	s := &Service{
-		l:  logger.Named("service"),
-		db: db,
+		l:       logger.Named("service"),
+		db:      db,
+		gateway: opts.GatewayOpts,
 	}
 
 	// set up logging params
@@ -71,13 +84,20 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 			return zap.Duration("grpc.duration", duration)
 		}),
 	}
+
+	// set up interceptors
+	authUnaryInterceptor, authStreamingInterceptor := newAuthInterceptors(opts.Token)
+
+	// instantiate server options
 	serverOpts = append(serverOpts,
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...)),
+			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+			authUnaryInterceptor),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...)))
+			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+			authStreamingInterceptor))
 
 	// set up TLS credentials
 	if opts.TLSOpts.CertFile != "" {
@@ -127,15 +147,32 @@ func (s *Service) Stop() {
 
 // GetStatus retrieves status of service
 func (s *Service) GetStatus(ctx context.Context, req *request.Status) (*response.Status, error) {
-	res := &response.Status{Callback: req.Callback}
-	if req.Callback == "I don't like launch pad" {
-		return res, errors.New("launch pad is the best and you know it")
-	}
-	return res, nil
+	return &response.Status{}, nil
+}
+
+// Handshake generates response to a Ping request (For Initial Auth Purpose)
+func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.Empty, error) {
+	s.l.Info("received handshake request from gateway")
+	grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"authorization": s.gateway.Token,
+	}))
+	return &response.Empty{}, nil
 }
 
 // CreateAccount sends an email verification email. TODO: Actually create account
-func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Status, error) {
+func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
+	// Validate email and password
+	if err := crypto.ValidateCredentialValues([]string{req.Email, req.Name}, req.Password); err != nil {
+		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
+	}
+
+	// Generate password salt
+	salt, err := crypto.HashAndSalt(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to salt password: %s", err.Error())
+	}
+
+	// Send verification email
 	hash, err := verifier.Init(req.Email)
 	GHash = hash // Temporary in-memory store
 	if err != nil {
@@ -156,16 +193,20 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 		return nil, fmt.Errorf("failed to send email: %s", err.Error())
 	}
 
+	if err := s.db.AddNewUser(&model.User{Email: req.Email, Name: req.Name, Salt: salt}); err != nil {
+		return nil, fmt.Errorf("failed to insert user into db: %s", err.Error())
+	}
+
 	// If no error, respond success. TODO: Change this to utilize response codes
-	return &response.Status{Callback: "success"}, nil
+	return &response.Message{Message: "success"}, nil
 }
 
 // Verify looks up the given hash, and verifies the hash matching email
-func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Status, error) {
+func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
 	// TODO: replace with Verifier method in future
 	if req.Hash != GHash {
 		return nil, fmt.Errorf("failed to verify email: no matching hash")
 	}
 
-	return &response.Status{Callback: "success"}, nil
+	return &response.Message{Message: "success"}, nil
 }

@@ -6,6 +6,8 @@ option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/response";
 
 message Empty {}
 
-message Status {
-  string callback = 1;
+message Status {}
+
+message Message {
+  string message = 1;
 }

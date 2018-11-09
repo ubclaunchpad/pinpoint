@@ -27,17 +27,20 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 func init() { proto.RegisterFile("pinpoint.proto", fileDescriptor_cbb17ad260bc57ce) }
 
 var fileDescriptor_cbb17ad260bc57ce = []byte{
-	// 156 bytes of a gzipped FileDescriptorProto
+	// 195 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0xc8, 0xcc, 0x2b,
 	0xc8, 0xcf, 0xcc, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x44,
 	0x8b, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xf4, 0xa1, 0x34, 0x44, 0x81, 0x94, 0x78, 0x51, 0x6a,
-	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x3e, 0x8c, 0x01, 0x91, 0x30, 0x5a, 0xc2, 0xc8, 0xc5, 0xe2,
+	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x3e, 0x8c, 0x01, 0x91, 0x30, 0xba, 0xc6, 0xc8, 0xc5, 0xe2,
 	0x9c, 0x5f, 0x94, 0x2a, 0x64, 0xc0, 0xc5, 0xe9, 0x9e, 0x5a, 0x12, 0x5c, 0x92, 0x58, 0x52, 0x5a,
 	0x2c, 0xc4, 0xaf, 0x07, 0xd3, 0x0e, 0x11, 0x90, 0x12, 0xd0, 0x83, 0xeb, 0x83, 0x88, 0x28, 0x31,
-	0x08, 0x59, 0x73, 0xf1, 0x3a, 0x17, 0xa5, 0x26, 0x96, 0xa4, 0x3a, 0x26, 0x27, 0xe7, 0x97, 0xe6,
-	0x95, 0x08, 0x89, 0xc1, 0x75, 0xa1, 0x88, 0x63, 0xd5, 0xac, 0xcb, 0xc5, 0x16, 0x96, 0x5a, 0x94,
-	0x99, 0x56, 0x89, 0x64, 0x17, 0x44, 0x00, 0x9b, 0xf2, 0x24, 0x36, 0xb0, 0x6b, 0x8d, 0x01, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0xb6, 0x06, 0xb9, 0x6f, 0xf9, 0x00, 0x00, 0x00,
+	0x08, 0xe9, 0x71, 0x71, 0x7a, 0x24, 0xe6, 0xa5, 0x14, 0x67, 0x24, 0x66, 0xa7, 0x0a, 0xf1, 0xc1,
+	0x75, 0xb8, 0xe6, 0x16, 0x94, 0x54, 0x4a, 0xf1, 0x23, 0x34, 0x80, 0x05, 0x94, 0x18, 0x84, 0x6c,
+	0xb8, 0x78, 0x9d, 0x8b, 0x52, 0x13, 0x4b, 0x52, 0x1d, 0x93, 0x93, 0xf3, 0x4b, 0xf3, 0x4a, 0x84,
+	0xc4, 0xe0, 0x7a, 0x50, 0xc4, 0xa5, 0x04, 0x11, 0x7a, 0x7d, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x53,
+	0xc1, 0xb6, 0xb1, 0x85, 0xa5, 0x16, 0x65, 0xa6, 0x55, 0x22, 0x39, 0x0e, 0x22, 0x80, 0x55, 0x7d,
+	0x12, 0x1b, 0xd8, 0x7f, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x75, 0xd2, 0x70, 0x2b,
+	0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -53,8 +56,9 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CoreClient interface {
 	GetStatus(ctx context.Context, in *request.Status, opts ...grpc.CallOption) (*response.Status, error)
-	CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Status, error)
-	Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Status, error)
+	Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error)
+	CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error)
+	Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Message, error)
 }
 
 type coreClient struct {
@@ -74,8 +78,17 @@ func (c *coreClient) GetStatus(ctx context.Context, in *request.Status, opts ...
 	return out, nil
 }
 
-func (c *coreClient) CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Status, error) {
-	out := new(response.Status)
+func (c *coreClient) Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error) {
+	out := new(response.Empty)
+	err := c.cc.Invoke(ctx, "/pinpoint.Core/Handshake", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreClient) CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
+	out := new(response.Message)
 	err := c.cc.Invoke(ctx, "/pinpoint.Core/CreateAccount", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,8 +96,8 @@ func (c *coreClient) CreateAccount(ctx context.Context, in *request.CreateAccoun
 	return out, nil
 }
 
-func (c *coreClient) Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Status, error) {
-	out := new(response.Status)
+func (c *coreClient) Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Message, error) {
+	out := new(response.Message)
 	err := c.cc.Invoke(ctx, "/pinpoint.Core/Verify", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,8 +108,9 @@ func (c *coreClient) Verify(ctx context.Context, in *request.Verify, opts ...grp
 // CoreServer is the server API for Core service.
 type CoreServer interface {
 	GetStatus(context.Context, *request.Status) (*response.Status, error)
-	CreateAccount(context.Context, *request.CreateAccount) (*response.Status, error)
-	Verify(context.Context, *request.Verify) (*response.Status, error)
+	Handshake(context.Context, *request.Empty) (*response.Empty, error)
+	CreateAccount(context.Context, *request.CreateAccount) (*response.Message, error)
+	Verify(context.Context, *request.Verify) (*response.Message, error)
 }
 
 func RegisterCoreServer(s *grpc.Server, srv CoreServer) {
@@ -117,6 +131,24 @@ func _Core_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreServer).GetStatus(ctx, req.(*request.Status))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Core_Handshake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(request.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreServer).Handshake(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pinpoint.Core/Handshake",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreServer).Handshake(ctx, req.(*request.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -164,6 +196,10 @@ var _Core_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatus",
 			Handler:    _Core_GetStatus_Handler,
+		},
+		{
+			MethodName: "Handshake",
+			Handler:    _Core_Handshake_Handler,
 		},
 		{
 			MethodName: "CreateAccount",
