@@ -29,17 +29,17 @@ class Login extends Component {
 
   render() {
     return (
-      <div className="login">
-        <div className="title">Sign In</div>
-        <div className="fields">
-          <input type="email" placeholder="Email" onChange={this.updateTextFields} />
-          <input type="password" placeholder="Password" onChange={this.updateTextFields} />
+      <div className="flex-al-center">
+        <div className="title magin-title">Sign In</div>
+        <div className="flex-inlinegrid magin-form">
+          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
+          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
         </div>
         <div>
           <input type="checkbox" />
           <span>Remember me</span>
         </div>
-        <button className="submit" type="submit" onClick={this.attemptLogin}>Sign in</button>
+        <button className="click-button button-small animate-button magin-form" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/login">Forgot Password?</a>
         </div>
