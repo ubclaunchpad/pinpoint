@@ -24,7 +24,11 @@ func newClubRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *ClubRouter {
 	router := chi.NewRouter()
 	club := &ClubRouter{l, c, router}
 	router.Post("/create_event", club.createEvent)
+<<<<<<< HEAD
 	router.Post("/create_club", club.createClub)
+=======
+	router.Post("/create_period", club.createPeriod)
+>>>>>>> 941705b39b526ef590962bd319356cf689459309
 	return &ClubRouter{l.Named("clubs"), c, router}
 }
 
@@ -68,4 +72,23 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	// TODO: create club in core
 
 	render.Render(w, r, res.Message(r, "Club created successfully", http.StatusCreated))
+}
+
+func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	// parse request data
+	var eData schema.CreatePeriod
+
+	if eData.Fields == nil {
+		render.Render(w, r, res.ErrBadRequest(r, errors.New("Missing fields"), "Missing fields"))
+	}
+
+	if err := decoder.Decode(&eData); err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		return
+	}
+
+	// TODO: create period in core
+
+	render.Render(w, r, res.Message(r, "Period created sucessfully", http.StatusCreated))
 }
