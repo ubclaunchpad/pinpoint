@@ -31,7 +31,7 @@ class Login extends Component {
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
-        <div className="flex-inlinegrid margin-top margin-bottom">
+        <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
         </div>
@@ -39,7 +39,7 @@ class Login extends Component {
           <input type="checkbox" />
           <span>Remember me</span>
         </div>
-        <button className="click-button button-small animate-button margin-top margin-bottom" type="submit" onClick={this.attemptLogin}>Sign in</button>
+        <button className="click-button button-small animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/login">Forgot Password?</a>
         </div>

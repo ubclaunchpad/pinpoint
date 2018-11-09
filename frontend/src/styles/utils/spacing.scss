@@ -60,11 +60,11 @@ $spacing-xxl: 48px;
 
   // top margin
   &-top, &-ends {
-    &-m { margin-top: $spacing-xs }
+    &-xs { margin-top: $spacing-xs }
   }
 
   // bottom margin
   &-bot, &-ends {
-    &-m { margin-bottom: $spacing-xs }
+    &-xs { margin-bottom: $spacing-xs }
   }
 }
