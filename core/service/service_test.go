@@ -121,40 +121,35 @@ func TestService_Handshake(t *testing.T) {
 
 func TestService_CreateAccount(t *testing.T) {
 	type args struct {
-		ctx context.Context
 		req *request.CreateAccount
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Status
 		wantErr bool
 	}{
 		{
 			"get mailer error",
-			args{nil, &request.CreateAccount{
+			args{&request.CreateAccount{
 				Email:    "test@pinpoint.com",
 				Name:     "test",
 				Password: "1234pass."}},
-			nil,
 			true,
 		},
 		{
 			"get password requirement error",
-			args{nil, &request.CreateAccount{
+			args{&request.CreateAccount{
 				Email:    "test@pinpoint.com",
 				Name:     "test",
 				Password: "1234"}},
-			nil,
 			true,
 		},
 		{
 			"get email requirement error",
-			args{nil, &request.CreateAccount{
+			args{&request.CreateAccount{
 				Email:    "test",
 				Name:     "test",
 				Password: "1234pass."}},
-			nil,
 			true,
 		},
 	}
@@ -162,7 +157,7 @@ func TestService_CreateAccount(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &Service{}
-			_, err := s.CreateAccount(tt.args.ctx, tt.args.req)
+			_, err := s.CreateAccount(context.Background(), tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
 			}
