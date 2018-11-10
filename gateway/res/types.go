@@ -25,7 +25,6 @@ func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
 type MsgResponse struct {
 	Message        string `json:"message"`
 	HTTPStatusCode int    `json:"-"`
-	StatusText     string `json:"status"`
 	RequestID      string `json:"request-id,omitempty"`
 
 	Details map[string]interface{} `json:"details,omitempty"`

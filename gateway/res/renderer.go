@@ -41,7 +41,7 @@ func ErrBadRequest(r *http.Request, err error, msg string, missingFields ...stri
 func Message(r *http.Request, msg string, code int, fields ...interface{}) render.Renderer {
 	return &MsgResponse{
 		HTTPStatusCode: code,
-		StatusText:     msg,
+		Message:        msg,
 		RequestID:      utils.RequestID(r),
 		Details:        utils.ToMap(fields),
 	}
