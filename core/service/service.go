@@ -177,17 +177,19 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	}
 
 	// set up verification code for user
-	hash, err := verifier.Init(req.Email, s.mail)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create email verification: %s", err.Error())
-	}
+	v := verifier.New(req.Email, s.mail)
 
 	// create user
 	if err := s.db.AddNewUser(
 		&model.User{Email: req.Email, Name: req.Name, Salt: salt},
-		&model.EmailVerification{Email: req.Email, Hash: hash, Expiry: time.Now().Add(24 * 7 * time.Hour)},
+		&model.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
 	); err != nil {
-		return nil, fmt.Errorf("failed to insert user into db: %s", err.Error())
+		return nil, fmt.Errorf("failed to create user: %s", err.Error())
+	}
+
+	// send verification email
+	if err = v.SendVerification(); err != nil {
+		return nil, fmt.Errorf("failed to create email verification: %s", err.Error())
 	}
 
 	// If no error, respond success

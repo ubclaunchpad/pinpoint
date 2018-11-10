@@ -57,6 +57,7 @@ func (db *Database) AddNewUser(u *model.User, e *model.EmailVerification) error 
 	}); err != nil {
 		return err
 	}
+
 	return nil
 }
 

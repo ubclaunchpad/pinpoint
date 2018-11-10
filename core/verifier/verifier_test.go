@@ -21,11 +21,7 @@ func TestInit(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := Init(tt.args.email, tt.args.m)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Init() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			_ = New(tt.args.email, tt.args.m)
 		})
 	}
 }

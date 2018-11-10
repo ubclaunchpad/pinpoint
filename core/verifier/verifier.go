@@ -3,30 +3,34 @@ package verifier
 import (
 	"crypto/sha1"
 	"encoding/base64"
-	"errors"
 	"fmt"
+	"time"
 
 	"github.com/ubclaunchpad/pinpoint/core/mailer"
 )
 
-// Init sets up verification on passed email address
-func Init(email string, m *mailer.Mailer) (string, error) {
-	if email == "" {
-		return "", errors.New("invalid email")
+// Verifier manages verification
+type Verifier struct {
+	Email  string
+	Hash   string
+	Expiry time.Time
+
+	m *mailer.Mailer
+}
+
+// New sets up verification on passed email address
+func New(email string, m *mailer.Mailer) Verifier {
+	return Verifier{Email: email, Hash: generateHash(email), Expiry: time.Now().Add(24 * 7 * time.Hour)}
+}
+
+// SendVerification sends a verification email
+func (v *Verifier) SendVerification() error {
+	if v.m == nil {
+		return nil
 	}
-
-	hash := generateHash(email)
-
-	// Send verification email - TODO: Change to get email address from user session
-	if m != nil {
-		if err := m.Send(email,
-			"Welcome to Pinpoint!",
-			fmt.Sprintf("Visit localhost:8081/user/verify?hash=%s to verify your email.", hash)); err != nil {
-			return hash, fmt.Errorf("failed to send email: %s", err.Error())
-		}
-	}
-
-	return hash, nil
+	return v.m.Send(v.Email,
+		"Welcome to Pinpoint!",
+		fmt.Sprintf("Visit localhost:8081/user/verify?hash=%s to verify your email.", v.Hash))
 }
 
 // generateHash generates a hash used for verifying
