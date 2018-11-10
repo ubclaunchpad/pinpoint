@@ -1,6 +1,6 @@
 package model
 
-// Club info
+// Tag model
 type Tag struct {
 	Applicant_ID    string `json:"pk"`
 	Period_Event_ID string `json:"sk"`

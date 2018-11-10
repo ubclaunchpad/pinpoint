@@ -126,7 +126,6 @@ func TestTag(t *testing.T) {
 		t.Errorf("Failed to add new tag: %s", err.Error())
 		t.FailNow()
 	}
-
 	tagActual, err := db.GetTag(tag.Applicant_ID, "1234" , "1233")
 	if err != nil {
 		t.Errorf("Failed to get tag: %s", err.Error())
@@ -136,27 +135,6 @@ func TestTag(t *testing.T) {
 		t.Errorf("tag collected is not as expected, expected: %+v, actual %+v", tag, tagActual)
 		t.FailNow()
 	}
-
-
-	tagNew, err := db.ChangeTagName(tag.Applicant_ID, "1234" , "1233",  "Marketing Team")
-	if err != nil {
-		t.Errorf("Failed to change tag %s", err.Error())
-		t.Errorf("Failed to change tag %+v", tagNew)
-		t.FailNow()
-	}
-
-	tag.Tag_Name = "Marketing Team"
-
-	tagActual, err = db.GetTag(tag.Applicant_ID, "1234" , "1233")
-	if err != nil {
-		t.Errorf("Failed to get tag: %s", err.Error())
-		t.FailNow()
-	}
-	if !reflect.DeepEqual(tagNew, tag) {
-		t.Errorf("tag collected is not as expected, expected: %+v, actual %+v", tag, tagNew)
-		t.FailNow()
-	}
-
 	err = db.DeleteTag(tag.Applicant_ID, "1234" , "1233")
 	if err != nil {
 		t.Errorf("Failed to delete tag %s", err.Error())

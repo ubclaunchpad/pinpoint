@@ -57,7 +57,7 @@ func (db *Database) GetTag(Applicant_ID string, Period_ID string, Event_ID strin
 func (db *Database) DeleteTag(Applicant_ID string, Period_ID string, Event_ID string) error {
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String("TagTable"),
-    Key: map[string]*dynamodb.AttributeValue{
+		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
 				S: aws.String(Applicant_ID),
 			},
@@ -70,39 +70,4 @@ func (db *Database) DeleteTag(Applicant_ID string, Period_ID string, Event_ID st
 		return err
 	}
 	return nil
-}
-
-
-/* Changes the tag name associated with Applicant_ID, Period_ID, & Event_ID */
-func (db *Database) ChangeTagName(Applicant_ID string, Period_ID string, Event_ID string, New_Name string) (*model.Tag, error)  {
-	input := &dynamodb.UpdateItemInput{
-    ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-       ":new_name": {
-           S: aws.String(New_Name),
-       },
-   },
-   ExpressionAttributeNames: map[string]*string{
-        "#attr_name": aws.String("Tag_Name"),
-    },
-    TableName: aws.String("TagTable"),
-    Key: map[string]*dynamodb.AttributeValue{
-			"pk": {
-				S: aws.String(Applicant_ID),
-			},
-			"sk": {
-				S: aws.String(Period_ID + "_" + Event_ID),
-			},
-		},
-    UpdateExpression: aws.String("SET #attr_name = :new_name"),
-    ReturnValues: aws.String("ALL_NEW"),
-	}
-  result, err := db.c.UpdateItem(input)
-	if err != nil {
-		return nil, err
-	}
-	tag := &model.Tag{}
-	if err := dynamodbattribute.UnmarshalMap(result.Attributes, tag); err != nil {
-		return nil, err
-	}
-	return tag, nil
 }
