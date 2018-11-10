@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 function newRequester({ baseURL = 'localhost', token = '' }) {
   return axios.create({
