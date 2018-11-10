@@ -3,7 +3,7 @@ package database
 import (
 	"reflect"
 	"testing"
-
+	//"time"
 	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
@@ -105,6 +105,61 @@ func TestClubUser(t *testing.T) {
 	err = db.DeleteUser(u.Email)
 	if err != nil {
 		t.Errorf("Failed to delete user %s", err.Error())
+		t.FailNow()
+	}
+
+
+
+
+}
+
+	/* Tag Tests */
+func TestTag(t *testing.T) {
+	db := newTestDB(t)
+	tag := &model.Tag{
+		Applicant_ID: "1234",
+		Period_Event_ID: "1234_1233",
+		Tag_Name: "Sponsorship Team",
+	}
+	err := db.AddNewTag(tag)
+	if err != nil {
+		t.Errorf("Failed to add new tag: %s", err.Error())
+		t.FailNow()
+	}
+
+	tagActual, err := db.GetTag(tag.Applicant_ID, "1234" , "1233")
+	if err != nil {
+		t.Errorf("Failed to get tag: %s", err.Error())
+		t.FailNow()
+	}
+	if !reflect.DeepEqual(tag, tagActual) {
+		t.Errorf("tag collected is not as expected, expected: %+v, actual %+v", tag, tagActual)
+		t.FailNow()
+	}
+
+
+	tagNew, err := db.ChangeTagName(tag.Applicant_ID, "1234" , "1233",  "Marketing Team")
+	if err != nil {
+		t.Errorf("Failed to change tag %s", err.Error())
+		t.Errorf("Failed to change tag %+v", tagNew)
+		t.FailNow()
+	}
+
+	tag.Tag_Name = "Marketing Team"
+
+	tagActual, err = db.GetTag(tag.Applicant_ID, "1234" , "1233")
+	if err != nil {
+		t.Errorf("Failed to get tag: %s", err.Error())
+		t.FailNow()
+	}
+	if !reflect.DeepEqual(tagNew, tag) {
+		t.Errorf("tag collected is not as expected, expected: %+v, actual %+v", tag, tagNew)
+		t.FailNow()
+	}
+
+	err = db.DeleteTag(tag.Applicant_ID, "1234" , "1233")
+	if err != nil {
+		t.Errorf("Failed to delete tag %s", err.Error())
 		t.FailNow()
 	}
 }
