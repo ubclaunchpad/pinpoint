@@ -55,7 +55,7 @@ class Login extends Component {
         </div>
         <button className="click-button button-small animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
-          <a href="/login">Forgot Password?</a>
+          <a href="/reset">Forgot Password?</a>
         </div>
         <div className="loginhelp">
           <span>Don&#x2019;t have an account? &nbsp;</span>
