@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Pinpoint from 'pinpoint';
+import Pinpoint from 'pinpoint-client';
 
 class Login extends Component {
   static contextTypes = {

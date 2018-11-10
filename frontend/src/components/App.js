@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Pinpoint from 'pinpoint';
+import Pinpoint from 'pinpoint-client';
 import logo from '../assets/logo.svg';
 import Login from './Login';
 import Reset from './Reset';
