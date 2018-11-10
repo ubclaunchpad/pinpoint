@@ -24,8 +24,9 @@ type UserRouter struct {
 func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
 	router := chi.NewRouter()
 	u := &UserRouter{l, c, router}
-	router.Post("/create_user", u.createUser)
+	router.Post("/create", u.createUser)
 	router.Post("/verify", u.verify)
+	router.Post("/login", u.login)
 	return &UserRouter{l.Named("users"), c, router}
 }
 
@@ -52,6 +53,13 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	// success!
 	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusCreated,
 		"email", user.GetEmail()))
+}
+
+func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, map[string]string{
+		"token": "1234",
+	})
 }
 
 func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
