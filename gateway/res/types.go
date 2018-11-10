@@ -27,6 +27,8 @@ type MsgResponse struct {
 	HTTPStatusCode int    `json:"-"`
 	StatusText     string `json:"status"`
 	RequestID      string `json:"request-id,omitempty"`
+
+	Details map[string]interface{} `json:"details,omitempty"`
 }
 
 // Render renders a MsgResponse
