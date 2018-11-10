@@ -1,4 +1,4 @@
-const Lib = require('.');
+import Lib from '.';
 
 describe('lib', () => {
   test('constructor', () => {

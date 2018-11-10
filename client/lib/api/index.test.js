@@ -1,6 +1,6 @@
-const moxios = require('moxios');
-const sinon = require('sinon');
-const api = require('.');
+import moxios from 'moxios';
+import sinon from 'sinon';
+import api from '.';
 
 beforeEach(() => {
   moxios.install();
