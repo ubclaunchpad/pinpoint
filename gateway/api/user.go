@@ -25,8 +25,8 @@ func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
 	router := chi.NewRouter()
 	u := &UserRouter{l, c, router}
 	router.Post("/create", u.createUser)
-	router.Post("/verify", u.verify)
 	router.Post("/login", u.login)
+	router.Get("/verify", u.verify)
 	return &UserRouter{l.Named("users"), c, router}
 }
 
