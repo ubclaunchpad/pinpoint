@@ -16,9 +16,6 @@ class ClubsSelection extends Component {
   // TODO Replace unique key with database id of club
   generateclubs() {
     console.log(this.state);
-    console.log('test');
-    console.log();
-
     const { clubs } = this.state;
     const clublist = clubs.map((club) => (
       <li className="margin-left-s margin-right-s" key={Math.random() * 10000}>
