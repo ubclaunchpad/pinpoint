@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import ClubsSelection from './ClubsSelection';
+import Login from './Login';
+import Reset from './Reset';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -30,6 +32,8 @@ class App extends Component {
             </p>
           </Route>
           <Route exact path="/me/clubs" component={ClubsSelection} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/reset" component={Reset} />
         </Switch>
       </BrowserRouter>
     );
