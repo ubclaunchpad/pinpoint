@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default function newRequester({ baseURL = 'localhost', token = '' }) {
+function newRequester({ baseURL = 'localhost', token = '' }) {
   return axios.create({
     baseURL,
     timeout: 1000,
@@ -9,3 +9,7 @@ export default function newRequester({ baseURL = 'localhost', token = '' }) {
     },
   });
 }
+
+module.exports = {
+  newRequester,
+};

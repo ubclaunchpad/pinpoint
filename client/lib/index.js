@@ -1,5 +1,5 @@
-import utils from './utils';
-import api from './api';
+const utils = require('./utils');
+const api = require('./api');
 
 // todo: replace with real deployment
 const defaultAPIPath = 'http://localhost:8081/';
@@ -20,4 +20,4 @@ addReadOnlyProperties($main, {
   API: api.API,
 });
 
-export default $main;
+module.exports = $main;

@@ -1,5 +1,5 @@
 
-export default class API {
+class API {
   constructor(req = require('axios')) {
     this.req = req;
   }
@@ -16,3 +16,7 @@ export default class API {
     return this.req.post('/user/login', { email, password });
   }
 }
+
+module.exports = {
+  API,
+};
