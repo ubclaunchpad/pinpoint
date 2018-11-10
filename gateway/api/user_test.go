@@ -54,7 +54,7 @@ func TestUserRouter_createUser(t *testing.T) {
 				}
 			}
 			reader := bytes.NewReader(b)
-			req, err := http.NewRequest("POST", "/create_user", reader)
+			req, err := http.NewRequest("POST", "/create", reader)
 			if err != nil {
 				t.Error(err)
 				return
