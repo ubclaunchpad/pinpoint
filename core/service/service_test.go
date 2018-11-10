@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ubclaunchpad/pinpoint/core/database"
+	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
@@ -169,6 +171,9 @@ func TestService_CreateAccount(t *testing.T) {
 }
 
 func TestService_Verify(t *testing.T) {
+	expectedHash := "NmSdjumzjHOF7IAnafAK74LAPug="
+	db, _ := database.NewTestDB()
+
 	type args struct {
 		ctx context.Context
 		req *request.Verify
@@ -176,33 +181,37 @@ func TestService_Verify(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Message
 		wantErr bool
 	}{
 		{
 			"get success given expected hash",
-			args{nil, &request.Verify{Hash: "NmSdjumzjHOF7IAnafAK74LAPug="}},
-			&response.Message{Message: "success"},
+			args{nil, &request.Verify{Hash: expectedHash}},
 			false,
 		},
 		{
 			"get error",
 			args{nil, &request.Verify{Hash: "incorrect hash"}},
-			nil,
 			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{}
-			GHash = "NmSdjumzjHOF7IAnafAK74LAPug="
-			got, err := s.Verify(tt.args.ctx, tt.args.req)
+			s := &Service{db: db}
+			db.AddNewUser(&model.User{
+				Email: "abc@def.com",
+				Name:  "Bob Ross",
+				Salt:  "qwer1234",
+			}, &model.EmailVerification{
+				Hash:   expectedHash,
+				Email:  "test@test",
+				Expiry: time.Now().Add(time.Minute),
+			})
+			defer db.DeleteUser("test@test")
+
+			_, err := s.Verify(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.Verify() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Service.Verify() = %v, want %v", got, tt.want)
 			}
 		})
 	}
