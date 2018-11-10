@@ -24,11 +24,8 @@ func newClubRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *ClubRouter {
 	router := chi.NewRouter()
 	club := &ClubRouter{l, c, router}
 	router.Post("/create_event", club.createEvent)
-<<<<<<< HEAD
-	router.Post("/create_club", club.createClub)
-=======
 	router.Post("/create_period", club.createPeriod)
->>>>>>> 941705b39b526ef590962bd319356cf689459309
+	router.Post("/create_club", club.createClub)
 	return &ClubRouter{l.Named("clubs"), c, router}
 }
 
