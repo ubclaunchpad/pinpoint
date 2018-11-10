@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import logo from '../assets/logo.svg';
+import ClubsSelection from './ClubsSelection';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -28,6 +29,7 @@ class App extends Component {
               Pinpoint is a versatile club application managment application
             </p>
           </Route>
+          <Route exact path="/me/clubs" component={ClubsSelection} />
         </Switch>
       </BrowserRouter>
     );
