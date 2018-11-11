@@ -7,18 +7,18 @@ import (
 	"github.com/ubclaunchpad/pinpoint/core/model"
 )
 
-/* Adds a new tag */
+// AddNewTag adds a tag to the database
 func (db *Database) AddNewTag(t *model.Tag) error {
 	input := &dynamodb.PutItemInput{
 		Item: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String(t.Applicant_ID),
+				S: aws.String(t.ApplicantID),
 			},
 			"sk": {
-				S: aws.String(t.Period_Event_ID),
+				S: aws.String(t.PeriodEventID),
 			},
 			"tag_name": {
-				S: aws.String(t.Tag_Name),
+				S: aws.String(t.TagName),
 			},
 		},
 		TableName: aws.String("TagTable"),
@@ -29,16 +29,16 @@ func (db *Database) AddNewTag(t *model.Tag) error {
 	return nil
 }
 
-/* Gets the tag associated with Applicant_ID, Period_ID, & Event_ID */
-func (db *Database) GetTag(Applicant_ID string, Period_ID string, Event_ID string) (*model.Tag, error) {
+// GetTag gets the tag associated with Applicant_ID, Period_ID, & Event_ID
+func (db *Database) GetTag(ApplicantID string, PeriodID string, EventID string) (*model.Tag, error) {
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String("TagTable"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String(Applicant_ID),
+				S: aws.String(ApplicantID),
 			},
 			"sk": {
-				S: aws.String(Period_ID + "_" + Event_ID),
+				S: aws.String(PeriodID + "_" + EventID),
 			},
 		},
 	}
@@ -53,16 +53,16 @@ func (db *Database) GetTag(Applicant_ID string, Period_ID string, Event_ID strin
 	return tag, nil
 }
 
-/* Deletes the tag associated with Applicant_ID, Period_ID, & Event_ID */
-func (db *Database) DeleteTag(Applicant_ID string, Period_ID string, Event_ID string) error {
+// DeleteTag associated with Applicant_ID, Period_ID, & Event_ID
+func (db *Database) DeleteTag(ApplicantID string, PeriodID string, EventID string) error {
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String("TagTable"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String(Applicant_ID),
+				S: aws.String(ApplicantID),
 			},
 			"sk": {
-				S: aws.String(Period_ID + "_" + Event_ID),
+				S: aws.String(PeriodID + "_" + EventID),
 			},
 		},
 	}

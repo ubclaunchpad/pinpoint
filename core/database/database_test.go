@@ -3,6 +3,7 @@ package database
 import (
 	"reflect"
 	"testing"
+
 	//"time"
 	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/utils"
@@ -108,25 +109,22 @@ func TestClubUser(t *testing.T) {
 		t.FailNow()
 	}
 
-
-
-
 }
 
-	/* Tag Tests */
+/* Tag Tests */
 func TestTag(t *testing.T) {
 	db := newTestDB(t)
 	tag := &model.Tag{
-		Applicant_ID: "1234",
-		Period_Event_ID: "1234_1233",
-		Tag_Name: "Sponsorship Team",
+		ApplicantID:   "1234",
+		PeriodEventID: "1234_1233",
+		TagName:       "Sponsorship Team",
 	}
 	err := db.AddNewTag(tag)
 	if err != nil {
 		t.Errorf("Failed to add new tag: %s", err.Error())
 		t.FailNow()
 	}
-	tagActual, err := db.GetTag(tag.Applicant_ID, "1234" , "1233")
+	tagActual, err := db.GetTag(tag.ApplicantID, "1234", "1233")
 	if err != nil {
 		t.Errorf("Failed to get tag: %s", err.Error())
 		t.FailNow()
@@ -135,7 +133,7 @@ func TestTag(t *testing.T) {
 		t.Errorf("tag collected is not as expected, expected: %+v, actual %+v", tag, tagActual)
 		t.FailNow()
 	}
-	err = db.DeleteTag(tag.Applicant_ID, "1234" , "1233")
+	err = db.DeleteTag(tag.ApplicantID, "1234", "1233")
 	if err != nil {
 		t.Errorf("Failed to delete tag %s", err.Error())
 		t.FailNow()
