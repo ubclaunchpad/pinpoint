@@ -24,8 +24,9 @@ type UserRouter struct {
 func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
 	router := chi.NewRouter()
 	u := &UserRouter{l, c, router}
-	router.Post("/create_user", u.createUser)
-	router.Post("/verify", u.verify)
+	router.Post("/create", u.createUser)
+	router.Post("/login", u.login)
+	router.Get("/verify", u.verify)
 	return &UserRouter{l.Named("users"), c, router}
 }
 
@@ -34,32 +35,38 @@ func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
 	// parse request data
-	var userData request.CreateAccount
-	if err := decoder.Decode(&userData); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+	decoder := json.NewDecoder(r.Body)
+	var user request.CreateAccount
+	if err := decoder.Decode(&user); err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "invalid request"))
 		return
-	}
-	resp, err := u.c.CreateAccount(context.Background(), &userData)
-	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
-		return
-	}
-	rJSON, err := json.Marshal(resp)
-	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
 	}
 
-	render.Render(w, r, res.Message(r, string(rJSON), http.StatusCreated))
+	// create account in core
+	resp, err := u.c.CreateAccount(context.Background(), &user)
+	if err != nil {
+		render.Render(w, r, res.ErrInternalServer(r, err))
+		return
+	}
+
+	// success!
+	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusCreated,
+		"email", user.GetEmail()))
+}
+
+func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, map[string]string{
+		"token": "1234",
+	})
 }
 
 func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
-	hash := r.FormValue("hash")
-	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: hash})
+	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: r.FormValue("hash")})
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(r, err))
 		return
 	}
-	render.JSON(w, r, resp)
+	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusAccepted))
 }

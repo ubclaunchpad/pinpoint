@@ -38,9 +38,6 @@ func TestUserRouter_createUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
-			// set up mock CreateAccount
-			fake.CreateAccount(nil, nil, nil)
-
 			// create user router
 			u := newUserRouter(l, fake)
 
@@ -54,7 +51,7 @@ func TestUserRouter_createUser(t *testing.T) {
 				}
 			}
 			reader := bytes.NewReader(b)
-			req, err := http.NewRequest("POST", "/create_user", reader)
+			req, err := http.NewRequest("POST", "/create", reader)
 			if err != nil {
 				t.Error(err)
 				return
@@ -67,6 +64,10 @@ func TestUserRouter_createUser(t *testing.T) {
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
+			}
+
+			if tt.wantCode == http.StatusCreated && fake.CreateAccountCallCount() < 1 {
+				t.Error("uhh")
 			}
 		})
 	}
