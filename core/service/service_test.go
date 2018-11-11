@@ -149,6 +149,7 @@ func TestService_CreateAccount(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
+		DBErr   bool
 		wantErr bool
 	}{
 		{
@@ -157,7 +158,7 @@ func TestService_CreateAccount(t *testing.T) {
 				Email:    "test@pinpoint.com",
 				Name:     "test",
 				Password: "1234"}},
-			true,
+			false, true,
 		},
 		{
 			"get email requirement error",
@@ -165,17 +166,40 @@ func TestService_CreateAccount(t *testing.T) {
 				Email:    "test",
 				Name:     "test",
 				Password: "1234pass."}},
-			true,
+			false, true,
+		},
+		{
+			"db failure",
+			args{&request.CreateAccount{
+				Email:    "test@gmail.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			true, true,
+		},
+		{
+			"success",
+			args{&request.CreateAccount{
+				Email:    "test@gmail.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			false, false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fk := &mocks.FakeDBClient{}
+			if tt.DBErr {
+				fk.AddNewUserReturns(errors.New("oh no"))
+			}
 			s := &Service{db: fk}
 			_, err := s.CreateAccount(context.Background(), tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if !tt.wantErr && fk.AddNewUserCallCount() < 1 {
+				t.Error("expected call to AddNewUser")
 			}
 		})
 	}
