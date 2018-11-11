@@ -14,6 +14,7 @@ check:
 .PHONY: deps
 deps:
 	go get -u github.com/maxbrunsfeld/counterfeiter
+	go get -u github.com/vburenin/ifacemaker
 	dep ensure
 	( cd frontend ; npm install )
 	( cd client ; npm install )
