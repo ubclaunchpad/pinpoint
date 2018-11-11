@@ -7,34 +7,55 @@ import (
 	"testing"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/ubclaunchpad/pinpoint/core/database/mocks"
 	"github.com/ubclaunchpad/pinpoint/core/model"
-
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 
-func TestService_New(t *testing.T) {
+func TestNew(t *testing.T) {
 	l, err := utils.NewLogger(true)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	aws, _ := utils.AWSSession(utils.AWSConfig(true))
-	if _, err = New(aws, l, Opts{}); err != nil {
-		t.Error(err)
-		return
+	acfg, _ := utils.AWSSession(utils.AWSConfig(true))
+	badcfg, _ := session.NewSession(aws.NewConfig())
+	type args struct {
+		awsConfig client.ConfigProvider
+		opts      Opts
 	}
-
-	// with TLS
-	if _, err = New(aws, l, Opts{
-		TLSOpts: TLSOpts{
-			CertFile: "../../dev/certs/127.0.0.1.crt",
-			KeyFile:  "../../dev/certs/127.0.0.1.key",
-		},
-	}); err != nil {
-		t.Error(err)
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"invalid aws config", args{badcfg, Opts{}}, true},
+		{"invalid tls config", args{acfg, Opts{
+			TLSOpts: TLSOpts{
+				CertFile: "../../dev/certs/asdf.crt",
+			},
+		}}, true},
+		{"valid no tls", args{acfg, Opts{}}, false},
+		{"valid tls config", args{acfg, Opts{
+			TLSOpts: TLSOpts{
+				CertFile: "../../dev/certs/127.0.0.1.crt",
+				KeyFile:  "../../dev/certs/127.0.0.1.key",
+			},
+		}}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := New(tt.args.awsConfig, l, tt.args.opts)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
 	}
 }
 
