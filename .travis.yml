@@ -18,9 +18,11 @@ matrix:
         - dep ensure -v
       script:
         # generate code and exit with status 1 if diff is detected
-        - make proto
+        - make gen
         - git --no-pager diff protobuf
+        - git --no-pager diff core/database
         - git diff-index --relative=protobuf --quiet HEAD --
+        - git diff-index --relative=core/database --quiet HEAD --
       after_success: skip
 
     # Go components

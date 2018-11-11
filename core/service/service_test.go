@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
 
-	"github.com/ubclaunchpad/pinpoint/core/database"
+	"github.com/ubclaunchpad/pinpoint/core/database/mocks"
 	"github.com/ubclaunchpad/pinpoint/core/model"
+
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
@@ -129,14 +131,6 @@ func TestService_CreateAccount(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"get mailer error",
-			args{&request.CreateAccount{
-				Email:    "test@pinpoint.com",
-				Name:     "test",
-				Password: "1234pass."}},
-			true,
-		},
-		{
 			"get password requirement error",
 			args{&request.CreateAccount{
 				Email:    "test@pinpoint.com",
@@ -156,7 +150,8 @@ func TestService_CreateAccount(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{}
+			fk := &mocks.FakeDBClient{}
+			s := &Service{db: fk}
 			_, err := s.CreateAccount(context.Background(), tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
@@ -167,8 +162,6 @@ func TestService_CreateAccount(t *testing.T) {
 
 func TestService_Verify(t *testing.T) {
 	expectedHash := "NmSdjumzjHOF7IAnafAK74LAPug="
-	db, _ := database.NewTestDB()
-
 	type args struct {
 		ctx context.Context
 		req *request.Verify
@@ -191,17 +184,14 @@ func TestService_Verify(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{db: db}
-			db.AddNewUser(&model.User{
-				Email: "abc@def.com",
-				Name:  "Bob Ross",
-				Salt:  "qwer1234",
-			}, &model.EmailVerification{
-				Hash:   expectedHash,
-				Email:  "test@test",
-				Expiry: time.Now().Add(time.Minute),
-			})
-			defer db.DeleteUser("test@test")
+			fk := &mocks.FakeDBClient{}
+			fk.GetEmailVerificationStub = func(hash string) (*model.EmailVerification, error) {
+				if hash != expectedHash {
+					return nil, errors.New("oh no")
+				}
+				return &model.EmailVerification{Hash: hash}, nil
+			}
+			s := &Service{db: fk}
 
 			_, err := s.Verify(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {

@@ -33,9 +33,9 @@ import (
 // logic and connections to various backends. It implements an gRPC interface.
 type Service struct {
 	l    *zap.SugaredLogger
-	db   *database.Database
 	grpc *grpc.Server
 	mail *mailer.Mailer
+	db   database.DBClient
 
 	gateway GatewayOpts
 }
@@ -164,7 +164,7 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 	return &response.Empty{}, nil
 }
 
-// CreateAccount resgiesters a user and sends an email verification email
+// CreateAccount registers a user and sends an email verification email
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
 	if err := crypto.ValidateCredentialValues(req.Email, req.Password); err != nil {
 		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
