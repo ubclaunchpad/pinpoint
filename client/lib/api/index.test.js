@@ -33,4 +33,47 @@ describe('API', () => {
       });
     });
   });
+
+  describe('createAccount', () => {
+    test('ok', (done) => {
+      const a = new api.API();
+      moxios.stubRequest('/user/create', {
+        status: 200,
+        response: {},
+      });
+
+      const onFulfilled = sinon.spy();
+      a.createAccount({
+        email: 'bob@gmail.com',
+        password: 'blah',
+        name: 'bob',
+      }).then(onFulfilled);
+      moxios.wait(() => {
+        const response = onFulfilled.getCall(0).args[0];
+        expect(response.status).toEqual(200);
+        done();
+      });
+    });
+  });
+
+  describe('login', () => {
+    test('ok', (done) => {
+      const a = new api.API();
+      moxios.stubRequest('/user/login', {
+        status: 200,
+        response: {},
+      });
+
+      const onFulfilled = sinon.spy();
+      a.login({
+        email: 'bob@gmail.com',
+        password: 'blah',
+      }).then(onFulfilled);
+      moxios.wait(() => {
+        const response = onFulfilled.getCall(0).args[0];
+        expect(response.status).toEqual(200);
+        done();
+      });
+    });
+  });
 });
