@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+    ports:
+      - 9300:9300
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.5.0
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+
+  filebeat:
+    container_name: filebeat
+    image: docker.elastic.co/beats/filebeat:6.5.0
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch:9200
