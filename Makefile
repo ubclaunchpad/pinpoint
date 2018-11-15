@@ -1,6 +1,6 @@
 VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
-DEV_COMPOSE=docker-compose -f dev/docker-compose.yml
+TEST_COMPOSE=docker-compose -f dev/testenv.yml
 MON_COMPOSE=docker-compose -f dev/monitoring.yml
 
 all: check
@@ -31,12 +31,12 @@ test:
 .PHONY: testenv
 testenv:
 	mkdir -p tmp/data
-	$(DEV_COMPOSE) up -d
+	$(TEST_COMPOSE) up -d
 
 # Stop test environment
 .PHONY: testenv-stop
 testenv-stop:
-	$(DEV_COMPOSE) stop
+	$(TEST_COMPOSE) stop
 
 # Set up monitoring environment
 .PHONY: monitoring
@@ -52,7 +52,8 @@ monitoring-stop:
 # Clean up stuff
 .PHONY: clean
 clean: testenv-stop monitoring-stop
-	$(DEV_COMPOSE) rm -f -s -v
+	$(TEST_COMPOSE) rm -f -s -v
+	$(MON_COMPOSE) rm -f -s -v
 	rm -rf tmp
 
 # Run linters and checks
