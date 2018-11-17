@@ -13,7 +13,7 @@ import (
 )
 
 func TestUserRouter_createUser(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
