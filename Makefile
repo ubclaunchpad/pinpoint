@@ -102,20 +102,20 @@ mocks:
 core:
 	go run core/main.go run --dev \
 		--tls.cert dev/certs/127.0.0.1.crt \
-		--tls.key dev/certs/127.0.0.1.key
+		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
 # Runs API gateway
 .PHONY: gateway
 gateway:
 	go run gateway/main.go run --dev \
-		--core.cert dev/certs/127.0.0.1.crt
+		--core.cert dev/certs/127.0.0.1.crt $(FLAGS)
 
 .PHONY: gateway-tls
 gateway-tls:
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt \
 		--tls.cert dev/certs/127.0.0.1.crt \
-		--tls.key dev/certs/127.0.0.1.key
+		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
 # Runs web app
 .PHONY: web
@@ -127,11 +127,11 @@ web:
 pinpoint-core:
 	go build -o ./bin/pinpoint-core \
     -ldflags "-X main.Version=$(VERSION)" \
-    ./core
+    ./core $(FLAGS)
 
 # Builds binary for pinpoint-gateway
 .PHONY: pinpoint-gateway
 pinpoint-gateway:
 	go build -o ./bin/pinpoint-gateway \
     -ldflags "-X main.Version=$(VERSION)" \
-    ./gateway
+    ./gateway $(FLAGS)
