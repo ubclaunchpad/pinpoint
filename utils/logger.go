@@ -22,7 +22,9 @@ func NewLogger(dev bool, logpath string) (sugar *zap.SugaredLogger, err error) {
 		// Stacktraces: WarningLevel
 		// Colors:      capitals
 		config = zap.NewDevelopmentConfig()
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		if logpath == "" {
+			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		}
 	} else {
 		// Log:         InfoLevel
 		// Encoder:     json
