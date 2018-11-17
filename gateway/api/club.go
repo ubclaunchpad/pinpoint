@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
@@ -57,7 +59,7 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	// parse request data
 	var eData schema.CreateClub
 
-	if eData.Fields == nil {
+	if eData.Name == "" || eData.Desc == "" {
 		render.Render(w, r, res.ErrBadRequest(r, errors.New("Missing fields"), "Missing fields"))
 	}
 
@@ -80,8 +82,16 @@ func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
+	layout := "2018, 12, 9"
+	start, err := time.Parse(layout, eData.Start)
+	end, err := time.Parse(layout, eData.End)
+	if err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		return
+	}
 
-	// TODO: create period in core
+	// TODO: create period in core, for now just log
+	fmt.Println(start, end)
 
 	render.Render(w, r, res.Message(r, "Period created sucessfully", http.StatusCreated))
 }
