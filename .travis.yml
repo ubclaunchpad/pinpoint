@@ -61,6 +61,7 @@ matrix:
         - npm install
       before_script:
         - npm run lint
+        - npm run sass-lint
       script:
         # disable build for now until client issues can be resolved
         # - npm run build
