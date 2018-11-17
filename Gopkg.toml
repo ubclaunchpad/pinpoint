@@ -19,13 +19,5 @@
   version = "1.9.1"
 
 [[constraint]]
-  name = "golang.org/x/net"
-  branch = "master"
-
-[[constraint]]
   name = "google.golang.org/grpc"
   version = "1.15.0"
-
-[[constraint]]
-  name = "github.com/golang/mock"
-  version = "1.1.1"

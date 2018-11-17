@@ -7,9 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"github.com/ubclaunchpad/pinpoint/gateway/schema"
-	"github.com/ubclaunchpad/pinpoint/protobuf/mocks"
+	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 
@@ -21,7 +20,7 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 
 	type args struct {
-		u *schema.CreateUser
+		u *request.CreateAccount
 	}
 	tests := []struct {
 		name     string
@@ -29,7 +28,7 @@ func TestUserRouter_createUser(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
-		{"successfully create user", args{&schema.CreateUser{
+		{"successfully create user", args{&request.CreateAccount{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",
@@ -37,13 +36,10 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// set up mock controller
-			ctrl := gomock.NewController(t)
-			mock := mocks.NewMockCoreClient(ctrl)
-			defer ctrl.Finish()
+			fake := &fakes.FakeCoreClient{}
 
 			// create user router
-			u := newUserRouter(l, mock)
+			u := newUserRouter(l, fake)
 
 			// create request
 			var b []byte
@@ -55,7 +51,7 @@ func TestUserRouter_createUser(t *testing.T) {
 				}
 			}
 			reader := bytes.NewReader(b)
-			req, err := http.NewRequest("POST", "/create_user", reader)
+			req, err := http.NewRequest("POST", "/create", reader)
 			if err != nil {
 				t.Error(err)
 				return
@@ -68,6 +64,10 @@ func TestUserRouter_createUser(t *testing.T) {
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
+			}
+
+			if tt.wantCode == http.StatusCreated && fake.CreateAccountCallCount() < 1 {
+				t.Error("uhh")
 			}
 		})
 	}

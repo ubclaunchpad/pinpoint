@@ -12,6 +12,12 @@
 
   // inline-flex
   &-inline { display: inline-flex }
+  &-inlinegrid { display: inline-grid }
+
+  // alignment of child text elements
+  &-al{
+    &-center { text-align: center };
+  }
 
   // flex-directions
   &.dir {
