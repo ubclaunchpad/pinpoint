@@ -1,7 +1,7 @@
 VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
-TEST_COMPOSE=docker-compose -f dev/testenv.yml
-MON_COMPOSE=docker-compose -f dev/monitoring.yml
+TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
+MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
 
 all: check
 
