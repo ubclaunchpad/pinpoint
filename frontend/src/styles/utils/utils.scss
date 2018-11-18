@@ -1,16 +1,16 @@
 
 // position declarations
 .pos {
-  &-abs { position: absolute }
-  &-rel { position: relative }
+  &-abs { position: absolute; }
+  &-rel { position: relative; }
 }
 
 // cursor declarations
-.clickable   { cursor: pointer } 
-.unclickable { cursor: not-allowed }
+.clickable   { cursor: pointer; }
+.unclickable { cursor: not-allowed; }
 
 // fill modes
-.fill { 
-  &-width     { width: 100% }
-  &-height    { height: 100% }
+.fill {
+  &-width     { width:  100%; }
+  &-height    { height: 100%; }
 }

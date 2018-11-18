@@ -15,12 +15,12 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
+  -webkit-font-smoothing: antialiased;
+  border: 0;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0;
   vertical-align: baseline;
-  -webkit-font-smoothing: antialiased;
 }
 
 html {
