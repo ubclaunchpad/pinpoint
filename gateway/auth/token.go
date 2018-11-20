@@ -11,15 +11,16 @@ import (
 
 // the public key is used to verify the tokens 
 // the private key is used for signing the tokens
+// TODO: fix data propagation
 var (
 	verifyKey  *rsa.PublicKey
 	signKey    *rsa.PrivateKey
 )
 
-// @robert: how should these key be stored ? not sure if this is right!
-const (									    // @robert: here are commands I used to generate keys
-	privateKeyPath = "auth/keys/app.rsa"    // openssl genrsa -out app.rsa 2048
-	publicKeyPath = "auth/keys/app.rsa.pub" // openssl rsa -in app.rsa -pubout > app.rsa.pub
+// @robert: how should I import dev package ?
+const (									    
+	privateKeyPath = "dev/keys/app.rsa"    
+	publicKeyPath = "dev/keys/app.rsa.pub" 
 	InvalidTokenErr = "invalid token"
 )
 
@@ -30,6 +31,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// TODO: propagate errors upwards
 // handleErr a helper function to handle the errors
 func handleErr(err error) {
 	if (err != nil){
