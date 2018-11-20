@@ -18,13 +18,36 @@ class Signup extends Component {
     const { email, password } = this.state;
     console.log(name, email, password, confirmpassword);
     const field = e.target.getAttribute('type');
-    this.setState({ [field]: e.target.value });
+
+    if (field === 'password' && e.target.getAttribute('placeholder') !== 'Password') {
+      this.setState({ confirmpassword: e.target.value });
+    } else {
+      this.setState({ [field]: e.target.value });
+    }
   }
 
   // TODO once endpoint is set up, currently does nothing
   attemptSignup(e) {
     const { email, password } = this.state;
-    console.log(email, password, e);
+    const { name, confirmpassword } = this.state;
+    console.log(email, password, name, confirmpassword, e);
+
+    if (confirmpassword !== password) {
+      console.log('Please make sure password is same as your confirmation');
+    } else {
+      // TODO Send signup information to backend here
+      console.log('Success');
+    }
+  }
+
+  generateError(error) {
+    const { email, password } = this.state;
+    const { name, confirmpassword } = this.state;
+    console.log(email, password, name, confirmpassword, e);
+
+    return (
+      <div>{error}</div>
+    );
   }
 
   render() {
@@ -35,7 +58,7 @@ class Signup extends Component {
           <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
-          <input className="input-box input-small" type="confirmpassword" placeholder="Confirm Password" onChange={this.updateTextFields} />
+          <input className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextFields} />
         </div>
         <div className="margin-top-xs">
           <input type="checkbox" />
