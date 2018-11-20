@@ -59,12 +59,8 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	// parse request data
 	var eData schema.CreateClub
 
-	if eData.Name == "" || eData.Desc == "" {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("Missing fields"), "Missing fields"))
-	}
-
 	if err := decoder.Decode(&eData); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid request"))
 		return
 	}
 
@@ -82,7 +78,8 @@ func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
-	layout := "2018, 12, 9"
+	// parse form date input into standard format
+	layout := "2006-01-02"
 	start, err := time.Parse(layout, eData.Start)
 	end, err := time.Parse(layout, eData.End)
 	if err != nil {

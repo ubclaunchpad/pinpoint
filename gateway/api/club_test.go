@@ -106,7 +106,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 
 			// create request
 			var b []byte
-			var err error
+			// var err error
 			if tt.args.period != nil {
 				if b, err = json.Marshal(tt.args.period); err != nil {
 					t.Error(err)
