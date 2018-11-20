@@ -33,8 +33,9 @@ import (
 // logic and connections to various backends. It implements an gRPC interface.
 type Service struct {
 	l    *zap.SugaredLogger
-	db   *database.Database
 	grpc *grpc.Server
+	mail *mailer.Mailer
+	db   database.DBClient
 
 	gateway GatewayOpts
 }
@@ -57,9 +58,6 @@ type GatewayOpts struct {
 	Token string
 }
 
-// GHash is a temporary variable to store hash
-var GHash string // TODO: Replace with db once in place.
-
 // New creates a new Service
 func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) (*Service, error) {
 	// set up database
@@ -73,6 +71,13 @@ func New(awsConfig client.ConfigProvider, logger *zap.SugaredLogger, opts Opts) 
 		l:       logger.Named("service"),
 		db:      db,
 		gateway: opts.GatewayOpts,
+	}
+
+	// Construct verification email - TODO: remove from ENV
+	s.mail, err = mailer.New(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
+	if err != nil {
+		s.l.Warnw("failed to instantiate mailer",
+			"user", os.Getenv("MAILER_USER"))
 	}
 
 	// set up logging params
@@ -159,10 +164,9 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 	return &response.Empty{}, nil
 }
 
-// CreateAccount sends an email verification email. TODO: Actually create account
+// CreateAccount registers a user and sends an email verification email
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
-	// Validate email and password
-	if err := crypto.ValidateCredentialValues([]string{req.Email, req.Name}, req.Password); err != nil {
+	if err := crypto.ValidateCredentialValues(req.Email, req.Password); err != nil {
 		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
 	}
 
@@ -172,41 +176,33 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 		return nil, fmt.Errorf("failed to salt password: %s", err.Error())
 	}
 
-	// Send verification email
-	hash, err := verifier.Init(req.Email)
-	GHash = hash // Temporary in-memory store
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash email: %s", err.Error())
+	// set up verification code for user
+	v := verifier.New(req.Email, s.mail)
+
+	// create user
+	if err := s.db.AddNewUser(
+		&model.User{Email: req.Email, Name: req.Name, Salt: salt},
+		&model.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
+	); err != nil {
+		return nil, fmt.Errorf("failed to create user: %s", err.Error())
 	}
 
-	// Construct verification email
-	mailer, err := mailer.New(os.Getenv("MAILER_USER"), os.Getenv("MAILER_PASS"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to setup mailer: %s", err.Error())
+	// send verification email
+	if err = v.SendVerification(); err != nil {
+		return nil, fmt.Errorf("failed to create email verification: %s", err.Error())
 	}
 
-	// Send email
-	// TODO: Change to get email address from user session
-	title := "Welcome to Pinpoint!"
-	body := "Visit localhost:8081/user/verify?hash=" + hash + " to verify your email."
-	if err := mailer.Send(req.Email, title, body); err != nil {
-		return nil, fmt.Errorf("failed to send email: %s", err.Error())
-	}
-
-	if err := s.db.AddNewUser(&model.User{Email: req.Email, Name: req.Name, Salt: salt}); err != nil {
-		return nil, fmt.Errorf("failed to insert user into db: %s", err.Error())
-	}
-
-	// If no error, respond success. TODO: Change this to utilize response codes
-	return &response.Message{Message: "success"}, nil
+	// If no error, respond success
+	return &response.Message{
+		Message: "user successfully created - an email verification was sent",
+	}, nil
 }
 
 // Verify looks up the given hash, and verifies the hash matching email
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
-	// TODO: replace with Verifier method in future
-	if req.Hash != GHash {
-		return nil, fmt.Errorf("failed to verify email: no matching hash")
+	v, err := s.db.GetEmailVerification(req.GetHash())
+	if err != nil {
+		return nil, err
 	}
-
-	return &response.Message{Message: "success"}, nil
+	return &response.Message{Message: "successfully verified " + v.Email}, nil
 }

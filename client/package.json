@@ -4,6 +4,7 @@
   "description": "The Pinpoint API client library",
   "author": "UBC Launch Pad",
   "license": "Apache-2.0",
+  "repository": "https://github.com/ubclaunchpad/pinpoint",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",

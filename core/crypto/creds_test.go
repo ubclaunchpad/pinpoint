@@ -15,24 +15,24 @@ func TestValidateCredentialValues(t *testing.T) {
 		wantErr   bool
 		wantedErr error
 	}{
-		{"valid case", args{"robert", "pinpoint@LP2018"}, false, nil},
-		{"valid case", args{"robert_lp", "pinpoint@LP$2018"}, false, nil},
-		{"valid case", args{"robert-lp", "#pinpoint@LP$2018"}, false, nil},
+		{"valid case", args{"robert@gmail.com", "pinpoint@LP2018"}, false, nil},
+		{"valid case", args{"robert_lp@gmail.com", "pinpoint@LP$2018"}, false, nil},
+		{"valid case", args{"robert-lp@gmail.com", "#pinpoint@LP$2018"}, false, nil},
 		{"same user password", args{"mojave", "mojave"}, true, errPasswordContainsUsername},
-		{"invalid username", args{"robert ", "pinpoint@LP2018"}, true, errInvalidUsername},
-		{"invalid username", args{"robert@lp", "pinpoint@LP2018"}, true, errInvalidUsername},
-		{"invalid username", args{"ROBERT.lp", "pinpoint@f$T#4%7"}, true, errInvalidUsername},
-		{"invalid password", args{"robert", "pinpoint f$T@4%7"}, true, errInvalidPassword},
+		{"invalid email", args{"robert ", "pinpoint@LP2018"}, true, errInvalidEmail},
+		{"invalid email", args{"robert@lp", "pinpoint@LP2018"}, true, errInvalidEmail},
+		{"invalid email", args{"ROBERT.lp", "pinpoint@f$T#4%7"}, true, errInvalidEmail},
+		{"invalid password", args{"robert@gmail.com", "pinpoint f$T@4%7"}, true, errInvalidPassword},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			if err = ValidateCredentialValues([]string{tt.args.username}, tt.args.password); (err != nil) != tt.wantErr {
+			if err = ValidateCredentialValues(tt.args.username, tt.args.password); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateCredentialValues() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if tt.wantErr && tt.wantedErr != nil {
 				if err != tt.wantedErr {
-					t.Errorf("wanted %s, got %s", tt.wantedErr, err)
+					t.Errorf("wanted '%s', got '%s'", tt.wantedErr, err)
 				}
 			}
 		})
