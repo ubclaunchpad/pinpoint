@@ -1,0 +1,14 @@
+// Animation Preset Variables
+$transition-time: .2s;
+
+// Colors
+$button-hover-color: #008cba;
+$button-hover-textcolor: fffff;
+
+.animate-button {
+  &:hover {
+    background-color: $button-hover-color;
+    color: $button-hover-textcolor;
+    transition: all $transition-time ease-in-out;
+  }
+}

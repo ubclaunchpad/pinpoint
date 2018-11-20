@@ -1,7 +1,11 @@
+const utils = require('./utils');
+const api = require('./api');
 
-function $main({ option1, option2 } = {}) {
-  console.log(option1, option2);
-  return {};
+// todo: replace with real deployment
+const defaultAPIPath = 'http://localhost:8081/';
+
+function $main({ base = defaultAPIPath, auth } = {}) {
+  return new api.API(utils.newRequester({ baseURL: base, token: auth }));
 }
 
 function addReadOnlyProperties(target, source) {
@@ -13,7 +17,7 @@ function addReadOnlyProperties(target, source) {
 }
 
 addReadOnlyProperties($main, {
-  // include library properties here
+  API: api.API,
 });
 
 module.exports = $main;

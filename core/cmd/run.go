@@ -44,11 +44,23 @@ func runCommand(c *CoreCommand) func(*cobra.Command, []string) error {
 			return fmt.Errorf("failed to connect to aws: %s", err.Error())
 		}
 
+		// Set up tokens
+		coreToken := os.Getenv("PINPOINT_CORE_TOKEN")
+		gatewayToken := os.Getenv("PINPOINT_GATEWAY_TOKEN")
+		if c.Dev && coreToken == "" && gatewayToken == "" {
+			coreToken = "valid_token"
+			gatewayToken = "valid_token"
+		}
+
 		// Set up service
 		core, err := service.New(awsConfig, c.SugaredLogger, service.Opts{
+			Token: coreToken,
 			TLSOpts: service.TLSOpts{
 				CertFile: flags["tls.cert"],
 				KeyFile:  flags["tls.key"],
+			},
+			GatewayOpts: service.GatewayOpts{
+				Token: gatewayToken,
 			},
 		})
 		if err != nil {
