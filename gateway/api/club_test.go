@@ -58,14 +58,12 @@ func TestClubRouter_createClub(t *testing.T) {
 
 			// Record responses
 			recorder := httptest.NewRecorder()
-
-			// TODO: Serve request
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
-			// TODO: core test portion with fake core
+			// TODO: test behaviour with fake core
 		})
 	}
 }
@@ -122,14 +120,12 @@ func TestClubRouter_createPeriod(t *testing.T) {
 
 			// Record responses
 			recorder := httptest.NewRecorder()
-
-			// TODO: Serve request
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
-			// TODO: core test portion with fake core
+			// TODO: test behaviour with fake core
 		})
 	}
 }
