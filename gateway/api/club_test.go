@@ -68,6 +68,10 @@ func TestClubRouter_createClub(t *testing.T) {
 	}
 }
 
+func TestClubRouter_createEvent(t *testing.T) {
+	// TODO once event stuff is more finalized
+}
+
 func TestClubRouter_createPeriod(t *testing.T) {
 	l, err := utils.NewLogger(true)
 	if err != nil {

@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -64,9 +65,14 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
-	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: r.FormValue("hash")})
+	hash := r.FormValue("hash")
+	if hash == "" {
+		render.Render(w, r, res.ErrBadRequest(r, errors.New("missing fields"), ""))
+	}
+
+	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: hash})
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
+		render.Render(w, r, res.Err(r, err, http.StatusNotFound))
 		return
 	}
 	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusAccepted))
