@@ -21,24 +21,23 @@ type ClubRouter struct {
 	mux *chi.Mux
 }
 
-func newClubRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *ClubRouter {
-	router := chi.NewRouter()
-	club := &ClubRouter{l, c, router}
+func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
+	c := &ClubRouter{l.Named("clubs"), core, chi.NewRouter()}
 
 	// club-related endpoints
-	router.Post("create", club.createClub)
+	c.mux.Post("create", c.createClub)
 
 	// club-event-related endpoints
-	router.Mount("event", router.Group(func(r chi.Router) {
-		r.Post("create", club.createEvent)
+	c.mux.Mount("event", c.mux.Group(func(r chi.Router) {
+		r.Post("create", c.createEvent)
 	}))
 
 	// club-period-related endpoints
-	router.Mount("period", router.Group(func(r chi.Router) {
-		r.Post("create", club.createPeriod)
+	c.mux.Mount("period", c.mux.Group(func(r chi.Router) {
+		r.Post("create", c.createPeriod)
 	}))
 
-	return &ClubRouter{l.Named("clubs"), c, router}
+	return c
 }
 
 func (club *ClubRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {

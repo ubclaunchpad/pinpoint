@@ -20,13 +20,15 @@ type UserRouter struct {
 	mux *chi.Mux
 }
 
-func newUserRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *UserRouter {
-	router := chi.NewRouter()
-	u := &UserRouter{l, c, router}
-	router.Post("/create", u.createUser)
-	router.Post("/login", u.login)
-	router.Get("/verify", u.verify)
-	return &UserRouter{l.Named("users"), c, router}
+func newUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *UserRouter {
+	u := &UserRouter{l.Named("users"), core, chi.NewRouter()}
+
+	// these should all be public
+	u.mux.Post("/create", u.createUser)
+	u.mux.Post("/login", u.login)
+	u.mux.Get("/verify", u.verify)
+
+	return u
 }
 
 func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
