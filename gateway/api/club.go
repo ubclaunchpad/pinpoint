@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -47,15 +46,9 @@ func (club *ClubRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	// parse request data
-	var eData schema.CreateEvent
-
-	if eData.Fields == nil {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("Missing fields"), "Missing fields"))
-	}
-
-	if err := decoder.Decode(&eData); err != nil {
+	var decoder = json.NewDecoder(r.Body)
+	var data schema.CreateEvent
+	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
@@ -66,11 +59,9 @@ func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
 }
 
 func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	// parse request data
-	var eData schema.CreateClub
-
-	if err := decoder.Decode(&eData); err != nil {
+	var decoder = json.NewDecoder(r.Body)
+	var data schema.CreateClub
+	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid request"))
 		return
 	}
@@ -81,18 +72,17 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 }
 
 func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	// parse request data
-	var eData schema.CreatePeriod
-
-	if err := decoder.Decode(&eData); err != nil {
+	var decoder = json.NewDecoder(r.Body)
+	var data schema.CreatePeriod
+	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
+
 	// parse form date input into standard format
 	layout := "2006-01-02"
-	start, err := time.Parse(layout, eData.Start)
-	end, err := time.Parse(layout, eData.End)
+	start, err := time.Parse(layout, data.Start)
+	end, err := time.Parse(layout, data.End)
 	if err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
