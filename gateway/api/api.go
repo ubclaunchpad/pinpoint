@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -95,7 +96,16 @@ func (a *API) setUpCoreClient(opts CoreOpts) error {
 // setUpRouter initializes any middleware or general things the API router
 // might need
 func (a *API) setUpRouter() {
+	// CORS setting for development use
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
 	a.r.Use(
+		c.Handler,
 		middleware.RequestID,
 		middleware.RealIP,
 		newLoggerMiddleware("router", a.l),
@@ -106,6 +116,7 @@ func (a *API) setUpRouter() {
 func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
 	a.r.Mount("/user", newUserRouter(a.l, a.c))
+	a.r.Mount("/club", newClubRouter(a.l, a.c))
 }
 
 // runs Core and Gateway connection handshake

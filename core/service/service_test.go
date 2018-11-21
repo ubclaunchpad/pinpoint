@@ -2,35 +2,60 @@ package service
 
 import (
 	"context"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/ubclaunchpad/pinpoint/core/database/mocks"
+	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
 )
 
-func TestService_New(t *testing.T) {
+func TestNew(t *testing.T) {
 	l, err := utils.NewLogger(true)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	aws, _ := utils.AWSSession(utils.AWSConfig(true))
-	if _, err = New(aws, l, Opts{}); err != nil {
-		t.Error(err)
-		return
+	acfg, _ := utils.AWSSession(utils.AWSConfig(true))
+	badcfg, _ := session.NewSession(aws.NewConfig())
+	type args struct {
+		awsConfig client.ConfigProvider
+		opts      Opts
 	}
-
-	// with TLS
-	if _, err = New(aws, l, Opts{
-		TLSOpts: TLSOpts{
-			CertFile: "../../dev/certs/127.0.0.1.crt",
-			KeyFile:  "../../dev/certs/127.0.0.1.key",
-		},
-	}); err != nil {
-		t.Error(err)
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"invalid aws config", args{badcfg, Opts{}}, true},
+		{"invalid tls config", args{acfg, Opts{
+			TLSOpts: TLSOpts{
+				CertFile: "../../dev/certs/asdf.crt",
+			},
+		}}, true},
+		{"valid no tls", args{acfg, Opts{}}, false},
+		{"valid tls config", args{acfg, Opts{
+			TLSOpts: TLSOpts{
+				CertFile: "../../dev/certs/127.0.0.1.crt",
+				KeyFile:  "../../dev/certs/127.0.0.1.key",
+			},
+		}}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := New(tt.args.awsConfig, l, tt.args.opts)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
 	}
 }
 
@@ -119,56 +144,69 @@ func TestService_Handshake(t *testing.T) {
 
 func TestService_CreateAccount(t *testing.T) {
 	type args struct {
-		ctx context.Context
 		req *request.CreateAccount
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Status
+		DBErr   bool
 		wantErr bool
 	}{
 		{
-			"get mailer error",
-			args{nil, &request.CreateAccount{
-				Email:    "test@pinpoint.com",
-				Name:     "test",
-				Password: "1234pass."}},
-			nil,
-			true,
-		},
-		{
 			"get password requirement error",
-			args{nil, &request.CreateAccount{
+			args{&request.CreateAccount{
 				Email:    "test@pinpoint.com",
 				Name:     "test",
 				Password: "1234"}},
-			nil,
-			true,
+			false, true,
 		},
 		{
 			"get email requirement error",
-			args{nil, &request.CreateAccount{
+			args{&request.CreateAccount{
 				Email:    "test",
 				Name:     "test",
 				Password: "1234pass."}},
-			nil,
-			true,
+			false, true,
+		},
+		{
+			"db failure",
+			args{&request.CreateAccount{
+				Email:    "test@gmail.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			true, true,
+		},
+		{
+			"success",
+			args{&request.CreateAccount{
+				Email:    "test@gmail.com",
+				Name:     "test",
+				Password: "1234pass."}},
+			false, false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{}
-			_, err := s.CreateAccount(tt.args.ctx, tt.args.req)
+			fk := &mocks.FakeDBClient{}
+			if tt.DBErr {
+				fk.AddNewUserReturns(errors.New("oh no"))
+			}
+			s := &Service{db: fk}
+			_, err := s.CreateAccount(context.Background(), tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.CreateAccount() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if !tt.wantErr && fk.AddNewUserCallCount() < 1 {
+				t.Error("expected call to AddNewUser")
 			}
 		})
 	}
 }
 
 func TestService_Verify(t *testing.T) {
+	expectedHash := "NmSdjumzjHOF7IAnafAK74LAPug="
 	type args struct {
 		ctx context.Context
 		req *request.Verify
@@ -176,33 +214,34 @@ func TestService_Verify(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *response.Message
 		wantErr bool
 	}{
 		{
 			"get success given expected hash",
-			args{nil, &request.Verify{Hash: "NmSdjumzjHOF7IAnafAK74LAPug="}},
-			&response.Message{Message: "success"},
+			args{nil, &request.Verify{Hash: expectedHash}},
 			false,
 		},
 		{
 			"get error",
 			args{nil, &request.Verify{Hash: "incorrect hash"}},
-			nil,
 			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{}
-			GHash = "NmSdjumzjHOF7IAnafAK74LAPug="
-			got, err := s.Verify(tt.args.ctx, tt.args.req)
+			fk := &mocks.FakeDBClient{}
+			fk.GetEmailVerificationStub = func(hash string) (*model.EmailVerification, error) {
+				if hash != expectedHash {
+					return nil, errors.New("oh no")
+				}
+				return &model.EmailVerification{Hash: hash}, nil
+			}
+			s := &Service{db: fk}
+
+			_, err := s.Verify(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.Verify() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Service.Verify() = %v, want %v", got, tt.want)
 			}
 		})
 	}

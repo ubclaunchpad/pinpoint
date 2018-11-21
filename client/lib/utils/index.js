@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-function newRequester({ baseURL = 'localhost', token = '' }) {
+function newRequester({ baseURL = 'localhost', token = '' } = {}) {
   return axios.create({
     baseURL,
     timeout: 1000,
