@@ -59,6 +59,9 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 
 func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+
+	// TODO: implement
+
 	render.JSON(w, r, map[string]string{
 		"token": "1234",
 	})
