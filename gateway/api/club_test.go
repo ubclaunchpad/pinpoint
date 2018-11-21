@@ -116,7 +116,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 				}
 			}
 			reader := bytes.NewReader(b)
-			req, err := http.NewRequest("POST", "/create_period", reader)
+			req, err := http.NewRequest("POST", "/period/create", reader)
 			if err != nil {
 				t.Error(err)
 				return
