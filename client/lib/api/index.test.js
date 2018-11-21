@@ -80,7 +80,7 @@ describe('API', () => {
   describe('createClub', () => {
     test('ok', (done) => {
       const a = new api.API();
-      moxios.stubRequest('/club/create_club', {
+      moxios.stubRequest('/club/create', {
         status: 200,
         response: {},
       });
@@ -101,7 +101,7 @@ describe('API', () => {
   describe('createPeriod', () => {
     test('ok', (done) => {
       const a = new api.API();
-      moxios.stubRequest('/club/create_period', {
+      moxios.stubRequest('/club/period/create', {
         status: 200,
         response: {},
       });

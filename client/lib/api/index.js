@@ -17,11 +17,11 @@ class API {
   }
 
   async createClub({ name, desc }) {
-    return this.req.post('/club/create_club', { name, desc });
+    return this.req.post('/club/create', { name, desc });
   }
 
   async createPeriod({ name, start, end }) {
-    return this.req.post('/club/create_period', { name, start, end });
+    return this.req.post('/club/period/create', { name, start, end });
   }
 }
 

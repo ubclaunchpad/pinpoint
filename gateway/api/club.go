@@ -25,9 +25,20 @@ type ClubRouter struct {
 func newClubRouter(l *zap.SugaredLogger, c pinpoint.CoreClient) *ClubRouter {
 	router := chi.NewRouter()
 	club := &ClubRouter{l, c, router}
-	router.Post("/create_event", club.createEvent)
-	router.Post("/create_club", club.createClub)
-	router.Post("/create_period", club.createPeriod)
+
+	// club-related endpoints
+	router.Post("create", club.createClub)
+
+	// club-event-related endpoints
+	router.Mount("event", router.Group(func(r chi.Router) {
+		r.Post("create", club.createEvent)
+	}))
+
+	// club-period-related endpoints
+	router.Mount("period", router.Group(func(r chi.Router) {
+		r.Post("create", club.createPeriod)
+	}))
+
 	return &ClubRouter{l.Named("clubs"), c, router}
 }
 
