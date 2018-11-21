@@ -28,14 +28,14 @@ func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
 	c.mux.Post("/create", c.createClub)
 
 	// club-event-related endpoints
-	c.mux.Mount("/event", c.mux.Group(func(r chi.Router) {
+	c.mux.Route("/event", func(r chi.Router) {
 		r.Post("/create", c.createEvent)
-	}))
+	})
 
 	// club-period-related endpoints
-	c.mux.Mount("/period", c.mux.Group(func(r chi.Router) {
+	c.mux.Route("/period", func(r chi.Router) {
 		r.Post("/create", c.createPeriod)
-	}))
+	})
 
 	return c
 }

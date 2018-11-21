@@ -29,7 +29,7 @@ func TestClubRouter_createClub(t *testing.T) {
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
 		{"successfully create club", args{&schema.CreateClub{
-			Name: "UBC Launchpad",
+			Name: "UBC Launch Pad",
 			Desc: "The best software engineering club",
 		}}, http.StatusCreated},
 	}
