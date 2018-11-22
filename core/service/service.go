@@ -206,3 +206,15 @@ func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Me
 	}
 	return &response.Message{Message: "successfully verified " + v.Email}, nil
 }
+
+// Login looks up the given email and password and attempts to validate the user
+func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Message, error) {
+	user, err := s.db.GetUser(req.GetEmail())
+	if err != nil {
+		return nil, err
+	}
+	if crypto.ComparePasswords(user.Salt, req.GetPassword()) {
+		return &response.Message{Message: "user successfully logged in"}, nil
+	}
+	return &response.Message{Message: "user not authenticated"}, nil
+}
