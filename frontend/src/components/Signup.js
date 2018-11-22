@@ -8,6 +8,8 @@ class Signup extends Component {
       email: '',
       password: '',
       confirmpassword: '',
+      showmessage: false,
+      message: { messageType: '', content: '' },
     };
     this.updateTextFields = this.updateTextFields.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
@@ -33,27 +35,35 @@ class Signup extends Component {
     console.log(email, password, name, confirmpassword, e);
 
     if (confirmpassword !== password) {
+      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match!' } });
       console.log('Please make sure password is same as your confirmation');
     } else {
       // TODO Send signup information to backend here
+      this.setState({ showmessage: true, message: { messageType: 'success', content: ' Success!' } });
       console.log('Success');
     }
   }
 
-  generateError(error) {
-    const { email, password } = this.state;
-    const { name, confirmpassword } = this.state;
-    console.log(email, password, name, confirmpassword, e);
-
-    return (
-      <div>{error}</div>
-    );
+  // Function can be reused elsewhere, potentially put into a lib
+  // content: string input
+  // messageType: "info", "success", "warning", "error"
+  generateMessage() {
+    const { message, showmessage } = this.state;
+    if (showmessage) {
+      return (
+        <div className={`${message.messageType}-msg`}>
+          <i className="fa fa-times-circle" />
+          {message.content}
+        </div>
+      );
+    }
   }
 
   render() {
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Signup</div>
+        { this.generateMessage() }
         <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
           <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />

@@ -37,11 +37,29 @@ class Login extends Component {
     }
   }
 
+  // TODO - Use this for displaying messages based on success
+  // Function can be reused elsewhere, potentially put into a lib
+  // content: string input
+  // messageType: "info", "success", "warning", "error"
+  generateMessage() {
+    const { message, showmessage } = this.state;
+    if (showmessage) {
+      return (
+        <div className={`${message.messageType}-msg`}>
+          <i className="fa fa-times-circle" />
+          {message.content}
+        </div>
+      );
+    }
+  }
+
+
   render() {
     const { failed } = this.state;
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
+
         <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />

@@ -1,0 +1,71 @@
+// Error message styling
+
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+
+.info-msg,
+.success-msg,
+.warning-msg,
+.error-msg {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px 3px 3px 3px;
+}
+.info-msg {
+  color: #059;
+  background-color: #BEF;
+}
+.success-msg {
+  color: #270;
+  background-color: #DFF2BF;
+}
+.warning-msg {
+  color: #9F6000;
+  background-color: #FEEFB3;
+}
+.error-msg {
+  color: #D8000C;
+  background-color: #FFBABA;
+}
+
+///////////////////
+// Usage Example //
+///////////////////
+
+// <div class="info-msg">
+//   <i class="fa fa-info-circle"></i>
+//   This is an info message.
+// </div>
+
+// <div class="success-msg">
+//   <i class="fa fa-check"></i>
+//   This is a success message.
+// </div>
+
+// <div class="warning-msg">
+//   <i class="fa fa-warning"></i>
+//   This is a warning message.
+// </div>
+
+// <div class="error-msg">
+//   <i class="fa fa-times-circle"></i>
+//   This is a error message.
+// </div>
+
+
+////////////////////////
+// Ex Javascript code //
+////////////////////////
+//   // Function can be reused elsewhere, potentially put into a lib
+//   // content: string input
+//   // messageType: "info", "success", "warning", "error"
+//   generateMessage() {
+//     const { message, showmessage } = this.state;
+//     if (showmessage) {
+//       return (
+//         <div className={`${message.messageType}-msg`}>
+//           <i className="fa fa-times-circle" />
+//           {message.content}
+//         </div>
+//       );
+//     }
+//   }
