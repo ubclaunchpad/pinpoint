@@ -2,51 +2,54 @@
 
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
 
-.info-msg,
-.success-msg,
-.warning-msg,
-.error-msg {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 3px 3px 3px 3px;
-}
-.info-msg {
-  color: #059;
-  background-color: #BEF;
-}
-.success-msg {
-  color: #270;
-  background-color: #DFF2BF;
-}
-.warning-msg {
-  color: #9F6000;
-  background-color: #FEEFB3;
-}
-.error-msg {
-  color: #D8000C;
-  background-color: #FFBABA;
+.highlight{
+    &-msg{
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 3px 3px 3px 3px;
+    }
+
+    &-blue{
+        color: #059;
+        background-color: #BEF;
+    }
+
+    &-green{
+        color: #270;
+        background-color: #DFF2BF;
+    }
+
+    &-orange{
+        color: #9F6000;
+        background-color: #FEEFB3;
+    }
+
+    &-red{
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
 }
 
 ///////////////////
 // Usage Example //
 ///////////////////
 
-// <div class="info-msg">
+// <div class="highlight-msg highlight-blue">
 //   <i class="fa fa-info-circle"></i>
 //   This is an info message.
 // </div>
 
-// <div class="success-msg">
+// <div class="highlight-msg highlight-green">
 //   <i class="fa fa-check"></i>
 //   This is a success message.
 // </div>
 
-// <div class="warning-msg">
+// <div class="highlight-msg highlight-orange">
 //   <i class="fa fa-warning"></i>
 //   This is a warning message.
 // </div>
 
-// <div class="error-msg">
+// <div class="highlight-msg highlight-red">
 //   <i class="fa fa-times-circle"></i>
 //   This is a error message.
 // </div>
@@ -58,14 +61,22 @@
 //   // Function can be reused elsewhere, potentially put into a lib
 //   // content: string input
 //   // messageType: "info", "success", "warning", "error"
-//   generateMessage() {
+// generateMessage() {
 //     const { message, showmessage } = this.state;
+//     const colors = {
+//       info: 'blue',
+//       success: 'green',
+//       warning: 'orange',
+//       error: 'red',
+//     };
+
 //     if (showmessage) {
 //       return (
-//         <div className={`${message.messageType}-msg`}>
+//         <div className={`highlight-msg highlight-${colors[message.messageType]}`}>
 //           <i className="fa fa-times-circle" />
 //           {message.content}
 //         </div>
 //       );
 //     }
 //   }
+

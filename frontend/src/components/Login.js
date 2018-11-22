@@ -51,9 +51,16 @@ class Login extends Component {
   // messageType: "info", "success", "warning", "error"
   generateMessage() {
     const { message, showmessage } = this.state;
+    const colors = {
+      info: 'blue',
+      success: 'green',
+      warning: 'orange',
+      error: 'red',
+    };
+
     if (showmessage) {
       return (
-        <div className={`${message.messageType}-msg`}>
+        <div className={`highlight-msg highlight-${colors[message.messageType]}`}>
           <i className="fa fa-times-circle" />
           {message.content}
         </div>
