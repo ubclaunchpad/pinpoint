@@ -13,7 +13,7 @@ import (
 )
 
 func TestClubRouter_createClub(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -73,7 +73,7 @@ func TestClubRouter_createEvent(t *testing.T) {
 }
 
 func TestClubRouter_createPeriod(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
