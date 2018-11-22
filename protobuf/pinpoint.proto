@@ -11,4 +11,32 @@ service Core {
   rpc Handshake(request.Empty) returns (response.Empty) {}
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}
   rpc Verify(request.Verify) returns (response.Message) {}
+
+  // Test is a demo endpoint
+  rpc Test(Event) returns (response.Message) {}
+}
+
+// TODO: move this somewhere more reasonable, like `models`
+
+message Event {
+  string name = 1;
+  string period = 2;
+  repeated Field fields = 3;
+}
+
+message Field {
+  string name = 1;
+  bool required = 2;
+  oneof properties {
+    LongText long_text = 3;
+    ShortText short_text = 4;
+  };
+}
+
+message LongText {
+  string im_long = 1;
+}
+
+message ShortText {
+  string im_short = 1;
 }
