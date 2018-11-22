@@ -24,23 +24,337 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type Event struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Period               string   `protobuf:"bytes,2,opt,name=period,proto3" json:"period,omitempty"`
+	Fields               []*Field `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Event) Reset()         { *m = Event{} }
+func (m *Event) String() string { return proto.CompactTextString(m) }
+func (*Event) ProtoMessage()    {}
+func (*Event) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cbb17ad260bc57ce, []int{0}
+}
+
+func (m *Event) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Event.Unmarshal(m, b)
+}
+func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Event.Marshal(b, m, deterministic)
+}
+func (m *Event) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Event.Merge(m, src)
+}
+func (m *Event) XXX_Size() int {
+	return xxx_messageInfo_Event.Size(m)
+}
+func (m *Event) XXX_DiscardUnknown() {
+	xxx_messageInfo_Event.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Event proto.InternalMessageInfo
+
+func (m *Event) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Event) GetPeriod() string {
+	if m != nil {
+		return m.Period
+	}
+	return ""
+}
+
+func (m *Event) GetFields() []*Field {
+	if m != nil {
+		return m.Fields
+	}
+	return nil
+}
+
+type Field struct {
+	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Required bool   `protobuf:"varint,2,opt,name=required,proto3" json:"required,omitempty"`
+	// Types that are valid to be assigned to Properties:
+	//	*Field_LongText
+	//	*Field_ShortText
+	Properties           isField_Properties `protobuf_oneof:"properties"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *Field) Reset()         { *m = Field{} }
+func (m *Field) String() string { return proto.CompactTextString(m) }
+func (*Field) ProtoMessage()    {}
+func (*Field) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cbb17ad260bc57ce, []int{1}
+}
+
+func (m *Field) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Field.Unmarshal(m, b)
+}
+func (m *Field) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Field.Marshal(b, m, deterministic)
+}
+func (m *Field) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Field.Merge(m, src)
+}
+func (m *Field) XXX_Size() int {
+	return xxx_messageInfo_Field.Size(m)
+}
+func (m *Field) XXX_DiscardUnknown() {
+	xxx_messageInfo_Field.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Field proto.InternalMessageInfo
+
+func (m *Field) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Field) GetRequired() bool {
+	if m != nil {
+		return m.Required
+	}
+	return false
+}
+
+type isField_Properties interface {
+	isField_Properties()
+}
+
+type Field_LongText struct {
+	LongText *LongText `protobuf:"bytes,3,opt,name=long_text,json=longText,proto3,oneof"`
+}
+
+type Field_ShortText struct {
+	ShortText *ShortText `protobuf:"bytes,4,opt,name=short_text,json=shortText,proto3,oneof"`
+}
+
+func (*Field_LongText) isField_Properties() {}
+
+func (*Field_ShortText) isField_Properties() {}
+
+func (m *Field) GetProperties() isField_Properties {
+	if m != nil {
+		return m.Properties
+	}
+	return nil
+}
+
+func (m *Field) GetLongText() *LongText {
+	if x, ok := m.GetProperties().(*Field_LongText); ok {
+		return x.LongText
+	}
+	return nil
+}
+
+func (m *Field) GetShortText() *ShortText {
+	if x, ok := m.GetProperties().(*Field_ShortText); ok {
+		return x.ShortText
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Field) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Field_OneofMarshaler, _Field_OneofUnmarshaler, _Field_OneofSizer, []interface{}{
+		(*Field_LongText)(nil),
+		(*Field_ShortText)(nil),
+	}
+}
+
+func _Field_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Field)
+	// properties
+	switch x := m.Properties.(type) {
+	case *Field_LongText:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.LongText); err != nil {
+			return err
+		}
+	case *Field_ShortText:
+		b.EncodeVarint(4<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.ShortText); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("Field.Properties has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Field_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Field)
+	switch tag {
+	case 3: // properties.long_text
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(LongText)
+		err := b.DecodeMessage(msg)
+		m.Properties = &Field_LongText{msg}
+		return true, err
+	case 4: // properties.short_text
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(ShortText)
+		err := b.DecodeMessage(msg)
+		m.Properties = &Field_ShortText{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Field_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Field)
+	// properties
+	switch x := m.Properties.(type) {
+	case *Field_LongText:
+		s := proto.Size(x.LongText)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Field_ShortText:
+		s := proto.Size(x.ShortText)
+		n += 1 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+type LongText struct {
+	ImLong               string   `protobuf:"bytes,1,opt,name=im_long,json=imLong,proto3" json:"im_long,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LongText) Reset()         { *m = LongText{} }
+func (m *LongText) String() string { return proto.CompactTextString(m) }
+func (*LongText) ProtoMessage()    {}
+func (*LongText) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cbb17ad260bc57ce, []int{2}
+}
+
+func (m *LongText) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LongText.Unmarshal(m, b)
+}
+func (m *LongText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LongText.Marshal(b, m, deterministic)
+}
+func (m *LongText) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LongText.Merge(m, src)
+}
+func (m *LongText) XXX_Size() int {
+	return xxx_messageInfo_LongText.Size(m)
+}
+func (m *LongText) XXX_DiscardUnknown() {
+	xxx_messageInfo_LongText.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LongText proto.InternalMessageInfo
+
+func (m *LongText) GetImLong() string {
+	if m != nil {
+		return m.ImLong
+	}
+	return ""
+}
+
+type ShortText struct {
+	ImShort              string   `protobuf:"bytes,1,opt,name=im_short,json=imShort,proto3" json:"im_short,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ShortText) Reset()         { *m = ShortText{} }
+func (m *ShortText) String() string { return proto.CompactTextString(m) }
+func (*ShortText) ProtoMessage()    {}
+func (*ShortText) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cbb17ad260bc57ce, []int{3}
+}
+
+func (m *ShortText) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ShortText.Unmarshal(m, b)
+}
+func (m *ShortText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ShortText.Marshal(b, m, deterministic)
+}
+func (m *ShortText) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ShortText.Merge(m, src)
+}
+func (m *ShortText) XXX_Size() int {
+	return xxx_messageInfo_ShortText.Size(m)
+}
+func (m *ShortText) XXX_DiscardUnknown() {
+	xxx_messageInfo_ShortText.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ShortText proto.InternalMessageInfo
+
+func (m *ShortText) GetImShort() string {
+	if m != nil {
+		return m.ImShort
+	}
+	return ""
+}
+
+func init() {
+	proto.RegisterType((*Event)(nil), "pinpoint.Event")
+	proto.RegisterType((*Field)(nil), "pinpoint.Field")
+	proto.RegisterType((*LongText)(nil), "pinpoint.LongText")
+	proto.RegisterType((*ShortText)(nil), "pinpoint.ShortText")
+}
+
 func init() { proto.RegisterFile("pinpoint.proto", fileDescriptor_cbb17ad260bc57ce) }
 
 var fileDescriptor_cbb17ad260bc57ce = []byte{
-	// 195 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0xc8, 0xcc, 0x2b,
-	0xc8, 0xcf, 0xcc, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x44,
-	0x8b, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xf4, 0xa1, 0x34, 0x44, 0x81, 0x94, 0x78, 0x51, 0x6a,
-	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x3e, 0x8c, 0x01, 0x91, 0x30, 0xba, 0xc6, 0xc8, 0xc5, 0xe2,
-	0x9c, 0x5f, 0x94, 0x2a, 0x64, 0xc0, 0xc5, 0xe9, 0x9e, 0x5a, 0x12, 0x5c, 0x92, 0x58, 0x52, 0x5a,
-	0x2c, 0xc4, 0xaf, 0x07, 0xd3, 0x0e, 0x11, 0x90, 0x12, 0xd0, 0x83, 0xeb, 0x83, 0x88, 0x28, 0x31,
-	0x08, 0xe9, 0x71, 0x71, 0x7a, 0x24, 0xe6, 0xa5, 0x14, 0x67, 0x24, 0x66, 0xa7, 0x0a, 0xf1, 0xc1,
-	0x75, 0xb8, 0xe6, 0x16, 0x94, 0x54, 0x4a, 0xf1, 0x23, 0x34, 0x80, 0x05, 0x94, 0x18, 0x84, 0x6c,
-	0xb8, 0x78, 0x9d, 0x8b, 0x52, 0x13, 0x4b, 0x52, 0x1d, 0x93, 0x93, 0xf3, 0x4b, 0xf3, 0x4a, 0x84,
-	0xc4, 0xe0, 0x7a, 0x50, 0xc4, 0xa5, 0x04, 0x11, 0x7a, 0x7d, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x53,
-	0xc1, 0xb6, 0xb1, 0x85, 0xa5, 0x16, 0x65, 0xa6, 0x55, 0x22, 0x39, 0x0e, 0x22, 0x80, 0x55, 0x7d,
-	0x12, 0x1b, 0xd8, 0x7f, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x75, 0xd2, 0x70, 0x2b,
-	0x01, 0x00, 0x00,
+	// 393 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x52, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0x1b, 0xd7, 0xb5, 0xa7, 0xd0, 0xc0, 0x20, 0x5a, 0xe3, 0x53, 0x64, 0x24, 0xc8, 0x01,
+	0xb9, 0x10, 0x38, 0x72, 0x81, 0xaa, 0xd0, 0x03, 0x5c, 0xdc, 0x8a, 0x13, 0x52, 0x64, 0x9a, 0x49,
+	0xb2, 0x22, 0xde, 0x5d, 0x76, 0x27, 0x28, 0xb9, 0xf3, 0x7b, 0xf8, 0x8d, 0xc8, 0xeb, 0xaf, 0x20,
+	0xe5, 0xb4, 0x33, 0xef, 0xcd, 0x7b, 0xf3, 0xa4, 0x59, 0x38, 0xd3, 0x42, 0x6a, 0x25, 0x24, 0x67,
+	0xda, 0x28, 0x56, 0x18, 0xb6, 0x7d, 0xf2, 0xd4, 0xd0, 0xaf, 0x0d, 0x59, 0xbe, 0x6c, 0xde, 0x7a,
+	0x20, 0xb9, 0x30, 0x64, 0xb5, 0x92, 0x96, 0x2e, 0xdb, 0xa2, 0x26, 0xd2, 0xef, 0x70, 0x7c, 0xfd,
+	0x9b, 0x24, 0x23, 0x82, 0x2f, 0x8b, 0x92, 0x62, 0x6f, 0xec, 0x4d, 0xa2, 0xdc, 0xd5, 0x78, 0x0e,
+	0x81, 0x26, 0x23, 0xd4, 0x3c, 0x3e, 0x72, 0x68, 0xd3, 0xe1, 0x4b, 0x08, 0x16, 0x82, 0xd6, 0x73,
+	0x1b, 0x0f, 0xc7, 0xc3, 0xc9, 0xe9, 0x74, 0x94, 0x75, 0x79, 0x3e, 0x55, 0x78, 0xde, 0xd0, 0xe9,
+	0x5f, 0x0f, 0x8e, 0x1d, 0x72, 0xd0, 0x3e, 0x81, 0xb0, 0x4a, 0x29, 0x0c, 0xd5, 0x0b, 0xc2, 0xbc,
+	0xeb, 0xf1, 0x0d, 0x44, 0x6b, 0x25, 0x97, 0x33, 0xa6, 0x2d, 0xc7, 0xc3, 0xb1, 0x37, 0x39, 0x9d,
+	0x62, 0xbf, 0xe5, 0x8b, 0x92, 0xcb, 0x3b, 0xda, 0xf2, 0xcd, 0x20, 0x0f, 0xd7, 0x4d, 0x8d, 0xef,
+	0x00, 0xec, 0x4a, 0x19, 0xae, 0x35, 0xbe, 0xd3, 0x3c, 0xe9, 0x35, 0xb7, 0x15, 0xd7, 0x88, 0x22,
+	0xdb, 0x36, 0x1f, 0x1f, 0x00, 0x68, 0xa3, 0x34, 0x19, 0x16, 0x64, 0xd3, 0xe7, 0x10, 0xb6, 0xde,
+	0x78, 0x01, 0x27, 0xa2, 0x9c, 0x55, 0xf6, 0x4d, 0xea, 0x40, 0x94, 0x15, 0x99, 0xbe, 0x80, 0xa8,
+	0x33, 0xc3, 0x67, 0x10, 0x8a, 0x72, 0xe6, 0xfc, 0x9a, 0xb1, 0x13, 0x51, 0x3a, 0x7a, 0xfa, 0xe7,
+	0x08, 0xfc, 0x2b, 0x65, 0x08, 0x5f, 0x43, 0xf4, 0x99, 0xf8, 0x96, 0x0b, 0xde, 0x58, 0x1c, 0x65,
+	0xed, 0x69, 0x6a, 0x20, 0x79, 0x94, 0x75, 0x37, 0xa9, 0x91, 0x74, 0x80, 0x19, 0x44, 0x37, 0x85,
+	0x9c, 0xdb, 0x55, 0xf1, 0x93, 0xf0, 0xac, 0x53, 0x5c, 0x97, 0x9a, 0x77, 0xc9, 0xa8, 0x17, 0x38,
+	0x20, 0x1d, 0xe0, 0x7b, 0x78, 0x78, 0x65, 0xa8, 0x60, 0xfa, 0x70, 0x7f, 0xaf, 0x36, 0x92, 0xf1,
+	0xbc, 0xd3, 0xfc, 0x87, 0x27, 0x8f, 0x7b, 0xed, 0x57, 0xb2, 0xb6, 0x58, 0x92, 0xdb, 0x16, 0x7c,
+	0x23, 0x23, 0x16, 0xbb, 0xbd, 0x70, 0x35, 0x70, 0x78, 0xfe, 0x15, 0xf8, 0x77, 0x64, 0x19, 0xf7,
+	0xee, 0xee, 0x3e, 0xd1, 0xc1, 0xe9, 0x1f, 0x81, 0xfb, 0x69, 0x6f, 0xff, 0x05, 0x00, 0x00, 0xff,
+	0xff, 0xa5, 0xb6, 0x37, 0xc3, 0xb5, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -59,6 +373,8 @@ type CoreClient interface {
 	Handshake(ctx context.Context, in *request.Empty, opts ...grpc.CallOption) (*response.Empty, error)
 	CreateAccount(ctx context.Context, in *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error)
 	Verify(ctx context.Context, in *request.Verify, opts ...grpc.CallOption) (*response.Message, error)
+	// Test is a demo endpoint
+	Test(ctx context.Context, in *Event, opts ...grpc.CallOption) (*response.Message, error)
 }
 
 type coreClient struct {
@@ -105,12 +421,23 @@ func (c *coreClient) Verify(ctx context.Context, in *request.Verify, opts ...grp
 	return out, nil
 }
 
+func (c *coreClient) Test(ctx context.Context, in *Event, opts ...grpc.CallOption) (*response.Message, error) {
+	out := new(response.Message)
+	err := c.cc.Invoke(ctx, "/pinpoint.Core/Test", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CoreServer is the server API for Core service.
 type CoreServer interface {
 	GetStatus(context.Context, *request.Status) (*response.Status, error)
 	Handshake(context.Context, *request.Empty) (*response.Empty, error)
 	CreateAccount(context.Context, *request.CreateAccount) (*response.Message, error)
 	Verify(context.Context, *request.Verify) (*response.Message, error)
+	// Test is a demo endpoint
+	Test(context.Context, *Event) (*response.Message, error)
 }
 
 func RegisterCoreServer(s *grpc.Server, srv CoreServer) {
@@ -189,6 +516,24 @@ func _Core_Verify_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Core_Test_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Event)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreServer).Test(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pinpoint.Core/Test",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreServer).Test(ctx, req.(*Event))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Core_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "pinpoint.Core",
 	HandlerType: (*CoreServer)(nil),
@@ -208,6 +553,10 @@ var _Core_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Verify",
 			Handler:    _Core_Verify_Handler,
+		},
+		{
+			MethodName: "Test",
+			Handler:    _Core_Test_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

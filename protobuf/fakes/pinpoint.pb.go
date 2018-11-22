@@ -57,6 +57,21 @@ type FakeCoreClient struct {
 		result1 *response.Empty
 		result2 error
 	}
+	TestStub        func(context.Context, *pinpoint.Event, ...grpc.CallOption) (*response.Message, error)
+	testMutex       sync.RWMutex
+	testArgsForCall []struct {
+		arg1 context.Context
+		arg2 *pinpoint.Event
+		arg3 []grpc.CallOption
+	}
+	testReturns struct {
+		result1 *response.Message
+		result2 error
+	}
+	testReturnsOnCall map[int]struct {
+		result1 *response.Message
+		result2 error
+	}
 	VerifyStub        func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Message, error)
 	verifyMutex       sync.RWMutex
 	verifyArgsForCall []struct {
@@ -271,6 +286,71 @@ func (fake *FakeCoreClient) HandshakeReturnsOnCall(i int, result1 *response.Empt
 	}{result1, result2}
 }
 
+func (fake *FakeCoreClient) Test(arg1 context.Context, arg2 *pinpoint.Event, arg3 ...grpc.CallOption) (*response.Message, error) {
+	fake.testMutex.Lock()
+	ret, specificReturn := fake.testReturnsOnCall[len(fake.testArgsForCall)]
+	fake.testArgsForCall = append(fake.testArgsForCall, struct {
+		arg1 context.Context
+		arg2 *pinpoint.Event
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("Test", []interface{}{arg1, arg2, arg3})
+	fake.testMutex.Unlock()
+	if fake.TestStub != nil {
+		return fake.TestStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.testReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) TestCallCount() int {
+	fake.testMutex.RLock()
+	defer fake.testMutex.RUnlock()
+	return len(fake.testArgsForCall)
+}
+
+func (fake *FakeCoreClient) TestCalls(stub func(context.Context, *pinpoint.Event, ...grpc.CallOption) (*response.Message, error)) {
+	fake.testMutex.Lock()
+	defer fake.testMutex.Unlock()
+	fake.TestStub = stub
+}
+
+func (fake *FakeCoreClient) TestArgsForCall(i int) (context.Context, *pinpoint.Event, []grpc.CallOption) {
+	fake.testMutex.RLock()
+	defer fake.testMutex.RUnlock()
+	argsForCall := fake.testArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) TestReturns(result1 *response.Message, result2 error) {
+	fake.testMutex.Lock()
+	defer fake.testMutex.Unlock()
+	fake.TestStub = nil
+	fake.testReturns = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) TestReturnsOnCall(i int, result1 *response.Message, result2 error) {
+	fake.testMutex.Lock()
+	defer fake.testMutex.Unlock()
+	fake.TestStub = nil
+	if fake.testReturnsOnCall == nil {
+		fake.testReturnsOnCall = make(map[int]struct {
+			result1 *response.Message
+			result2 error
+		})
+	}
+	fake.testReturnsOnCall[i] = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeCoreClient) Verify(arg1 context.Context, arg2 *request.Verify, arg3 ...grpc.CallOption) (*response.Message, error) {
 	fake.verifyMutex.Lock()
 	ret, specificReturn := fake.verifyReturnsOnCall[len(fake.verifyArgsForCall)]
@@ -345,6 +425,8 @@ func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	defer fake.getStatusMutex.RUnlock()
 	fake.handshakeMutex.RLock()
 	defer fake.handshakeMutex.RUnlock()
+	fake.testMutex.RLock()
+	defer fake.testMutex.RUnlock()
 	fake.verifyMutex.RLock()
 	defer fake.verifyMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
