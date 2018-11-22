@@ -12,7 +12,7 @@ func NewTestDB() (*Database, *dynamodb.DynamoDB) {
 	if err != nil {
 		return nil, nil
 	}
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		return nil, nil
 	}

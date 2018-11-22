@@ -66,7 +66,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestCommand_Sync(t *testing.T) {
-	log, err := utils.NewLogger(true)
+	log, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 		return
