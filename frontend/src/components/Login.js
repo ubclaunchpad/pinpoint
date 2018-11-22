@@ -13,6 +13,8 @@ class Login extends Component {
       email: '',
       password: '',
       failed: false,
+      showmessage: false,
+      message: { messageType: '', content: '' },
     };
     this.updateTextFields = this.updateTextFields.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
@@ -28,6 +30,12 @@ class Login extends Component {
     this.setState({ failed: false });
     const { email, password } = this.state;
     const { client } = this.props;
+
+    if (!email || !password) {
+      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      console.log('Please fill in all fields');
+    }
+
     const resp = await client.login({ email, password });
     if (resp.status === 200) {
       const { router: { history } } = this.context;
@@ -59,7 +67,7 @@ class Login extends Component {
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
-
+        { this.generateMessage() }
         <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />

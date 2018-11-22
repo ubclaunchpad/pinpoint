@@ -34,8 +34,11 @@ class Signup extends Component {
     const { name, confirmpassword } = this.state;
     console.log(email, password, name, confirmpassword, e);
 
-    if (confirmpassword !== password) {
-      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match!' } });
+    if (!email || !password || !name || !confirmpassword) {
+      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      console.log('Please fill in all fields');
+    } else if (confirmpassword !== password) {
+      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
       console.log('Please make sure password is same as your confirmation');
     } else {
       // TODO Send signup information to backend here
