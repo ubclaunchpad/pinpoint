@@ -14,9 +14,10 @@ import (
 type Command struct {
 	*zap.SugaredLogger
 	cobra.Command
-	Host string
-	Port string
-	Dev  bool
+	Host    string
+	Port    string
+	Dev     bool
+	LogPath string
 }
 
 // New creates a new CLI app and logger
@@ -35,22 +36,24 @@ func New(name, short, long, version, defaultPort string) *Command {
 	app.PersistentFlags().String("host", "127.0.0.1", "service host")
 	app.PersistentFlags().String("port", defaultPort, "service port")
 	app.PersistentFlags().Bool("dev", os.Getenv("MODE") == "development", "toggle dev mode")
+	app.PersistentFlags().String("logpath", "", "output file for logs")
 
 	// set flag and initial config loader
 	app.PersistentPreRunE = func(cmd *cobra.Command, args []string) (err error) {
 		// set flags
-		strFlags, err := GetStringFlags(cmd, "host", "port")
+		strFlags, err := GetStringFlags(cmd, "host", "port", "logpath")
 		if err != nil {
 			return
 		}
 		app.Host = strFlags["host"]
 		app.Port = strFlags["port"]
+		app.LogPath = strFlags["logpath"]
 		if app.Dev, err = cmd.Flags().GetBool("dev"); err != nil {
 			return
 		}
 
-		// set logger - TODO: allow more granular config
-		if app.SugaredLogger, err = utils.NewLogger(app.Dev); err != nil {
+		// set logger
+		if app.SugaredLogger, err = utils.NewLogger(app.Dev, app.LogPath); err != nil {
 			return fmt.Errorf("failed to init logger: %s", err.Error())
 		}
 

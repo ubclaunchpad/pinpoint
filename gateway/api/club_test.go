@@ -2,21 +2,17 @@ package api
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
-	"github.com/ubclaunchpad/pinpoint/protobuf/request"
-	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
-	"google.golang.org/grpc"
 )
 
-func TestUserRouter_createUser(t *testing.T) {
+func TestClubRouter_createClub(t *testing.T) {
 	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
@@ -24,7 +20,7 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 
 	type args struct {
-		u *request.CreateAccount
+		club *schema.CreateClub
 	}
 	tests := []struct {
 		name     string
@@ -32,24 +28,23 @@ func TestUserRouter_createUser(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
-		{"successfully create user", args{&request.CreateAccount{
-			Name:     "Create",
-			Email:    "user@test.com",
-			Password: "password",
+		{"successfully create club", args{&schema.CreateClub{
+			Name: "UBC Launch Pad",
+			Desc: "The best software engineering club",
 		}}, http.StatusCreated},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
-			// create user router
-			u := newUserRouter(l, fake)
+			// create club router
+			u := newClubRouter(l, fake)
 
 			// create request
 			var b []byte
 			var err error
-			if tt.args.u != nil {
-				if b, err = json.Marshal(tt.args.u); err != nil {
+			if tt.args.club != nil {
+				if b, err = json.Marshal(tt.args.club); err != nil {
 					t.Error(err)
 					return
 				}
@@ -63,21 +58,21 @@ func TestUserRouter_createUser(t *testing.T) {
 
 			// Record responses
 			recorder := httptest.NewRecorder()
-
-			// Serve request
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
-			if tt.wantCode == http.StatusCreated && fake.CreateAccountCallCount() < 1 {
-				t.Error("uhh")
-			}
+			// TODO: test behaviour with fake core
 		})
 	}
 }
 
-func TestUserRouter_verify(t *testing.T) {
+func TestClubRouter_createEvent(t *testing.T) {
+	// TODO once event stuff is more finalized
+}
+
+func TestClubRouter_createPeriod(t *testing.T) {
 	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
@@ -85,33 +80,43 @@ func TestUserRouter_verify(t *testing.T) {
 	}
 
 	type args struct {
-		hash string
+		period *schema.CreatePeriod
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
 	}{
-		{"no hash", args{""}, http.StatusBadRequest},
-		{"ok hash", args{"tom"}, http.StatusAccepted},
-		{"bad hash", args{"robert"}, http.StatusNotFound},
+		{"bad input", args{nil}, http.StatusBadRequest},
+		{"successfully create period", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018-08-09",
+			End:   "2018-08-12",
+		}}, http.StatusCreated},
+		{"successfully create period", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018asdasdfawkjefe-09",
+			End:   "2018-08asdfasdfasdf-12",
+		}}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// create user router
 			fake := &fakes.FakeCoreClient{}
-			u := newUserRouter(l, fake)
 
-			// set stub behaviour
-			fake.VerifyStub = func(c context.Context, r *request.Verify, opts ...grpc.CallOption) (*response.Message, error) {
-				if r.GetHash() == "tom" {
-					return &response.Message{Message: "hello"}, nil
-				}
-				return nil, errors.New("unknown hash")
-			}
+			// create club router
+			u := newClubRouter(l, fake)
 
 			// create request
-			req, err := http.NewRequest("GET", "/verify?hash="+tt.args.hash, nil)
+			var b []byte
+			// var err error
+			if tt.args.period != nil {
+				if b, err = json.Marshal(tt.args.period); err != nil {
+					t.Error(err)
+					return
+				}
+			}
+			reader := bytes.NewReader(b)
+			req, err := http.NewRequest("POST", "/period/create", reader)
 			if err != nil {
 				t.Error(err)
 				return
@@ -124,9 +129,7 @@ func TestUserRouter_verify(t *testing.T) {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
-			if tt.wantCode == http.StatusAccepted && fake.VerifyCallCount() < 1 {
-				t.Error("expected call to core.Verify")
-			}
+			// TODO: test behaviour with fake core
 		})
 	}
 }

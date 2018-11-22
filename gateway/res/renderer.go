@@ -27,7 +27,7 @@ func ErrInternalServer(r *http.Request, err error, msg ...interface{}) render.Re
 	}
 }
 
-// ErrBadRequest is a shortcut for internal server errors
+// ErrBadRequest is a shortcut for bad requests
 func ErrBadRequest(r *http.Request, err error, msg string, missingFields ...string) render.Renderer {
 	return &ErrResponse{
 		HTTPStatusCode: http.StatusBadRequest,

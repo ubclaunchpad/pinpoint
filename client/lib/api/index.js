@@ -15,6 +15,14 @@ class API {
   async login({ email, password }) {
     return this.req.post('/user/login', { email, password });
   }
+
+  async createClub({ name, desc }) {
+    return this.req.post('/club/create', { name, desc });
+  }
+
+  async createPeriod({ name, start, end }) {
+    return this.req.post('/club/period/create', { name, start, end });
+  }
 }
 
 module.exports = {
