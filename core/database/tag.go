@@ -25,12 +25,12 @@ func (db *Database) AddNewTag(t *model.Tag, c *model.Club) error {
 }
 
 // GetTag gets the tag associated with Applicant_ID, Period_ID, & Event_ID
-func (db *Database) GetTag(ApplicantID string, PeriodID string, EventID string, c *model.Club) (*model.Tag, error) {
+func (db *Database) GetTag(applicantID string, periodID string, eventID string, c *model.Club) (*model.Tag, error) {
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String("ClubData-" + c.ID),
 		Key: map[string]*dynamodb.AttributeValue{
-			"pk": {S: aws.String(ApplicantID)},
-			"sk": {S: aws.String(PeriodID + "_" + EventID)},
+			"pk": {S: aws.String(applicantID)},
+			"sk": {S: aws.String(periodID + "_" + eventID)},
 		},
 	}
 	result, err := db.c.GetItem(input)
@@ -45,12 +45,12 @@ func (db *Database) GetTag(ApplicantID string, PeriodID string, EventID string, 
 }
 
 // DeleteTag associated with Applicant_ID, Period_ID, & Event_ID
-func (db *Database) DeleteTag(ApplicantID string, PeriodID string, EventID string, c *model.Club) error {
+func (db *Database) DeleteTag(applicantID string, periodID string, eventID string, c *model.Club) error {
 	input := &dynamodb.DeleteItemInput{
 		TableName: aws.String("ClubData-" + c.ID),
 		Key: map[string]*dynamodb.AttributeValue{
-			"pk": {S: aws.String(ApplicantID)},
-			"sk": {S: aws.String(PeriodID + "_" + EventID)},
+			"pk": {S: aws.String(applicantID)},
+			"sk": {S: aws.String(periodID + "_" + eventID)},
 		},
 	}
 	if _, err := db.c.DeleteItem(input); err != nil {
