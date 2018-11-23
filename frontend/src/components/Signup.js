@@ -70,7 +70,7 @@ class Signup extends Component {
   render() {
     return (
       <div className="flex-al-center">
-        <div className="title margin-title">Signup</div>
+        <div className="title margin-title">Sign-up</div>
         { this.generateMessage() }
         <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextFields} />
