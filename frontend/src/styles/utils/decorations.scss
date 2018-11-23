@@ -33,6 +33,37 @@ body {
   &-hidden { overflow: hidden; }
 }
 
+// border-radius
+.border {
+  &-m {
+    border-radius: 3px;
+  }
+}
+
+// Message / Highlight styling
+.highlight {
+  &-blue {
+      color: #059;
+      background-color: #BEF;
+  }
+
+  &-green {
+      color: #270;
+      background-color: #DFF2BF;
+  }
+
+  &-orange {
+      color: #9F6000;
+      background-color: #FEEFB3;
+  }
+
+  &-red {
+      color: #D8000C;
+      background-color: #FFBABA;
+  }
+}
+
+
 ///////////////////////////////////////////////////////////////
 // Input and button sizings, define more here to standardize //
 ///////////////////////////////////////////////////////////////
