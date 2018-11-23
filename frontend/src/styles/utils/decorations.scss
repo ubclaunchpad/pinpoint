@@ -33,44 +33,31 @@ body {
   &-hidden { overflow: hidden; }
 }
 
-/////////////////////////
-//   BORDER CLASSES    //
-/////////////////////////
-$spacing-xxs:  0.1px;
-$spacing-xs:  0.5px;
-$spacing-s:   1px;
-$spacing-m:   2px;
-$spacing-l:   4px;
-$spacing-xl:  8px;
-
 // border-radius
-.border{
-  &-m{
+.border {
+  &-m {
     border-radius: 3px;
-  }
-  &-l{
-    border-radius: $spacing-l $spacing-l $spacing-l $spacing-l;
   }
 }
 
 // Message / Highlight styling
-.highlight{
+.highlight {
   &-blue {
       color: #059;
       background-color: #BEF;
   }
 
-  &-green{
+  &-green {
       color: #270;
       background-color: #DFF2BF;
   }
 
-  &-orange{
+  &-orange {
       color: #9F6000;
       background-color: #FEEFB3;
   }
 
-  &-red{
+  &-red {
       color: #D8000C;
       background-color: #FFBABA;
   }

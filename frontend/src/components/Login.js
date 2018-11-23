@@ -13,7 +13,7 @@ class Login extends Component {
       email: '',
       password: '',
       failed: false,
-      showmessage: false,
+      showMessage: false,
       message: { messageType: '', content: '' },
     };
     this.updateTextFields = this.updateTextFields.bind(this);
@@ -22,7 +22,7 @@ class Login extends Component {
 
   updateTextFields(e) {
     const loginField = e.target.getAttribute('type');
-    this.setState({ showmessage: false });
+    this.setState({ showMessage: false });
     this.setState({ [loginField]: e.target.value });
   }
 
@@ -33,7 +33,7 @@ class Login extends Component {
     const { client } = this.props;
 
     if (!email || !password) {
-      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
       console.log('Please fill in all fields');
     }
 
@@ -51,7 +51,7 @@ class Login extends Component {
   // content: string input
   // messageType: "info", "success", "warning", "error"
   generateMessage() {
-    const { message, showmessage } = this.state;
+    const { message, showMessage } = this.state;
     const colors = {
       info: 'blue',
       success: 'green',
@@ -59,7 +59,7 @@ class Login extends Component {
       error: 'red',
     };
 
-    if (showmessage) {
+    if (showMessage) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
           <i className="fa fa-times-circle" />

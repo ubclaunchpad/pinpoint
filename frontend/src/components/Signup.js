@@ -8,7 +8,7 @@ class Signup extends Component {
       email: '',
       password: '',
       confirmpassword: '',
-      showmessage: false,
+      showMessage: false,
       message: { messageType: '', content: '' },
     };
     this.updateTextFields = this.updateTextFields.bind(this);
@@ -20,7 +20,7 @@ class Signup extends Component {
     const { email, password } = this.state;
     console.log(name, email, password, confirmpassword);
     const field = e.target.getAttribute('type');
-    this.setState({ showmessage: false });
+    this.setState({ showMessage: false });
     if (field === 'password' && e.target.getAttribute('placeholder') !== 'Password') {
       this.setState({ confirmpassword: e.target.value });
     } else {
@@ -35,12 +35,12 @@ class Signup extends Component {
     console.log(email, password, name, confirmpassword, e);
 
     if (!email || !password || !name || !confirmpassword) {
-      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
     } else if (confirmpassword !== password) {
-      this.setState({ showmessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
+      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
     } else {
       // TODO Send signup information to backend here
-      this.setState({ showmessage: true, message: { messageType: 'success', content: ' Success!' } });
+      this.setState({ showMessage: true, message: { messageType: 'success', content: ' Success!' } });
     }
   }
 
@@ -48,7 +48,7 @@ class Signup extends Component {
   // content: string input
   // messageType: "info", "success", "warning", "error"
   generateMessage() {
-    const { message, showmessage } = this.state;
+    const { message, showMessage } = this.state;
     const colors = {
       info: 'blue',
       success: 'green',
@@ -56,7 +56,7 @@ class Signup extends Component {
       error: 'red',
     };
 
-    if (showmessage) {
+    if (showMessage) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
           <i className="fa fa-times-circle" />
