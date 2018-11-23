@@ -29,14 +29,14 @@ class Login extends Component {
     const { client } = this.props;
 
     if (!email || !password) {
-      this.setState({ message: { messageType: 'error', content: 'Please fill in all fields.' } });
+      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
     } else {
       const resp = await client.login({ email, password });
       if (resp.status === 200) {
         const { router: { history } } = this.context;
         history.push('/');
       } else {
-        this.setState({ message: { messageType: 'error', content: 'Incorrect Credentials.' } });
+        this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
       }
     }
   }
