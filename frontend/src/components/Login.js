@@ -14,14 +14,13 @@ class Login extends Component {
       password: '',
       message: null,
     };
-    this.updateTextFields = this.updateTextFields.bind(this);
+    this.updateTextField = this.updateTextField.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
   }
 
-  updateTextFields(e) {
+  updateTextField(e) {
     const loginField = e.target.getAttribute('type');
-    this.setState({ message: null });
-    this.setState({ [loginField]: e.target.value });
+    this.setState({ message: null, [loginField]: e.target.value });
   }
 
   // TODO once endpoint is set up, currently does nothing
@@ -77,8 +76,8 @@ class Login extends Component {
         <div className="title margin-title">Sign In</div>
         { this.generateMessage() }
         <div className="flex-inlinegrid margin-ends-xs">
-          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
-          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
+          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextField} />
         </div>
 
         <div>

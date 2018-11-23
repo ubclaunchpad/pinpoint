@@ -10,11 +10,11 @@ class Signup extends Component {
       passwordConfirm: '',
       message: null,
     };
-    this.updateTextFields = this.updateTextFields.bind(this);
+    this.updateTextField = this.updateTextField.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
   }
 
-  updateTextFields(e) {
+  updateTextField(e) {
     const field = e.target.getAttribute('type');
     this.setState({ message: null });
     if (e.target.getAttribute('id') === 'confirm-password') {
@@ -79,10 +79,10 @@ class Signup extends Component {
         <div className="title margin-title">Sign-up</div>
         { this.generateMessage() }
         <div className="flex-inlinegrid margin-ends-xs">
-          <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextFields} />
-          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
-          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
-          <input id="confirm-password" className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextFields} />
+          <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextField} />
+          <input id="confirm-password" className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextField} />
         </div>
         <div className="margin-top-xs">
           <input type="checkbox" />
