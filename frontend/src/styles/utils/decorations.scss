@@ -46,7 +46,7 @@ $spacing-xl:  8px;
 // border-radius
 .border{
   &-m{
-    border-radius: $spacing-m $spacing-m $spacing-m $spacing-m;
+    border-radius: 3px;
   }
   &-l{
     border-radius: $spacing-l $spacing-l $spacing-l $spacing-l;
