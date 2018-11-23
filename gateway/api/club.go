@@ -71,19 +71,25 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 }
 
 func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
-	var decoder = json.NewDecoder(r.Body)
-	var data schema.CreatePeriod
+	var (
+		decoder    = json.NewDecoder(r.Body)
+		data       schema.CreatePeriod
+		err        error
+		start, end time.Time
+	)
 	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
 		return
 	}
 
 	// parse form date input into standard format
-	layout := "2006-01-02"
-	start, err := time.Parse(layout, data.Start)
-	end, err := time.Parse(layout, data.End)
-	if err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+	const layout = "2006-01-02"
+	if start, err = time.Parse(layout, data.Start); err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid start date"))
+		return
+	}
+	if end, err = time.Parse(layout, data.End); err != nil {
+		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid end date"))
 		return
 	}
 
