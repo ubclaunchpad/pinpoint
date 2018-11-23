@@ -22,6 +22,7 @@ class Login extends Component {
 
   updateTextFields(e) {
     const loginField = e.target.getAttribute('type');
+    this.setState({ showmessage: false });
     this.setState({ [loginField]: e.target.value });
   }
 
@@ -60,7 +61,7 @@ class Login extends Component {
 
     if (showmessage) {
       return (
-        <div className={`highlight-msg highlight-${colors[message.messageType]}`}>
+        <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
           <i className="fa fa-times-circle" />
           {message.content}
         </div>
@@ -75,7 +76,7 @@ class Login extends Component {
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
         { this.generateMessage() }
-        <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
+        <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
         </div>
@@ -86,7 +87,7 @@ class Login extends Component {
           <input type="checkbox" />
           <span>Remember me</span>
         </div>
-        <button className="click-button button-small animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
+        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/reset">Forgot Password?</a>
         </div>

@@ -33,6 +33,56 @@ body {
   &-hidden { overflow: hidden; }
 }
 
+/////////////////////////
+//   BORDER CLASSES    //
+/////////////////////////
+$spacing-xxs:  0.1px;
+$spacing-xs:  0.5px;
+$spacing-s:   1px;
+$spacing-m:   2px;
+$spacing-l:   4px;
+$spacing-xl:  8px;
+
+// border-radius
+.border{
+  &-m{
+    border-radius: $spacing-m $spacing-m $spacing-m $spacing-m;
+  }
+  &-l{
+    border-radius: $spacing-l $spacing-l $spacing-l $spacing-l;
+  }
+}
+
+// Message / Highlight styling
+.highlight{
+  &-msg{
+      // margin: 10px 0;
+      // padding: 10px;
+      border-radius: 3px 3px 3px 3px;
+  }
+
+  &-blue{
+      color: #059;
+      background-color: #BEF;
+  }
+
+  &-green{
+      color: #270;
+      background-color: #DFF2BF;
+  }
+
+  &-orange{
+      color: #9F6000;
+      background-color: #FEEFB3;
+  }
+
+  &-red{
+      color: #D8000C;
+      background-color: #FFBABA;
+  }
+}
+
+
 ///////////////////////////////////////////////////////////////
 // Input and button sizings, define more here to standardize //
 ///////////////////////////////////////////////////////////////
