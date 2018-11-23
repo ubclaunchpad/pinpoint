@@ -12,7 +12,6 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      failed: false,
       message: null,
     };
     this.updateTextFields = this.updateTextFields.bind(this);
@@ -27,20 +26,19 @@ class Login extends Component {
 
   // TODO once endpoint is set up, currently does nothing
   async attemptLogin() {
-    this.setState({ failed: false });
     const { email, password } = this.state;
     const { client } = this.props;
 
     if (!email || !password) {
-      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
-    }
-
-    const resp = await client.login({ email, password });
-    if (resp.status === 200) {
-      const { router: { history } } = this.context;
-      history.push('/');
+      this.setState({ message: { messageType: 'error', content: 'Please fill in all fields.' } });
     } else {
-      this.setState({ failed: true });
+      const resp = await client.login({ email, password });
+      if (resp.status === 200) {
+        const { router: { history } } = this.context;
+        history.push('/');
+      } else {
+        this.setState({ message: { messageType: 'error', content: 'Incorrect Credentials.' } });
+      }
     }
   }
 
@@ -74,7 +72,6 @@ class Login extends Component {
 
 
   render() {
-    const { failed } = this.state;
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
@@ -83,8 +80,6 @@ class Login extends Component {
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
         </div>
-
-        { failed ? <div>Invalid credentials</div> : null }
 
         <div>
           <input type="checkbox" />
