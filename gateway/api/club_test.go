@@ -98,6 +98,11 @@ func TestClubRouter_createPeriod(t *testing.T) {
 			Start: "2018-08-09",
 			End:   "2018-08asdfasdfasdf-12",
 		}}, http.StatusBadRequest},
+		{"end before start", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018-08-15",
+			End:   "2018-08-10",
+		}}, http.StatusBadRequest},
 		{"successfully create period", args{&schema.CreatePeriod{
 			Name:  "Winter Semester",
 			Start: "2018-08-09",

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -90,6 +91,12 @@ func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
 	}
 	if end, err = time.Parse(layout, data.End); err != nil {
 		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid end date"))
+		return
+	}
+
+	// check validity
+	if start.After(end) {
+		render.Render(w, r, res.ErrBadRequest(r, errors.New("Start date must be before end date"), ""))
 		return
 	}
 
