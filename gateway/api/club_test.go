@@ -111,14 +111,12 @@ func TestClubRouter_createPeriod(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fake := &fakes.FakeCoreClient{}
-
 			// create club router
+			fake := &fakes.FakeCoreClient{}
 			u := newClubRouter(l, fake)
 
 			// create request
 			var b []byte
-			// var err error
 			if tt.args.period != nil {
 				if b, err = json.Marshal(tt.args.period); err != nil {
 					t.Error(err)
