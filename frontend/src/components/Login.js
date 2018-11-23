@@ -13,8 +13,7 @@ class Login extends Component {
       email: '',
       password: '',
       failed: false,
-      showMessage: false,
-      message: { messageType: '', content: '' },
+      message: null,
     };
     this.updateTextFields = this.updateTextFields.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
@@ -22,7 +21,7 @@ class Login extends Component {
 
   updateTextFields(e) {
     const loginField = e.target.getAttribute('type');
-    this.setState({ showMessage: false });
+    this.setState({ message: null });
     this.setState({ [loginField]: e.target.value });
   }
 
@@ -33,8 +32,7 @@ class Login extends Component {
     const { client } = this.props;
 
     if (!email || !password) {
-      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
-      console.log('Please fill in all fields');
+      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
     }
 
     const resp = await client.login({ email, password });
@@ -46,12 +44,10 @@ class Login extends Component {
     }
   }
 
-  // TODO - Use this for displaying messages based on success
-  // Function can be reused elsewhere, potentially put into a lib
   // content: string input
   // messageType: "info", "success", "warning", "error"
   generateMessage() {
-    const { message, showMessage } = this.state;
+    const { message } = this.state;
     const colors = {
       info: 'blue',
       success: 'green',
@@ -59,10 +55,17 @@ class Login extends Component {
       error: 'red',
     };
 
-    if (showMessage) {
+    const shape = {
+      info: 'fa-info-circle',
+      success: 'fa-check',
+      warning: 'fa-warning',
+      error: 'fa-times-circle',
+    };
+
+    if (message) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
-          <i className="fa fa-times-circle" />
+          <i className={`fa ${shape[message.messageType]}`} />
           {message.content}
         </div>
       );

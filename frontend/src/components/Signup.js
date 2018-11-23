@@ -7,48 +7,46 @@ class Signup extends Component {
       name: '',
       email: '',
       password: '',
-      confirmpassword: '',
-      showMessage: false,
-      message: { messageType: '', content: '' },
+      passwordConfirm: '',
+      message: null,
     };
     this.updateTextFields = this.updateTextFields.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
   }
 
   updateTextFields(e) {
-    const { name, confirmpassword } = this.state;
-    const { email, password } = this.state;
-    console.log(name, email, password, confirmpassword);
     const field = e.target.getAttribute('type');
-    this.setState({ showMessage: false });
-    if (field === 'password' && e.target.getAttribute('placeholder') !== 'Password') {
-      this.setState({ confirmpassword: e.target.value });
+    this.setState({ message: null });
+    if (e.target.getAttribute('id') === 'confirm-password') {
+      this.setState({ passwordConfirm: e.target.value });
     } else {
       this.setState({ [field]: e.target.value });
     }
   }
 
   // TODO once endpoint is set up, currently does nothing
-  attemptSignup(e) {
-    const { email, password } = this.state;
-    const { name, confirmpassword } = this.state;
-    console.log(email, password, name, confirmpassword, e);
+  attemptSignup() {
+    const {
+      email,
+      password,
+      name,
+      passwordConfirm,
+    } = this.state;
 
-    if (!email || !password || !name || !confirmpassword) {
-      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please fill in all fields.' } });
-    } else if (confirmpassword !== password) {
-      this.setState({ showMessage: true, message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
+    if (!email || !password || !name || !passwordConfirm) {
+      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
+    } else if (passwordConfirm !== password) {
+      this.setState({ message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
     } else {
       // TODO Send signup information to backend here
-      this.setState({ showMessage: true, message: { messageType: 'success', content: ' Success!' } });
+      this.setState({ message: { messageType: 'success', content: ' Success!' } });
     }
   }
 
-  // Function can be reused elsewhere, potentially put into a lib
   // content: string input
   // messageType: "info", "success", "warning", "error"
   generateMessage() {
-    const { message, showMessage } = this.state;
+    const { message } = this.state;
     const colors = {
       info: 'blue',
       success: 'green',
@@ -56,10 +54,18 @@ class Signup extends Component {
       error: 'red',
     };
 
-    if (showMessage) {
+    const shape = {
+      info: 'fa-info-circle',
+      success: 'fa-check',
+      warning: 'fa-warning',
+      error: 'fa-times-circle',
+    };
+
+
+    if (message) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
-          <i className="fa fa-times-circle" />
+          <i className={`fa ${shape[message.messageType]}`} />
           {message.content}
         </div>
       );
@@ -76,7 +82,7 @@ class Signup extends Component {
           <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextFields} />
           <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextFields} />
-          <input className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextFields} />
+          <input id="confirm-password" className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextFields} />
         </div>
         <div className="margin-top-xs">
           <input type="checkbox" />

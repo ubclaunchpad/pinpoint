@@ -5,7 +5,7 @@ $transition-time: .2s;
 $button-hover-color: #008cba;
 $button-hover-textcolor: #ffffff;
 
-.animate{
+.animate {
   &-button {
     &:hover {
       background-color: $button-hover-color;
