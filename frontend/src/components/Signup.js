@@ -16,11 +16,10 @@ class Signup extends Component {
 
   updateTextField(e) {
     const field = e.target.getAttribute('type');
-    this.setState({ message: null });
     if (e.target.getAttribute('id') === 'confirm-password') {
-      this.setState({ passwordConfirm: e.target.value });
+      this.setState({ message: null, passwordConfirm: e.target.value });
     } else {
-      this.setState({ [field]: e.target.value });
+      this.setState({ message: null, [field]: e.target.value });
     }
   }
 
