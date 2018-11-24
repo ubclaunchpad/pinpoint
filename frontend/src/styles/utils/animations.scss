@@ -3,12 +3,15 @@ $transition-time: .2s;
 
 // Colors
 $button-hover-color: #008cba;
-$button-hover-textcolor: fffff;
+$button-hover-textcolor: #ffffff;
 
-.animate-button {
-  &:hover {
-    background-color: $button-hover-color;
-    color: $button-hover-textcolor;
-    transition: all $transition-time ease-in-out;
+.animate {
+  &-button {
+    &:hover {
+      background-color: $button-hover-color;
+      color: $button-hover-textcolor;
+      transition: all $transition-time ease-in-out;
+    }
   }
 }
+

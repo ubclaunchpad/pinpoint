@@ -5,6 +5,7 @@ import Pinpoint from 'pinpoint-client';
 import logo from '../assets/logo.svg';
 import Login from './Login';
 import Reset from './Reset';
+import Signup from './Signup';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -35,6 +36,7 @@ class App extends Component {
           </Route>
           <Route exact path="/login" component={() => <Login client={client} />} />
           <Route exact path="/reset" component={Reset} />
+          <Route exact path="/signup" component={Signup} />
         </Switch>
       </BrowserRouter>
     );
