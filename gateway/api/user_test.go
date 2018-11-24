@@ -176,8 +176,8 @@ func TestUserRouter_login(t *testing.T) {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
-			if tt.wantCode == http.StatusAccepted && fake.VerifyCallCount() != 2 {
-				t.Error("unexpected amount of call to core.Login")
+			if tt.wantCode == http.StatusOK && fake.LoginCallCount() < 1 {
+				t.Error("expected call to core.Login")
 			}
 		})
 	}

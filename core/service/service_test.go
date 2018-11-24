@@ -253,7 +253,6 @@ func TestService_Login(t *testing.T) {
 	correctSalt := "$2a$10$T/26fFbPqC9GY/zsQgGuGO1djroBCIXbL1kRXQpDw.OlKPniDTQt2---"
 
 	type args struct {
-		ctx context.Context
 		req *request.Login
 	}
 	tests := []struct {
@@ -263,17 +262,17 @@ func TestService_Login(t *testing.T) {
 	}{
 		{
 			"get success with correct email and password",
-			args{nil, &request.Login{Email: correctEmail, Password: correctPassword}},
+			args{&request.Login{Email: correctEmail, Password: correctPassword}},
 			false,
 		},
 		{
 			"get unauthorized with wrong email and password",
-			args{nil, &request.Login{Email: "random@email.com", Password: "supersecurepassword"}},
+			args{&request.Login{Email: "random@email.com", Password: "supersecurepassword"}},
 			false,
 		},
 		{
 			"get error with empty fields",
-			args{nil, &request.Login{Email: "", Password: ""}},
+			args{&request.Login{Email: "", Password: ""}},
 			false,
 		},
 	}
@@ -287,7 +286,7 @@ func TestService_Login(t *testing.T) {
 	s := &Service{db: fk}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := s.Login(tt.args.ctx, tt.args.req)
+			_, err := s.Login(nil, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.Login() error = %v, wantErr %v", err, tt.wantErr)
 				return
