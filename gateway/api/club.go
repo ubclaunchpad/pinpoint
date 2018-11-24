@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -49,7 +48,7 @@ func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateEvent
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
@@ -62,7 +61,7 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateClub
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid request"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
@@ -79,29 +78,29 @@ func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
 		start, end time.Time
 	)
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
 	// parse form date input into standard format
 	const layout = "2006-01-02"
 	if start, err = time.Parse(layout, data.Start); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid start date"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid start date"))
 		return
 	}
 	if end, err = time.Parse(layout, data.End); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid end date"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid end date"))
 		return
 	}
 
 	// check validity
 	if start.After(end) {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("Start date must be before end date"), ""))
+		render.Render(w, r, res.ErrBadRequest(r, "start date must be before end date"))
 		return
 	}
 
 	// TODO: create period in core, for now just log
 	fmt.Println(start, end)
 
-	render.Render(w, r, res.Message(r, "Period created sucessfully", http.StatusCreated))
+	render.Render(w, r, res.Message(r, "period created sucessfully", http.StatusCreated))
 }

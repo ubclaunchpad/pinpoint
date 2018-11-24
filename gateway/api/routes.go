@@ -12,7 +12,7 @@ import (
 func (a *API) statusHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := a.c.GetStatus(context.Background(), &request.Status{})
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
+		render.Render(w, r, res.ErrInternalServer(r, err.Error()))
 		return
 	}
 	render.JSON(w, r, resp)
