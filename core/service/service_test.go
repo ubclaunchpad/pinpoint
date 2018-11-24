@@ -246,3 +246,51 @@ func TestService_Verify(t *testing.T) {
 		})
 	}
 }
+
+func TestService_Login(t *testing.T) {
+	correctEmail := "demo@demo.com"
+	correctPassword := "demoPassword123!"
+	correctSalt := "$2a$10$T/26fFbPqC9GY/zsQgGuGO1djroBCIXbL1kRXQpDw.OlKPniDTQt2---"
+
+	type args struct {
+		req *request.Login
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			"get success with correct email and password",
+			args{&request.Login{Email: correctEmail, Password: correctPassword}},
+			false,
+		},
+		{
+			"unauthorized error with wrong email and password",
+			args{&request.Login{Email: "random@email.com", Password: "supersecurepassword"}},
+			true,
+		},
+		{
+			"get error with empty fields",
+			args{&request.Login{Email: "", Password: ""}},
+			true,
+		},
+	}
+	fk := &mocks.FakeDBClient{}
+	fk.GetUserStub = func(email string) (*model.User, error) {
+		if email != correctEmail {
+			return &model.User{Email: email, Name: "", Salt: "", Verified: false}, nil
+		}
+		return &model.User{Email: correctEmail, Name: "", Salt: correctSalt, Verified: true}, nil
+	}
+	s := &Service{db: fk}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := s.Login(nil, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.Login() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

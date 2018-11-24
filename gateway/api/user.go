@@ -58,10 +58,22 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+	if email == "" || password == "" {
+		render.Render(w, r, res.ErrBadRequest(r, errors.New("missing fields"), ""))
+		return
+	}
+
+	_, err := u.c.Login(context.Background(), &request.Login{Email: email, Password: password})
+	if err != nil {
+		render.Render(w, r, res.ErrUnauthorized(r, err, ""))
+		return
+	}
+
+	// No error means authenticated, proceed to generate token
 	w.WriteHeader(http.StatusOK)
-
-	// TODO: implement
-
+	// TODO: Generate token. See #10
 	render.JSON(w, r, map[string]string{
 		"token": "1234",
 	})
@@ -71,6 +83,7 @@ func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
 	hash := r.FormValue("hash")
 	if hash == "" {
 		render.Render(w, r, res.ErrBadRequest(r, errors.New("missing fields"), ""))
+		return
 	}
 
 	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: hash})

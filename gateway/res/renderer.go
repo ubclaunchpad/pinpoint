@@ -37,6 +37,16 @@ func ErrBadRequest(r *http.Request, err error, msg string, missingFields ...stri
 	}
 }
 
+// ErrUnauthorized is a shortcut for unauthorized requests
+func ErrUnauthorized(r *http.Request, err error, msg string, missingFields ...string) render.Renderer {
+	return &ErrResponse{
+		HTTPStatusCode: http.StatusUnauthorized,
+		StatusText:     msg,
+		ErrorText:      err.Error(),
+		RequestID:      utils.RequestID(r),
+	}
+}
+
 // Message is a shortcut for non-error statuses
 func Message(r *http.Request, msg string, code int, fields ...interface{}) render.Renderer {
 	return &MsgResponse{

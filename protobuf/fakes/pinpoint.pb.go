@@ -57,6 +57,21 @@ type FakeCoreClient struct {
 		result1 *response.Empty
 		result2 error
 	}
+	LoginStub        func(context.Context, *request.Login, ...grpc.CallOption) (*response.Message, error)
+	loginMutex       sync.RWMutex
+	loginArgsForCall []struct {
+		arg1 context.Context
+		arg2 *request.Login
+		arg3 []grpc.CallOption
+	}
+	loginReturns struct {
+		result1 *response.Message
+		result2 error
+	}
+	loginReturnsOnCall map[int]struct {
+		result1 *response.Message
+		result2 error
+	}
 	VerifyStub        func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Message, error)
 	verifyMutex       sync.RWMutex
 	verifyArgsForCall []struct {
@@ -271,6 +286,71 @@ func (fake *FakeCoreClient) HandshakeReturnsOnCall(i int, result1 *response.Empt
 	}{result1, result2}
 }
 
+func (fake *FakeCoreClient) Login(arg1 context.Context, arg2 *request.Login, arg3 ...grpc.CallOption) (*response.Message, error) {
+	fake.loginMutex.Lock()
+	ret, specificReturn := fake.loginReturnsOnCall[len(fake.loginArgsForCall)]
+	fake.loginArgsForCall = append(fake.loginArgsForCall, struct {
+		arg1 context.Context
+		arg2 *request.Login
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("Login", []interface{}{arg1, arg2, arg3})
+	fake.loginMutex.Unlock()
+	if fake.LoginStub != nil {
+		return fake.LoginStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.loginReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) LoginCallCount() int {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	return len(fake.loginArgsForCall)
+}
+
+func (fake *FakeCoreClient) LoginCalls(stub func(context.Context, *request.Login, ...grpc.CallOption) (*response.Message, error)) {
+	fake.loginMutex.Lock()
+	defer fake.loginMutex.Unlock()
+	fake.LoginStub = stub
+}
+
+func (fake *FakeCoreClient) LoginArgsForCall(i int) (context.Context, *request.Login, []grpc.CallOption) {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	argsForCall := fake.loginArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) LoginReturns(result1 *response.Message, result2 error) {
+	fake.loginMutex.Lock()
+	defer fake.loginMutex.Unlock()
+	fake.LoginStub = nil
+	fake.loginReturns = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) LoginReturnsOnCall(i int, result1 *response.Message, result2 error) {
+	fake.loginMutex.Lock()
+	defer fake.loginMutex.Unlock()
+	fake.LoginStub = nil
+	if fake.loginReturnsOnCall == nil {
+		fake.loginReturnsOnCall = make(map[int]struct {
+			result1 *response.Message
+			result2 error
+		})
+	}
+	fake.loginReturnsOnCall[i] = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeCoreClient) Verify(arg1 context.Context, arg2 *request.Verify, arg3 ...grpc.CallOption) (*response.Message, error) {
 	fake.verifyMutex.Lock()
 	ret, specificReturn := fake.verifyReturnsOnCall[len(fake.verifyArgsForCall)]
@@ -345,6 +425,8 @@ func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	defer fake.getStatusMutex.RUnlock()
 	fake.handshakeMutex.RLock()
 	defer fake.handshakeMutex.RUnlock()
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
 	fake.verifyMutex.RLock()
 	defer fake.verifyMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
