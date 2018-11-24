@@ -130,3 +130,55 @@ func TestUserRouter_verify(t *testing.T) {
 		})
 	}
 }
+
+func TestUserRouter_login(t *testing.T) {
+	l, err := utils.NewLogger(true)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	type args struct {
+		email, password string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		{"no args", args{"", ""}, http.StatusBadRequest},
+		{"regular user", args{"demo", "demopassword"}, http.StatusOK},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create user router
+			fake := &fakes.FakeCoreClient{}
+			u := newUserRouter(l, fake)
+
+			fake.LoginStub = func(c context.Context, r *request.Login, opts ...grpc.CallOption) (*response.Message, error) {
+				if r.GetEmail() == "demo" && r.GetPassword() == "demopassword" {
+					return &response.Message{Message: "user successfully logged in"}, nil
+				}
+				return nil, errors.New("user not authenticated")
+			}
+
+			// Create request
+			req, err := http.NewRequest("POST", "/login?email="+tt.args.email+"&password="+tt.args.password, nil)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			// Record responses
+			recorder := httptest.NewRecorder()
+			u.ServeHTTP(recorder, req)
+			if recorder.Code != tt.wantCode {
+				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
+			}
+
+			if tt.wantCode == http.StatusAccepted && fake.VerifyCallCount() != 2 {
+				t.Error("unexpected amount of call to core.Login")
+			}
+		})
+	}
+}
