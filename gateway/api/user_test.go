@@ -17,7 +17,7 @@ import (
 )
 
 func TestUserRouter_createUser(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -78,7 +78,7 @@ func TestUserRouter_createUser(t *testing.T) {
 }
 
 func TestUserRouter_verify(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -132,7 +132,7 @@ func TestUserRouter_verify(t *testing.T) {
 }
 
 func TestUserRouter_login(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return

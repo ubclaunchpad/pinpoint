@@ -13,7 +13,7 @@ import (
 )
 
 func TestClubRouter_createClub(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -73,7 +73,7 @@ func TestClubRouter_createEvent(t *testing.T) {
 }
 
 func TestClubRouter_createPeriod(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -88,27 +88,35 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{nil}, http.StatusBadRequest},
+		{"invalid start", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018asdasdfawkjefe-09",
+			End:   "2018-08-09",
+		}}, http.StatusBadRequest},
+		{"invalid end", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018-08-09",
+			End:   "2018-08asdfasdfasdf-12",
+		}}, http.StatusBadRequest},
+		{"end before start", args{&schema.CreatePeriod{
+			Name:  "Winter Semester",
+			Start: "2018-08-15",
+			End:   "2018-08-10",
+		}}, http.StatusBadRequest},
 		{"successfully create period", args{&schema.CreatePeriod{
 			Name:  "Winter Semester",
 			Start: "2018-08-09",
-			End:   "2018-08-12",
+			End:   "2018-08-10",
 		}}, http.StatusCreated},
-		{"successfully create period", args{&schema.CreatePeriod{
-			Name:  "Winter Semester",
-			Start: "2018asdasdfawkjefe-09",
-			End:   "2018-08asdfasdfasdf-12",
-		}}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fake := &fakes.FakeCoreClient{}
-
 			// create club router
+			fake := &fakes.FakeCoreClient{}
 			u := newClubRouter(l, fake)
 
 			// create request
 			var b []byte
-			// var err error
 			if tt.args.period != nil {
 				if b, err = json.Marshal(tt.args.period); err != nil {
 					t.Error(err)

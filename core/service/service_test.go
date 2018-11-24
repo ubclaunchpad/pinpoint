@@ -18,7 +18,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -60,7 +60,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestService_Run(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -124,7 +124,7 @@ func TestService_Handshake(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l, err := utils.NewLogger(true)
+			l, err := utils.NewLogger(true, "")
 			if err != nil {
 				t.Error(err)
 				return
