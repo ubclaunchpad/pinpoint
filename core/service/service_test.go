@@ -266,14 +266,14 @@ func TestService_Login(t *testing.T) {
 			false,
 		},
 		{
-			"get unauthorized with wrong email and password",
+			"unauthorized error with wrong email and password",
 			args{&request.Login{Email: "random@email.com", Password: "supersecurepassword"}},
-			false,
+			true,
 		},
 		{
 			"get error with empty fields",
 			args{&request.Login{Email: "", Password: ""}},
-			false,
+			true,
 		},
 	}
 	fk := &mocks.FakeDBClient{}

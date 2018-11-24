@@ -65,18 +65,15 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := u.c.Login(context.Background(), &request.Login{Email: email, Password: password})
+	_, err := u.c.Login(context.Background(), &request.Login{Email: email, Password: password})
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
-		return
-	}
-	if resp.GetMessage() != "user successfully logged in" {
-		render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusUnauthorized))
+		render.Render(w, r, res.ErrUnauthorized(r, err, ""))
 		return
 	}
 
+	// No error means authenticated, proceed to generate token
 	w.WriteHeader(http.StatusOK)
-	// TODO: Generate token
+	// TODO: Generate token. See #10
 	render.JSON(w, r, map[string]string{
 		"token": "1234",
 	})
