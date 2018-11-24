@@ -60,10 +60,6 @@ class Signup extends Component {
       error: 'fa-times-circle',
     };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     if (message) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
@@ -74,10 +70,6 @@ class Signup extends Component {
     }
   }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
   render() {
     return (
       <div className="flex-al-center">
