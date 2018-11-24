@@ -7,6 +7,21 @@ import (
 	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 )
 
+// ErrResponse is the template for a typical HTTP response for errors
+type ErrResponse struct {
+	Err            error  `json:"-"`
+	HTTPStatusCode int    `json:"-"`
+	StatusText     string `json:"status"`
+	ErrorText      string `json:"error,omitempty"`
+	RequestID      string `json:"request-id,omitempty"`
+}
+
+// Render renders an ErrResponse
+func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	render.Status(r, e.HTTPStatusCode)
+	return nil
+}
+
 // Err is a basic error response constructor
 func Err(r *http.Request, err error, status int, msg ...interface{}) render.Renderer {
 	return &ErrResponse{
@@ -44,15 +59,5 @@ func ErrUnauthorized(r *http.Request, err error, msg string, missingFields ...st
 		StatusText:     msg,
 		ErrorText:      err.Error(),
 		RequestID:      utils.RequestID(r),
-	}
-}
-
-// Message is a shortcut for non-error statuses
-func Message(r *http.Request, msg string, code int, fields ...interface{}) render.Renderer {
-	return &MsgResponse{
-		HTTPStatusCode: code,
-		Message:        msg,
-		RequestID:      utils.RequestID(r),
-		Details:        utils.ToMap(fields),
 	}
 }

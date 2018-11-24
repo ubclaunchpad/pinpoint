@@ -4,22 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 )
-
-// ErrResponse is the template for a typical HTTP response for errors
-type ErrResponse struct {
-	Err            error  `json:"-"`
-	HTTPStatusCode int    `json:"-"`
-	StatusText     string `json:"status"`
-	ErrorText      string `json:"error,omitempty"`
-	RequestID      string `json:"request-id,omitempty"`
-}
-
-// Render renders an ErrResponse
-func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	render.Status(r, e.HTTPStatusCode)
-	return nil
-}
 
 // MsgResponse is the template for a typical HTTP response for messages
 type MsgResponse struct {
@@ -34,4 +20,14 @@ type MsgResponse struct {
 func (m *MsgResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	render.Status(r, m.HTTPStatusCode)
 	return nil
+}
+
+// Message is a shortcut for non-error statuses
+func Message(r *http.Request, msg string, code int, fields ...interface{}) render.Renderer {
+	return &MsgResponse{
+		HTTPStatusCode: code,
+		Message:        msg,
+		RequestID:      utils.RequestID(r),
+		Details:        utils.ToMap(fields),
+	}
 }
