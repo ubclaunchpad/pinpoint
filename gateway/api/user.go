@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -45,7 +44,7 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create account in core
-	resp, err := u.c.CreateAccount(context.Background(), &user)
+	resp, err := u.c.CreateAccount(r.Context(), &user)
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(r, "failed to create user account",
 			"error", err.Error()))
@@ -65,7 +64,7 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := u.c.Login(context.Background(), &request.Login{
+	if _, err := u.c.Login(r.Context(), &request.Login{
 		Email: email, Password: password,
 	}); err != nil {
 		render.Render(w, r, res.ErrUnauthorized(r, err.Error()))
@@ -87,10 +86,11 @@ func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: hash})
+	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
 	if err != nil {
 		render.Render(w, r, res.Err(r, err.Error(), http.StatusNotFound))
 		return
 	}
+
 	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusAccepted))
 }
