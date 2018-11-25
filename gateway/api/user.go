@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -45,7 +44,7 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create account in core
-	resp, err := u.c.CreateAccount(context.Background(), &user)
+	resp, err := u.c.CreateAccount(r.Context(), &user)
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(r, "failed to create user account",
 			"error", err.Error()))
