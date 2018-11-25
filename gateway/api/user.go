@@ -65,7 +65,7 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := u.c.Login(context.Background(), &request.Login{Email: email, Password: password})
+	_, err := u.c.Login(r.Context(), &request.Login{Email: email, Password: password})
 	if err != nil {
 		render.Render(w, r, res.ErrUnauthorized(r, err, ""))
 		return
@@ -86,10 +86,11 @@ func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := u.c.Verify(context.Background(), &request.Verify{Hash: hash})
+	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
 	if err != nil {
 		render.Render(w, r, res.Err(r, err, http.StatusNotFound))
 		return
 	}
+
 	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusAccepted))
 }
