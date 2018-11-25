@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -41,14 +40,15 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var user request.CreateAccount
 	if err := decoder.Decode(&user); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "invalid request"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
 	// create account in core
 	resp, err := u.c.CreateAccount(context.Background(), &user)
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
+		render.Render(w, r, res.ErrInternalServer(r, "failed to create user account",
+			"error", err.Error()))
 		return
 	}
 
@@ -61,13 +61,14 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	if email == "" || password == "" {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("missing fields"), ""))
+		render.Render(w, r, res.ErrBadRequest(r, "missing fields - both email and password is required"))
 		return
 	}
 
-	_, err := u.c.Login(r.Context(), &request.Login{Email: email, Password: password})
-	if err != nil {
-		render.Render(w, r, res.ErrUnauthorized(r, err, ""))
+	if _, err := u.c.Login(r.Context(), &request.Login{
+		Email: email, Password: password,
+	}); err != nil {
+		render.Render(w, r, res.ErrUnauthorized(r, err.Error()))
 		return
 	}
 
@@ -82,13 +83,13 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
 	hash := r.FormValue("hash")
 	if hash == "" {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("missing fields"), ""))
+		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))
 		return
 	}
 
 	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
 	if err != nil {
-		render.Render(w, r, res.Err(r, err, http.StatusNotFound))
+		render.Render(w, r, res.Err(r, err.Error(), http.StatusNotFound))
 		return
 	}
 
