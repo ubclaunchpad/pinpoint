@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -16,22 +15,6 @@ var (
 	tableClubsAndUsers   = aws.String("ClubsAndUsers")
 	keyEmailVerification = aws.String("verification")
 )
-
-func prefixClubID(id string) *string {
-	return aws.String("Club-" + id)
-}
-
-func prefixUserEmail(email string) *string {
-	return aws.String("User-" + email)
-}
-
-func removePrefix(str string) string {
-	s := strings.SplitN(str, "-", 2)
-	if len(s) > 1 {
-		return s[1]
-	}
-	return str
-}
 
 // AddNewUser creates a new user in the database
 func (db *Database) AddNewUser(u *model.User, e *model.EmailVerification) error {
