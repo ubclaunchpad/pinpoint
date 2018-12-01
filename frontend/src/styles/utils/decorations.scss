@@ -2,57 +2,91 @@
 // ELEMENT DECORATIONS //
 /////////////////////////
 
-body{
-  font-family: sans-serif;
+body {
   color: black;
+  font-family: sans-serif;
 }
 
-.title{
+.title {
   font-size: 40px;
 }
 
 .shadow {
-  box-shadow: 0px 4px 6px $shadow
+  box-shadow: 0 4px 6px $shadow;
 }
 
 // opacity declarations
 .opacity {
-  &-0  { opacity: 0 }
-  &-20 { opacity: 0.2 }
-  &-40 { opacity: 0.4 }
-  &-60 { opacity: 0.6 }
+  &-0  { opacity: 0; }
+  &-20 { opacity: .2; }
+  &-40 { opacity: .4; }
+  &-60 { opacity: .6; }
 }
 
 // visibility declarations
 .display {
-  &-none { display: none }
+  &-none { display: none; }
 }
 
 // overflow modes
 .overflow {
-  &-hidden { overflow: hidden }
+  &-hidden { overflow: hidden; }
 }
+
+// border-radius
+.border {
+  &-m {
+    border-radius: 3px;
+  }
+}
+
+// Message / Highlight styling
+.highlight {
+  &-blue {
+      color: #059;
+      background-color: #BEF;
+  }
+
+  &-green {
+      color: #270;
+      background-color: #DFF2BF;
+  }
+
+  &-orange {
+      color: #9F6000;
+      background-color: #FEEFB3;
+  }
+
+  &-red {
+      color: #D8000C;
+      background-color: #FFBABA;
+  }
+}
+
 
 ///////////////////////////////////////////////////////////////
 // Input and button sizings, define more here to standardize //
 ///////////////////////////////////////////////////////////////
-.input-small{
+
+// TODO: Remove most of this
+
+.input-small {
   width: 200px;
   height: 30px;
 }
 
-.button-small{
+.button-small {
   height: 30px;
   width: 100px;
 }
 
-.button-medium{
+.button-medium {
   height: 30px;
   width: 150px;
 }
 
 // Input textbox, apply to any <input> to apply pinpoint theme
-.input-box{
+.input-box {
   border-radius: 5px;
   margin: 2px;
   border-radius: 10px;
@@ -62,14 +96,14 @@ body{
 }
 
 // Remove default linking text style and change to pinpoint theme
-a{
-  text-decoration: none;
+a {
   color: grey;
   font-weight: bold;
+  text-decoration: none;
 }
 
 // Pinpoint theme button
-.click-button{
+.click-button {
   background-color: white;
   margin-top: 5px;
   border-radius: 10px;
@@ -78,10 +112,10 @@ a{
 }
 
 // Removes any focusing behaviour from style for pinpoint theme
-input:focus::-webkit-input-placeholder { color:transparent; }
-input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
-input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
-input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
+input:focus::-webkit-input-placeholder { color: transparent; }
+input:focus:-moz-placeholder { color: transparent; } /* FF 4-18 */
+input:focus::-moz-placeholder { color: transparent; } /* FF 19+ */
+input:focus:-ms-input-placeholder { color: transparent; } /* IE 10+ */
 
 input:focus, textarea:focus, button:focus {
     outline: none;

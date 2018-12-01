@@ -116,6 +116,7 @@ func (a *API) setUpRouter() {
 func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
 	a.r.Mount("/user", newUserRouter(a.l, a.c))
+	a.r.Mount("/club", newClubRouter(a.l, a.c))
 }
 
 // runs Core and Gateway connection handshake

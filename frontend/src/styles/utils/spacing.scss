@@ -2,7 +2,6 @@
 //   SPACING CLASSES   //
 /////////////////////////
 
-
 $spacing-xxs:  4px;
 $spacing-xs:   8px;
 $spacing-s:   16px;
@@ -16,55 +15,71 @@ $spacing-xxl: 48px;
 
 .pad {
   // navbar
-  &-nav { padding-top: 1 }
+  &-nav { padding-top: 1; }
 
   // left padding
   &-left, &-sides {
-    &-m { padding-left: 1 }
+    &-m { padding-left: $spacing-m; }
   }
 
   // right padding
   &-right, &-sides {
-    &-m { padding-right: 1 }
+    &-m { padding-right: $spacing-m; }
   }
 
   // top margin
   &-top, &-ends {
-    &-m { padding-top: 1 }
+    &-xs { padding-top: $spacing-xs; }
+    &-s { padding-top: $spacing-s; }
+    &-m { padding-top: $spacing-m; }
   }
 
   // bottom margin
   &-bot, &-ends {
-    &-m { padding-bottom: 1 }
+    &-xs { padding-bottom: $spacing-xs; }
+    &-s { padding-bottom: $spacing-s; }
+    &-m { padding-bottom: $spacing-m; }
   }
 }
 
 .margin {
   // navbar
-  &-nav { margin-top: 1 }
+  &-nav { margin-top: 1; }
 
-  &-title { 
-    margin-top: $spacing-xxl;
+  &-title {
     margin-bottom: $spacing-s;
+    margin-top: $spacing-xxl;
   }
 
   // left margin
   &-left, &-sides {
-    &-m { margin-left: 1 }
+    &-xs { margin-left: $spacing-xs; }
+    &-s { margin-left: $spacing-s; }
+    &-m { margin-left: $spacing-m; }
+    &-l { margin-left: $spacing-l; }
   }
 
   // right margin
   &-right, &-sides {
-    &-m { margin-left: 1 }
+    &-xs { margin-left: $spacing-xs; }
+    &-s { margin-left: $spacing-s; }
+    &-m { margin-left: $spacing-m; }
+    &-l { margin-left: $spacing-l; }
   }
 
   // top margin
   &-top, &-ends {
-    &-xs { margin-top: $spacing-xs }
+    &-xs { margin-top: $spacing-xs; }
+    &-s { margin-top: $spacing-s; }
+    &-m { margin-top: $spacing-m; }
+    &-l { margin-top: $spacing-l; }
   }
 
   // bottom margin
   &-bot, &-ends {
-    &-xs { margin-bottom: $spacing-xs }
+    &-xs { margin-bottom: $spacing-xs; }
+    &-s { margin-bottom: $spacing-s; }
+    &-m { margin-bottom: $spacing-m; }
+    &-l { margin-bottom: $spacing-l; }
   }
 }

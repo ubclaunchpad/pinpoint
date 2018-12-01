@@ -17,3 +17,8 @@ message CreateAccount {
 message Verify {
   string hash = 1;
 }
+
+message Login {
+  string email = 1;
+  string password = 2;
+}

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/go-chi/render"
@@ -10,9 +9,9 @@ import (
 )
 
 func (a *API) statusHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := a.c.GetStatus(context.Background(), &request.Status{})
+	resp, err := a.c.GetStatus(r.Context(), &request.Status{})
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err))
+		render.Render(w, r, res.ErrInternalServer(r, err.Error()))
 		return
 	}
 	render.JSON(w, r, resp)

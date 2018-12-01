@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -221,4 +222,16 @@ func (s *Service) Test(ctx context.Context, req *pinpoint.Event) (*response.Mess
 	}
 
 	return nil, nil
+}
+
+// Login looks up the given email and password and attempts to validate the user
+func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Message, error) {
+	user, err := s.db.GetUser(req.GetEmail())
+	if err != nil {
+		return nil, fmt.Errorf("failed to authenticate user: %s", err.Error())
+	}
+	if crypto.ComparePasswords(user.Salt, req.GetPassword()) {
+		return &response.Message{Message: "user successfully logged in"}, nil
+	}
+	return nil, errors.New("user not authenticated")
 }

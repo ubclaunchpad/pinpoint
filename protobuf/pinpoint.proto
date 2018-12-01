@@ -11,6 +11,7 @@ service Core {
   rpc Handshake(request.Empty) returns (response.Empty) {}
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}
   rpc Verify(request.Verify) returns (response.Message) {}
+  rpc Login(request.Login) returns (response.Message) {}
 
   // Test is a demo endpoint
   rpc Test(Event) returns (response.Message) {}
