@@ -12,12 +12,7 @@ service Core {
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}
   rpc Verify(request.Verify) returns (response.Message) {}
   rpc Login(request.Login) returns (response.Message) {}
-
-  // Test is a demo endpoint
-  rpc Test(Event) returns (response.Message) {}
 }
-
-// TODO: move this somewhere more reasonable, like `models`
 
 message Event {
   string name = 1;

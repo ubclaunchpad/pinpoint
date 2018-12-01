@@ -208,22 +208,6 @@ func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Me
 	return &response.Message{Message: "successfully verified " + v.Email}, nil
 }
 
-// Test is a demo endpoint
-func (s *Service) Test(ctx context.Context, req *pinpoint.Event) (*response.Message, error) {
-	for _, f := range req.GetFields() {
-		switch v := f.GetProperties().(type) {
-		case *pinpoint.Field_LongText:
-			// it's a long text!
-			println(v.LongText.GetImLong())
-		case *pinpoint.Field_ShortText:
-			// it's a short text!
-			println(v.ShortText.GetImShort())
-		}
-	}
-
-	return nil, nil
-}
-
 // Login looks up the given email and password and attempts to validate the user
 func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Message, error) {
 	user, err := s.db.GetUser(req.GetEmail())
