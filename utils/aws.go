@@ -8,6 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
+// AWSDebugEnv is the key used for the env variable that toggles debug logs
+const AWSDebugEnv = "AWS_DEBUG"
+
 // Logger defines a logger that can be configured for use with the AWS SDK
 type Logger interface {
 	Info(...interface{})
@@ -32,7 +35,7 @@ func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 		cfg = aws.NewConfig()
 	}
 
-	if os.Getenv("AWS_DEBUG") == "true" {
+	if os.Getenv(AWSDebugEnv) == "true" {
 		// log everything
 		cfg.LogLevel = aws.LogLevel(aws.LogDebug)
 	} else {
@@ -40,12 +43,11 @@ func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 		cfg.LogLevel = aws.LogLevel(aws.LogDebugWithRequestErrors)
 	}
 
-	// assign logger(s)
+	// assign logger
 	if len(logger) > 0 {
 		var l = logger[0]
-		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) {
-			l.Info(args...)
-		})
+		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) { l.Info(args...) })
+		cfg.Logger.Log("aws logger initialized")
 	}
 
 	return cfg

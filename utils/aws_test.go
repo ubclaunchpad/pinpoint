@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"os"
 	"testing"
 )
 
@@ -9,17 +10,24 @@ func TestAWSConfig(t *testing.T) {
 	type args struct {
 		dev    bool
 		logger Logger
+		debug  bool
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"dev", args{true, nil}},
-		{"prod", args{false, nil}},
-		{"with logger", args{false, l}},
+		{"dev", args{true, nil, false}},
+		{"prod", args{false, nil, false}},
+		{"with logger", args{false, l, false}},
+		{"with debug", args{false, nil, true}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.args.debug {
+				os.Setenv(AWSDebugEnv, "true")
+				defer os.Setenv(AWSDebugEnv, "")
+			}
+
 			// skip any checks for now
 			_ = AWSConfig(tt.args.dev, tt.args.logger)
 		})
