@@ -39,7 +39,8 @@ func runCommand(c *CoreCommand) func(*cobra.Command, []string) error {
 		}
 
 		// Set up AWS credentials
-		awsConfig, err := utils.AWSSession(utils.AWSConfig(c.Dev))
+		awsConfig, err := utils.AWSSession(utils.AWSConfig(
+			c.Dev, c.SugaredLogger.Named("aws")))
 		if err != nil {
 			return fmt.Errorf("failed to connect to aws: %s", err.Error())
 		}
