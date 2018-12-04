@@ -8,8 +8,14 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-// AWSConfig generates an AWS session Configuration
-func AWSConfig(dev bool) (cfg *aws.Config) {
+// Logger defines a logger that can be configured for use with the AWS SDK
+type Logger interface {
+	Info(...interface{})
+}
+
+// AWSConfig generates an AWS session Configuration. Only the first provided
+// logger is used.
+func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 	if dev {
 		cfg = &aws.Config{
 			// dynamodb-local
@@ -26,7 +32,17 @@ func AWSConfig(dev bool) (cfg *aws.Config) {
 		}
 	} else {
 		// todo: production aws setup
+		cfg = aws.NewConfig()
 	}
+
+	// assign logger(s)
+	if len(logger) > 0 {
+		var l = logger[0]
+		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) {
+			l.Info(args...)
+		})
+	}
+
 	return cfg
 }
 
