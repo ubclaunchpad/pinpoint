@@ -27,12 +27,17 @@ func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 			// arbitrary region
 			Region: aws.String("us-west-2"),
 		}
-		if os.Getenv("AWS_DEBUG") == "true" {
-			cfg.LogLevel = aws.LogLevel(aws.LogDebug)
-		}
 	} else {
-		// todo: production aws setup
+		// todo: more granular production aws setup
 		cfg = aws.NewConfig()
+	}
+
+	if os.Getenv("AWS_DEBUG") == "true" {
+		// log everything
+		cfg.LogLevel = aws.LogLevel(aws.LogDebug)
+	} else {
+		// by default, log error events
+		cfg.LogLevel = aws.LogLevel(aws.LogDebugWithRequestErrors)
 	}
 
 	// assign logger(s)
