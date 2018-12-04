@@ -2,6 +2,7 @@ package utils
 
 import (
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -13,7 +14,8 @@ const AWSDebugEnv = "AWS_DEBUG"
 
 // Logger defines a logger that can be configured for use with the AWS SDK
 type Logger interface {
-	Info(...interface{})
+	Debug(...interface{})
+	Error(...interface{})
 }
 
 // AWSConfig generates an AWS session Configuration. Only the first provided
@@ -46,7 +48,13 @@ func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 	// assign logger
 	if len(logger) > 0 && logger[0] != nil {
 		var l = logger[0]
-		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) { l.Info(args...) })
+		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) {
+			if str, ok := args[0].(string); ok && strings.Contains(str, "ERROR") {
+				l.Error(args...)
+			} else {
+				l.Debug(args...)
+			}
+		})
 		cfg.Logger.Log("aws logger initialized")
 	}
 
