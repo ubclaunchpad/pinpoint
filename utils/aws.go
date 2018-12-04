@@ -44,7 +44,7 @@ func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 	}
 
 	// assign logger
-	if len(logger) > 0 {
+	if len(logger) > 0 && logger[0] != nil {
 		var l = logger[0]
 		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) { l.Info(args...) })
 		cfg.Logger.Log("aws logger initialized")
