@@ -73,3 +73,9 @@ $spacing-xxl: 48px;
     &-xs { margin-bottom: $spacing-xs }
   }
 }
+
+.margin {
+  &-auto {display: flex;
+    flex-direction: column;
+    justify-content: center;}
+}
