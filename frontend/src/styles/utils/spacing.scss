@@ -2,15 +2,13 @@
 //   SPACING CLASSES   //
 /////////////////////////
 
-
-$spacing-xxs:  4px;
-$spacing-xs:   8px;
-$spacing-s:   16px;
-$spacing-m:   24px;
-$spacing-l:   32px;
-$spacing-xl:  40px;
+$spacing-xxs: 4px;
+$spacing-xs: 8px;
+$spacing-s: 16px;
+$spacing-m: 24px;
+$spacing-l: 32px;
+$spacing-xl: 40px;
 $spacing-xxl: 48px;
-
 
 // todo - more classes, replace 1 with variables
 
@@ -20,62 +18,95 @@ $spacing-xxl: 48px;
 
 .pad {
   // navbar
-  &-nav { padding-top: 1 }
+  &-nav {
+    padding-top: 1;
+  }
 
   // left padding
-  &-left, &-sides {
-    &-m { padding-left: 1 }
+  &-left,
+  &-sides {
+    &-m {
+      padding-left: 1;
+    }
   }
 
   // right padding
-  &-right, &-sides {
-    &-m { padding-right: 1 }
+  &-right,
+  &-sides {
+    &-m {
+      padding-right: 1;
+    }
   }
 
   // top margin
-  &-top, &-ends {
-    &-m { padding-top: 1 }
+  &-top,
+  &-ends {
+    &-m {
+      padding-top: 1;
+    }
   }
 
   // bottom margin
-  &-bot, &-ends {
-    &-m { padding-bottom: 1 }
+  &-bot,
+  &-ends {
+    &-m {
+      padding-bottom: 1;
+    }
   }
 }
 
 .margin {
   // navbar
-  &-nav { margin-top: 1 }
+  &-nav {
+    margin-top: 1;
+  }
 
-  &-title { 
+  &-title {
     margin-top: $spacing-xxl;
     margin-bottom: $spacing-s;
   }
 
   // left margin
-  &-left, &-sides {
-    &-s {margin-left: $spacing-s; margin-right: $spacing-s}
-    &-m { margin-left: 1 }
+  &-left,
+  &-sides {
+    &-s {
+      margin-left: $spacing-s;
+      margin-right: $spacing-s;
+    }
+    &-m {
+      margin-left: 1;
+    }
   }
 
   // right margin
-  &-right, &-sides {
-    &-m { margin-left: 1 }
+  &-right,
+  &-sides {
+    &-m {
+      margin-left: 1;
+    }
   }
 
   // top margin
-  &-top, &-ends {
-    &-xs { margin-top: $spacing-xs }
+  &-top,
+  &-ends {
+    &-xs {
+      margin-top: $spacing-xs;
+    }
   }
 
   // bottom margin
-  &-bot, &-ends {
-    &-xs { margin-bottom: $spacing-xs }
+  &-bot,
+  &-ends {
+    &-xs {
+      margin-bottom: $spacing-xs;
+    }
   }
 }
 
 .margin {
-  &-auto {display: flex;
+  &-auto {
+    display: flex;
     flex-direction: column;
-    justify-content: center;}
+    justify-content: center;
+  }
 }
