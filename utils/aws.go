@@ -2,14 +2,25 @@ package utils
 
 import (
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-// AWSConfig generates an AWS session Configuration
-func AWSConfig(dev bool) (cfg *aws.Config) {
+// AWSDebugEnv is the key used for the env variable that toggles debug logs
+const AWSDebugEnv = "AWS_DEBUG"
+
+// Logger defines a logger that can be configured for use with the AWS SDK
+type Logger interface {
+	Debug(...interface{})
+	Error(...interface{})
+}
+
+// AWSConfig generates an AWS session Configuration. Only the first provided
+// logger is used.
+func AWSConfig(dev bool, logger ...Logger) (cfg *aws.Config) {
 	if dev {
 		cfg = &aws.Config{
 			// dynamodb-local
@@ -21,12 +32,32 @@ func AWSConfig(dev bool) (cfg *aws.Config) {
 			// arbitrary region
 			Region: aws.String("us-west-2"),
 		}
-		if os.Getenv("AWS_DEBUG") == "true" {
-			cfg.LogLevel = aws.LogLevel(aws.LogDebug)
-		}
 	} else {
-		// todo: production aws setup
+		// todo: more granular production aws setup
+		cfg = aws.NewConfig()
 	}
+
+	if os.Getenv(AWSDebugEnv) == "true" {
+		// log everything
+		cfg.LogLevel = aws.LogLevel(aws.LogDebug)
+	} else {
+		// by default, log error events
+		cfg.LogLevel = aws.LogLevel(aws.LogDebugWithRequestErrors)
+	}
+
+	// assign logger
+	if len(logger) > 0 && logger[0] != nil {
+		var l = logger[0]
+		cfg.Logger = aws.LoggerFunc(func(args ...interface{}) {
+			if str, ok := args[0].(string); ok && strings.Contains(str, "ERROR") {
+				l.Error(args...)
+			} else {
+				l.Debug(args...)
+			}
+		})
+		cfg.Logger.Log("aws logger initialized")
+	}
+
 	return cfg
 }
 
