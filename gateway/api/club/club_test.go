@@ -1,4 +1,4 @@
-package api
+package club
 
 import (
 	"bytes"
@@ -38,7 +38,7 @@ func TestClubRouter_createClub(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
 			// create club router
-			u := newClubRouter(l, fake)
+			u := NewClubRouter(l, fake)
 
 			// create request
 			var b []byte
@@ -113,7 +113,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// create club router
 			fake := &fakes.FakeCoreClient{}
-			u := newClubRouter(l, fake)
+			u := NewClubRouter(l, fake)
 
 			// create request
 			var b []byte
