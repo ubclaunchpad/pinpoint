@@ -1,8 +1,7 @@
-package api
+package club
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -15,15 +14,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// ClubRouter routes to all club endpoints
-type ClubRouter struct {
+// Router routes to all club endpoints
+type Router struct {
 	l   *zap.SugaredLogger
 	c   pinpoint.CoreClient
 	mux *chi.Mux
 }
 
-func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
-	c := &ClubRouter{l.Named("clubs"), core, chi.NewRouter()}
+// NewClubRouter instantiates a new router for club functionality
+func NewClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
+	c := &Router{l.Named("clubs"), core, chi.NewRouter()}
 
 	// club-related endpoints
 	c.mux.Post("/create", c.createClub)
@@ -41,15 +41,15 @@ func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
 	return c
 }
 
-func (club *ClubRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	club.mux.ServeHTTP(w, r)
+func (c *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	c.mux.ServeHTTP(w, r)
 }
 
-func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateEvent
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
@@ -58,11 +58,11 @@ func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, res.Message(r, "Event created successfully", http.StatusCreated))
 }
 
-func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateClub
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid request"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
@@ -71,7 +71,7 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, res.Message(r, "Club created successfully", http.StatusCreated))
 }
 
-func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createPeriod(w http.ResponseWriter, r *http.Request) {
 	var (
 		decoder    = json.NewDecoder(r.Body)
 		data       schema.CreatePeriod
@@ -79,29 +79,29 @@ func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
 		start, end time.Time
 	)
 	if err := decoder.Decode(&data); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid input"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
 		return
 	}
 
 	// parse form date input into standard format
 	const layout = "2006-01-02"
 	if start, err = time.Parse(layout, data.Start); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid start date"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid start date"))
 		return
 	}
 	if end, err = time.Parse(layout, data.End); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, err, "Invalid end date"))
+		render.Render(w, r, res.ErrBadRequest(r, "invalid end date"))
 		return
 	}
 
 	// check validity
 	if start.After(end) {
-		render.Render(w, r, res.ErrBadRequest(r, errors.New("Start date must be before end date"), ""))
+		render.Render(w, r, res.ErrBadRequest(r, "start date must be before end date"))
 		return
 	}
 
 	// TODO: create period in core, for now just log
 	fmt.Println(start, end)
 
-	render.Render(w, r, res.Message(r, "Period created sucessfully", http.StatusCreated))
+	render.Render(w, r, res.Message(r, "period created sucessfully", http.StatusCreated))
 }

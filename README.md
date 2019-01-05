@@ -21,7 +21,7 @@ To get started, make sure you have the following installed:
 
 - [Golang](https://golang.org/dl/) 1.11+
 - [Node.js](https://nodejs.org/en/download/) 8.12+
-- [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation)
+- [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+
 - [Docker CE](https://docs.docker.com/install/#supported-platforms) and [docker-compose](https://docs.docker.com/compose/install/)
 
 To fetch the codebase, use `go get`:
