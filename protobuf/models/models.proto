@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/any.proto";
 
 // package model defines model datatypes
 package models;
