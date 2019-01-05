@@ -6,45 +6,26 @@
   display: flex;
 
   // inline-flex
-
-  &-inline {
-    display: inline-flex;
-  }
-  &-inlinegrid {
-    display: inline-grid;
-  }
+  &-inline { display: inline-flex; }
+  &-inlinegrid { display: inline-grid; }
 
   // alignment of child text elements
   &-al {
-    &-center {
-      text-align: center;
-    }
+    &-center { text-align: center; };
   }
 
   // flex-directions
   &.dir {
-    &-col {
-      flex-direction: column;
-    }
-    &-row {
-      flex-direction: row;
-    }
+    &-col { flex-direction: column; }
+    &-row { flex-direction: row; }
   }
 
   // justify-content
   &.jc {
-    &-start {
-      justify-content: flex-start;
-    }
-    &-end {
-      justify-content: flex-end;
-    }
-    &-center {
-      justify-content: center;
-    }
-    &-around {
-      justify-content: space-around;
-    }
+    &-start  { justify-content: flex-start; }
+    &-end    { justify-content: flex-end; }
+    &-center { justify-content: center; }
+    &-around { justify-content: space-around; }
 
     &-between {
       justify-content: space-between;
@@ -59,32 +40,21 @@
   }
 
   // flex-wrap
-
-  &.wrap {
-    flex-wrap: wrap;
-  }
+  &.wrap { flex-wrap: wrap; }
 
   // align-items
   &.ai {
-    &-center {
-      align-items: center;
-    }
-    &-end {
-      align-items: flex-end;
-    }
+    &-center { align-items: center; }
+    &-end    { align-items: flex-end; }
   }
 
   // algin-self
   &.as {
-    &-end {
-      align-self: flex-end;
-    }
+    &-end { align-self: flex-end; }
   }
 
   // align-content
   &.ac {
-    &-end {
-      align-content: flex-end;
-    }
+    &-end { align-content: flex-end; }
   }
 }
