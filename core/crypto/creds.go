@@ -10,7 +10,7 @@ import (
 
 var (
 	errPasswordContainsUsername = errors.New("password must not contain username")
-	errInvalidUsername          = errors.New("username must be at least 3 characters. only alphanumeric, underscores, and dashes are allowed")
+	errInvalidEmail             = errors.New("email does not appear to be a valid email")
 	errInvalidPassword          = errors.New("password must be at least 5 characters. only alphanumeric and symbols are alowed")
 )
 
@@ -32,16 +32,12 @@ func ComparePasswords(hashedPassword string, password string) bool {
 }
 
 // ValidateCredentialValues verifies that the chosen username and passwords are valid
-// A valid password must be at least 5 characters long
-// A valid username must be at least 3 characters and contains only legal characters
-func ValidateCredentialValues(usernames []string, password string) error {
-	for _, username := range usernames {
-		if strings.Contains(username, password) {
-			return errPasswordContainsUsername
-		}
-		if len(username) < 3 || len(username) >= 128 || (!isLegalUserName(username) && !isEmailFormat(username)) {
-			return errInvalidUsername
-		}
+func ValidateCredentialValues(email, password string) error {
+	if strings.Contains(email, password) {
+		return errPasswordContainsUsername
+	}
+	if len(email) < 3 || len(email) >= 128 || !isEmailFormat(email) {
+		return errInvalidEmail
 	}
 
 	if len(password) < 5 || len(password) >= 128 || !isLegalPassword(password) {
@@ -49,16 +45,6 @@ func ValidateCredentialValues(usernames []string, password string) error {
 	}
 
 	return nil
-}
-
-// isLegalUserName returns true if the chosen username only contains characters [A-Z], [a-z], or '_' or '-'
-func isLegalUserName(username string) bool {
-	for _, c := range username {
-		if (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < 48 || c > 57) && c != '_' && c != '-' {
-			return false
-		}
-	}
-	return true
 }
 
 // isLegalPassword returns true if the chosen password does not contain illegal characters
@@ -72,6 +58,7 @@ func isLegalPassword(password string) bool {
 	return true
 }
 
+// isEmailFormat checks that a given email is formatted correctly
 func isEmailFormat(email string) bool {
 	regex := regexp.MustCompile(`^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$`)
 	return regex.MatchString(email)

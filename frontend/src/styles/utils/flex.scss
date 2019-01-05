@@ -3,14 +3,10 @@
 //////////////////////////
 
 .flex {
-  // set correct display mode
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
 
   // inline-flex
+
   &-inline {
     display: inline-flex;
   }
@@ -49,8 +45,10 @@
     &-around {
       justify-content: space-around;
     }
+
     &-between {
       justify-content: space-between;
+
       &-right-if-one {
         :only-child {
           align-self: flex-end;
@@ -61,6 +59,7 @@
   }
 
   // flex-wrap
+
   &.wrap {
     flex-wrap: wrap;
   }

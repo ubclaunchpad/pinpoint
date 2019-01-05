@@ -19,19 +19,19 @@ $mobile-s:   320px;
     &-sides {
       &-tablet {
         @media screen and (max-width: $tablet) {
-          padding-right: 0 !important;
           padding-left: 0 !important;
+          padding-right: 0 !important;
         }
       }
     }
   }
 
   &-margin {
-    &-sides {    
+    &-sides {
       &-tablet {
         @media screen and (max-width: $tablet) {
-          margin-right: 0 !important;
           margin-left: 0 !important;
+          margin-right: 0 !important;
         }
       }
     }

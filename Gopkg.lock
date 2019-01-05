@@ -54,6 +54,14 @@
   version = "v3.3.3"
 
 [[projects]]
+  digest = "1:dfa416a1bb8139f30832543340f972f65c0db9932034cb6a1b42c5ac615a3fb8"
+  name = "github.com/go-chi/cors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "dba6525398619dead495962a916728e7ee2ca322"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:54d7b4b9ab2bb2bae35b55eea900bc8fe15cba05a95fc78bf7fd7b82a9a07afa"
   name = "github.com/go-chi/render"
   packages = ["."]
@@ -276,6 +284,7 @@
     "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
     "github.com/go-chi/chi",
     "github.com/go-chi/chi/middleware",
+    "github.com/go-chi/cors",
     "github.com/go-chi/render",
     "github.com/golang/protobuf/proto",
     "github.com/grpc-ecosystem/go-grpc-middleware",
@@ -287,7 +296,6 @@
     "go.uber.org/zap/zapcore",
     "go.uber.org/zap/zaptest/observer",
     "golang.org/x/crypto/bcrypt",
-    "golang.org/x/net/context",
     "google.golang.org/grpc",
     "google.golang.org/grpc/codes",
     "google.golang.org/grpc/credentials",

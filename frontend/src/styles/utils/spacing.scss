@@ -2,6 +2,7 @@
 //   SPACING CLASSES   //
 /////////////////////////
 
+
 $spacing-xxs: 4px;
 $spacing-xs: 8px;
 $spacing-s: 16px;
@@ -37,6 +38,7 @@ $spacing-xxl: 48px;
       padding-right: 1;
     }
   }
+}
 
   // top margin
   &-top,
@@ -52,7 +54,6 @@ $spacing-xxl: 48px;
     &-m {
       padding-bottom: 1;
     }
-  }
 }
 
 .margin {
@@ -61,12 +62,15 @@ $spacing-xxl: 48px;
     margin-top: 1;
   }
 
+  &-nav { margin-top: 1; }
+
   &-title {
-    margin-top: $spacing-xxl;
     margin-bottom: $spacing-s;
+    margin-top: $spacing-xxl;
   }
 
   // left margin
+
   &-left,
   &-sides {
     &-s {
@@ -108,5 +112,36 @@ $spacing-xxl: 48px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+  &-left, &-sides {
+    &-xs { margin-left: $spacing-xs; }
+    &-s { margin-left: $spacing-s; }
+    &-m { margin-left: $spacing-m; }
+    &-l { margin-left: $spacing-l; }
   }
+
+  // right margin
+  &-right, &-sides {
+    &-xs { margin-left: $spacing-xs; }
+    &-s { margin-left: $spacing-s; }
+    &-m { margin-left: $spacing-m; }
+    &-l { margin-left: $spacing-l; }
+  }
+
+  // top margin
+  &-top, &-ends {
+    &-xs { margin-top: $spacing-xs; }
+    &-s { margin-top: $spacing-s; }
+    &-m { margin-top: $spacing-m; }
+    &-l { margin-top: $spacing-l; }
+  }
+
+  // bottom margin
+  &-bot, &-ends {
+    &-xs { margin-bottom: $spacing-xs; }
+    &-s { margin-bottom: $spacing-s; }
+    &-m { margin-bottom: $spacing-m; }
+    &-l { margin-bottom: $spacing-l; }
+  }
+}
 }

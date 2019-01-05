@@ -1,13 +1,17 @@
-import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import logo from '../assets/logo.svg';
-import ClubsSelection from './ClubsSelection';
-import Login from './Login';
-import Reset from './Reset';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Pinpoint from "pinpoint-client";
+import logo from "../assets/logo.svg";
+import ClubsSelection from "./ClubsSelection";
+import Login from "./Login";
+import Reset from "./Reset";
+import Signup from "./Signup";
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
   render() {
+    const { client } = this.props;
     return (
       <BrowserRouter>
         <Switch>
@@ -19,9 +23,7 @@ class App extends Component {
               </header>
               <p className="app-intro">
                 To get started, edit
-                <code>
-                  src/App.js
-                </code>
+                <code>src/App.js</code>
                 and save to reload.
               </p>
             </div>
@@ -32,12 +34,25 @@ class App extends Component {
             </p>
           </Route>
           <Route exact path="/me/clubs" component={ClubsSelection} />
-          <Route exact path="/login" component={Login} />
+          <Route
+            exact
+            path="/login"
+            component={() => <Login client={client} />}
+          />
           <Route exact path="/reset" component={Reset} />
+          <Route exact path="/signup" component={Signup} />
         </Switch>
       </BrowserRouter>
     );
   }
 }
+
+App.defaultProps = {
+  client: new Pinpoint()
+};
+
+App.propTypes = {
+  client: PropTypes.instanceOf(Pinpoint.API)
+};
 
 export default App;

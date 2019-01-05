@@ -18,6 +18,3 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
 
 echo Cleaning up...
 rm -f $PROTOC_ZIP
-
-echo Installing Golang plugin...
-go get -u github.com/golang/protobuf/protoc-gen-go
