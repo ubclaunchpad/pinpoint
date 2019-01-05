@@ -74,6 +74,7 @@ gen: proto mocks
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
+	make proto-pkg PKG=models
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
 	# generate mock
@@ -86,7 +87,7 @@ proto-pkg:
 
 .PHONY: mocks
 mocks:
-	# generate database interface and mock 
+	# generate database interface and mock
 	ifacemaker \
 		-f ./core/database/*.go \
 		-s Database \
