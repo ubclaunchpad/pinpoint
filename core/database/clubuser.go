@@ -282,7 +282,7 @@ func (db *Database) DeleteClub(id string) error {
 		return err
 	}
 	t := &dynamodb.DeleteTableInput{
-		TableName: aws.String("ClubData-" + id),
+		TableName: aws.String(clubTablePrefix + id),
 	}
 	if _, err = db.c.DeleteTable(t); err != nil {
 		return err

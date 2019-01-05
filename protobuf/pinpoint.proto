@@ -13,26 +13,3 @@ service Core {
   rpc Verify(request.Verify) returns (response.Message) {}
   rpc Login(request.Login) returns (response.Message) {}
 }
-
-message Event {
-  string name = 1;
-  string period = 2;
-  repeated Field fields = 3;
-}
-
-message Field {
-  string name = 1;
-  bool required = 2;
-  oneof properties {
-    LongText long_text = 3;
-    ShortText short_text = 4;
-  };
-}
-
-message LongText {
-  string im_long = 1;
-}
-
-message ShortText {
-  string im_short = 1;
-}

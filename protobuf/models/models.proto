@@ -6,9 +6,9 @@ package models;
 option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/models";
 
 message Event {
-	string period = 1;
+  string period = 1;
   string eventID = 2;
-	string name = 3;
+  string name = 3;
   string description = 4;
   repeated Field fields = 5;
 }
@@ -31,18 +31,18 @@ message ShortText {
 }
 
 message Applicant {
-	string period = 1;
-	string email = 2;
-	string name = 3;
-	repeated string tags = 4;
+  string period = 1;
+  string email = 2;
+  string name = 3;
+  repeated string tags = 4;
 }
 
 message Application {
-	string period = 1;
-	string eventID = 2;
-	string email = 3;
-	string name = 4;
-	map<string, FieldEntry> entires = 5;
+  string period = 1;
+  string eventID = 2;
+  string email = 3;
+  string name = 4;
+  map<string, FieldEntry> entries = 5;
 }
 
 message FieldEntry {
@@ -50,6 +50,6 @@ message FieldEntry {
 }
 
 message Tag {
-	string period = 1;
-	string tagName = 2;
+  string period = 1;
+  string tagName = 2;
 }

@@ -7,14 +7,6 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
-const (
-	clubTablePrefix = "ClubData-"
-	peidPrefix      = "PEID-"
-	periodPrefix    = "Period-"
-	applicantPrefix = "Applicant-"
-	tagPrefix       = "Tag-"
-)
-
 // AddNewEvent creates a new event in the club table
 func (db *Database) AddNewEvent(clubID string, event *models.Event) error {
 	e := newDBEvent(event)
@@ -50,7 +42,7 @@ func (db *Database) GetEvent(clubID string, period string, eventID string) (*mod
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
 		return nil, err
 	}
-	return getEvent(&item), nil
+	return newEvent(&item), nil
 }
 
 // GetEvents returns all the events of an application period
@@ -75,7 +67,7 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.Event, er
 	}
 	events := make([]*models.Event, *result.Count)
 	for _, item := range items {
-		events = append(events, getEvent(item))
+		events = append(events, newEvent(item))
 	}
 	return events, nil
 }
@@ -97,13 +89,13 @@ func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
 		return err
 	}
 
-	var batch []*dynamodb.WriteRequest
-	for _, item := range result.Items {
-		batch = append(batch, &dynamodb.WriteRequest{
+	batch := make([]*dynamodb.WriteRequest, len(result.Items))
+	for i, item := range result.Items {
+		batch[i] = &dynamodb.WriteRequest{
 			DeleteRequest: &dynamodb.DeleteRequest{
 				Key: item,
 			},
-		})
+		}
 	}
 	batchInput := &dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]*dynamodb.WriteRequest{
@@ -118,8 +110,7 @@ func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
 
 // AddNewApplicant creates a new applicant in the club table for an application period
 func (db *Database) AddNewApplicant(clubID string, applicant *models.Applicant) error {
-	a := newDBApplicant(applicant)
-	item, err := dynamodbattribute.MarshalMap(a)
+	item, err := dynamodbattribute.MarshalMap(newDBApplicant(applicant))
 	if err != nil {
 		return err
 	}
@@ -150,7 +141,7 @@ func (db *Database) GetApplicant(clubID string, period string, email string) (*m
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
 		return nil, err
 	}
-	return getApplicant(&item), nil
+	return newApplicant(&item), nil
 }
 
 // GetApplicants returns all the applicants for an application period
@@ -178,7 +169,7 @@ func (db *Database) GetApplicants(clubID string, period string) ([]*models.Appli
 	}
 	applicants := make([]*models.Applicant, *result.Count)
 	for _, item := range items {
-		applicants = append(applicants, getApplicant(item))
+		applicants = append(applicants, newApplicant(item))
 	}
 	return applicants, nil
 }
@@ -206,13 +197,13 @@ func (db *Database) DeleteApplicant(clubID string, period string, email string) 
 		return err
 	}
 
-	var batch []*dynamodb.WriteRequest
-	for _, item := range result.Items {
-		batch = append(batch, &dynamodb.WriteRequest{
+	batch := make([]*dynamodb.WriteRequest, len(result.Items))
+	for i, item := range result.Items {
+		batch[i] = &dynamodb.WriteRequest{
 			DeleteRequest: &dynamodb.DeleteRequest{
 				Key: item,
 			},
-		})
+		}
 	}
 	batchInput := &dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]*dynamodb.WriteRequest{
@@ -259,7 +250,7 @@ func (db *Database) GetApplication(clubID string, period string, eventID string,
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
 		return nil, err
 	}
-	return getApplication(&item), nil
+	return newApplication(&item), nil
 }
 
 // GetApplications returns all the applications for an event
@@ -287,7 +278,7 @@ func (db *Database) GetApplications(clubID string, period string, eventID string
 	}
 	applications := make([]*models.Application, *result.Count)
 	for _, item := range items {
-		applications = append(applications, getApplication(item))
+		applications = append(applications, newApplication(item))
 	}
 	return applications, nil
 }
@@ -331,7 +322,7 @@ func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error)
 	}
 	tags := make([]*models.Tag, *result.Count)
 	for _, item := range items {
-		tags = append(tags, getTag(item))
+		tags = append(tags, newTag(item))
 	}
 	return tags, nil
 }

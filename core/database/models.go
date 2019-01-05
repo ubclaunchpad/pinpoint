@@ -21,7 +21,7 @@ type applicationItem struct {
 	Peid    string                        `json:"pk"`
 	Email   string                        `json:"sk"`
 	Name    string                        `json:"name"`
-	Entires map[string]*models.FieldEntry `json:"entries"`
+	Entries map[string]*models.FieldEntry `json:"entries"`
 }
 
 type tagItem struct {
@@ -40,7 +40,7 @@ func newDBEvent(event *models.Event) *eventItem {
 	}
 }
 
-func getEvent(item *eventItem) *models.Event {
+func newEvent(item *eventItem) *models.Event {
 	p, e := getPeriodAndEventID(item.PeidPK)
 	return &models.Event{
 		Period:      p,
@@ -61,7 +61,7 @@ func newDBApplicant(applicant *models.Applicant) *applicantItem {
 	}
 }
 
-func getApplicant(item *applicantItem) *models.Applicant {
+func newApplicant(item *applicantItem) *models.Applicant {
 	return &models.Applicant{
 		Period: removePrefix(item.Period),
 		Email:  removePrefix(item.Email),
@@ -77,7 +77,7 @@ func newDBTag(tag *models.Tag) *tagItem {
 	}
 }
 
-func getTag(item *tagItem) *models.Tag {
+func newTag(item *tagItem) *models.Tag {
 	return &models.Tag{
 		Period:  removePrefix(item.Period),
 		TagName: removePrefix(item.TagName),
@@ -90,11 +90,11 @@ func newDBApplication(application *models.Application) *applicationItem {
 		Peid:    peid,
 		Email:   prefixApplicantID(application.Email),
 		Name:    application.Name,
-		Entires: application.Entires,
+		Entries: application.Entries,
 	}
 }
 
-func getApplication(item *applicationItem) *models.Application {
+func newApplication(item *applicationItem) *models.Application {
 	p, e := getPeriodAndEventID(item.Peid)
 	return &models.Application{
 		Period:  p,
