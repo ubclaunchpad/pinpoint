@@ -69,7 +69,6 @@ class Login extends Component {
     }
   }
 
-
   render() {
     return (
       <div className="flex-al-center">
@@ -96,7 +95,6 @@ class Login extends Component {
     );
   }
 }
-
 
 Login.propTypes = {
   client: PropTypes.instanceOf(Pinpoint.API).isRequired,
