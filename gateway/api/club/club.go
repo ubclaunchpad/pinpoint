@@ -1,4 +1,4 @@
-package api
+package club
 
 import (
 	"encoding/json"
@@ -14,15 +14,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// ClubRouter routes to all club endpoints
-type ClubRouter struct {
+// Router routes to all club endpoints
+type Router struct {
 	l   *zap.SugaredLogger
 	c   pinpoint.CoreClient
 	mux *chi.Mux
 }
 
-func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
-	c := &ClubRouter{l.Named("clubs"), core, chi.NewRouter()}
+// NewClubRouter instantiates a new router for club functionality
+func NewClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
+	c := &Router{l.Named("clubs"), core, chi.NewRouter()}
 
 	// club-related endpoints
 	c.mux.Post("/create", c.createClub)
@@ -40,11 +41,11 @@ func newClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *ClubRouter {
 	return c
 }
 
-func (club *ClubRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	club.mux.ServeHTTP(w, r)
+func (c *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	c.mux.ServeHTTP(w, r)
 }
 
-func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateEvent
 	if err := decoder.Decode(&data); err != nil {
@@ -57,7 +58,7 @@ func (club *ClubRouter) createEvent(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, res.Message(r, "Event created successfully", http.StatusCreated))
 }
 
-func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateClub
 	if err := decoder.Decode(&data); err != nil {
@@ -70,7 +71,7 @@ func (club *ClubRouter) createClub(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, res.Message(r, "Club created successfully", http.StatusCreated))
 }
 
-func (club *ClubRouter) createPeriod(w http.ResponseWriter, r *http.Request) {
+func (c *Router) createPeriod(w http.ResponseWriter, r *http.Request) {
 	var (
 		decoder    = json.NewDecoder(r.Body)
 		data       schema.CreatePeriod

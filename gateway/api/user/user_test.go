@@ -1,4 +1,4 @@
-package api
+package user
 
 import (
 	"bytes"
@@ -43,7 +43,7 @@ func TestUserRouter_createUser(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
 			// create user router
-			u := newUserRouter(l, fake)
+			u := NewUserRouter(l, fake)
 
 			// create request
 			var b []byte
@@ -100,7 +100,7 @@ func TestUserRouter_verify(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// create user router
 			fake := &fakes.FakeCoreClient{}
-			u := newUserRouter(l, fake)
+			u := NewUserRouter(l, fake)
 
 			// set stub behaviour
 			fake.VerifyStub = func(c context.Context, r *request.Verify, opts ...grpc.CallOption) (*response.Message, error) {
@@ -153,7 +153,7 @@ func TestUserRouter_login(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Create user router
 			fake := &fakes.FakeCoreClient{}
-			u := newUserRouter(l, fake)
+			u := NewUserRouter(l, fake)
 
 			fake.LoginStub = func(c context.Context, r *request.Login, opts ...grpc.CallOption) (*response.Message, error) {
 				if r.GetEmail() == "demo" && r.GetPassword() == "demopassword" {

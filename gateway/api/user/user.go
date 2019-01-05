@@ -1,4 +1,4 @@
-package api
+package user
 
 import (
 	"encoding/json"
@@ -12,15 +12,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// UserRouter routes to all user endpoints
-type UserRouter struct {
+// Router routes to all user endpoints
+type Router struct {
 	l   *zap.SugaredLogger
 	c   pinpoint.CoreClient
 	mux *chi.Mux
 }
 
-func newUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *UserRouter {
-	u := &UserRouter{l.Named("users"), core, chi.NewRouter()}
+// NewUserRouter instantiates a new router for handling user functionality
+func NewUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
+	u := &Router{l.Named("users"), core, chi.NewRouter()}
 
 	// these should all be public
 	u.mux.Post("/create", u.createUser)
@@ -30,11 +31,11 @@ func newUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *UserRouter {
 	return u
 }
 
-func (u *UserRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (u *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u.mux.ServeHTTP(w, r)
 }
 
-func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
+func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 	// parse request data
 	decoder := json.NewDecoder(r.Body)
 	var user request.CreateAccount
@@ -56,7 +57,7 @@ func (u *UserRouter) createUser(w http.ResponseWriter, r *http.Request) {
 		"email", user.GetEmail()))
 }
 
-func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
+func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	if email == "" || password == "" {
@@ -79,7 +80,7 @@ func (u *UserRouter) login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (u *UserRouter) verify(w http.ResponseWriter, r *http.Request) {
+func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
 	hash := r.FormValue("hash")
 	if hash == "" {
 		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))
