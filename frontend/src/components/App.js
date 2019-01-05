@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Pinpoint from "pinpoint-client";
-import logo from "../assets/logo.svg";
-import ClubsSelection from "./ClubsSelection";
-import Login from "./Login";
-import Reset from "./Reset";
-import Signup from "./Signup";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Pinpoint from 'pinpoint-client';
+import logo from '../assets/logo.svg';
+import ClubsSelection from './ClubsSelection';
+import Login from './Login';
+import Reset from './Reset';
+import Signup from './Signup';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -48,11 +48,11 @@ class App extends Component {
 }
 
 App.defaultProps = {
-  client: new Pinpoint()
+  client: new Pinpoint(),
 };
 
 App.propTypes = {
-  client: PropTypes.instanceOf(Pinpoint.API)
+  client: PropTypes.instanceOf(Pinpoint.API),
 };
 
 export default App;

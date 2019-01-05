@@ -14,48 +14,47 @@ class ClubsSelection extends Component {
       clubs: [
         {
           name: 'UBC Launchpad 1',
-          imagePath: '../assets/ubclaunchpad-logo.png'
+          imagePath: '../assets/ubclaunchpad-logo.png',
         },
         {
           name: 'UBC Launchpad 2',
-          imagePath: '../assets/ubclaunchpad-logo.png'
-        }
-      ]
+          imagePath: '../assets/ubclaunchpad-logo.png',
+        },
+      ],
     });
   }
 
   // TODO Replace unique key with database id of club
   generateclubs() {
-    console.log(this.state);
     const { clubs } = this.state;
     return clubs.map(club => (
-      <li className='margin-left-s margin-right-s' key={Math.random() * 10000}>
+      <li className="margin-left-s margin-right-s" key={Math.random() * 10000}>
         <img
-          className='club-img-l'
+          className="club-img-l"
           src={require('../assets/ubclaunchpad-logo.png')}
           alt={club.name}
         />
-        <p className='textwrap'>{club.name}</p>
+        <p className="textwrap">{club.name}</p>
       </li>
     ));
   }
 
   render() {
     return (
-      <div className='flex-al-cente'>
-        <div className='title margin-title'> Your Clubs </div>
-        <ul className='flex-inline margin-top-xs margin-bottom-xs'>
+      <div className="flex-al-center">
+        <div className="title margin-title"> Your Clubs </div>
+        <ul className="flex-inline margin-top-xs margin-bottom-xs">
           {this.generateclubs()}
           <li
-            className='margin-left-s margin-right-s'
+            className="margin-left-s margin-right-s"
             key={Math.random() * 10000}
           >
             <img
-              className='club-img-l'
+              className="club-img-l"
               src={require('../assets/newclub.png')}
-              alt='new club'
+              alt="new club"
             />
-            <p className='textwrap'>Create new club</p>
+            <p className="textwrap">Create new club</p>
           </li>
         </ul>
       </div>
