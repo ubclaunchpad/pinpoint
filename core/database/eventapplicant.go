@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -12,14 +14,14 @@ func (db *Database) AddNewEvent(clubID string, event *models.Event) error {
 	e := newDBEvent(event)
 	item, err := dynamodbattribute.MarshalMap(e)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to marshal event: %s", err.Error())
 	}
 	input := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: getClubTable(clubID),
 	}
 	if _, err := db.c.PutItem(input); err != nil {
-		return err
+		return fmt.Errorf("Failed to put event: %s", err.Error())
 	}
 	return nil
 }
@@ -35,12 +37,12 @@ func (db *Database) GetEvent(clubID string, period string, eventID string) (*mod
 		},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to get event: %s", err.Error())
 	}
 
 	var item eventItem
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal event: %s", err.Error())
 	}
 	return newEvent(&item), nil
 }
@@ -59,11 +61,11 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.Event, er
 
 	result, err := db.c.Query(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed query for all events: %s", err.Error())
 	}
 	items := make([]*eventItem, *result.Count)
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &items); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal events: %s", err.Error())
 	}
 	events := make([]*models.Event, *result.Count)
 	for _, item := range items {
@@ -86,7 +88,7 @@ func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
 	}
 	result, err := db.c.Query(input)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed query for event: %s", err.Error())
 	}
 
 	batch := make([]*dynamodb.WriteRequest, len(result.Items))
@@ -103,7 +105,7 @@ func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
 		},
 	}
 	if _, err = db.c.BatchWriteItem(batchInput); err != nil {
-		return err
+		return fmt.Errorf("Failed batch delete requests for event: %s", err.Error())
 	}
 	return nil
 }
@@ -112,14 +114,14 @@ func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
 func (db *Database) AddNewApplicant(clubID string, applicant *models.Applicant) error {
 	item, err := dynamodbattribute.MarshalMap(newDBApplicant(applicant))
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to marshal applicant: %s", err.Error())
 	}
 	input := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: getClubTable(clubID),
 	}
 	if _, err := db.c.PutItem(input); err != nil {
-		return err
+		return fmt.Errorf("Failed to put applicant: %s", err.Error())
 	}
 	return nil
 }
@@ -134,12 +136,12 @@ func (db *Database) GetApplicant(clubID string, period string, email string) (*m
 		},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to get applicant: %s", err.Error())
 	}
 
 	var item applicantItem
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal applicant: %s", err.Error())
 	}
 	return newApplicant(&item), nil
 }
@@ -161,11 +163,11 @@ func (db *Database) GetApplicants(clubID string, period string) ([]*models.Appli
 
 	result, err := db.c.Query(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed query for all applicants: %s", err.Error())
 	}
 	items := make([]*applicantItem, *result.Count)
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &items); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal all applicants: %s", err.Error())
 	}
 	applicants := make([]*models.Applicant, *result.Count)
 	for _, item := range items {
@@ -194,7 +196,7 @@ func (db *Database) DeleteApplicant(clubID string, period string, email string) 
 	}
 	result, err := db.c.Query(input)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed query for applicant: %s", err.Error())
 	}
 
 	batch := make([]*dynamodb.WriteRequest, len(result.Items))
@@ -211,7 +213,7 @@ func (db *Database) DeleteApplicant(clubID string, period string, email string) 
 		},
 	}
 	if _, err = db.c.BatchWriteItem(batchInput); err != nil {
-		return err
+		return fmt.Errorf("Failed batch delete request for applicant: %s", err.Error())
 	}
 	return nil
 }
@@ -221,14 +223,14 @@ func (db *Database) AddNewApplication(clubID string, application *models.Applica
 	a := newDBApplication(application)
 	item, err := dynamodbattribute.MarshalMap(a)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to marshal application: %s", err.Error())
 	}
 	input := &dynamodb.PutItemInput{
 		Item:      item,
 		TableName: getClubTable(clubID),
 	}
 	if _, err := db.c.PutItem(input); err != nil {
-		return err
+		return fmt.Errorf("Failed to put application: %s", err.Error())
 	}
 	return nil
 }
@@ -243,12 +245,12 @@ func (db *Database) GetApplication(clubID string, period string, eventID string,
 		},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to get application: %s", err.Error())
 	}
 
 	var item applicationItem
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to put application: %s", err.Error())
 	}
 	return newApplication(&item), nil
 }
@@ -270,11 +272,11 @@ func (db *Database) GetApplications(clubID string, period string, eventID string
 
 	result, err := db.c.Query(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to get all applications: %s", err.Error())
 	}
 	items := make([]*applicationItem, *result.Count)
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &items); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal applications: %s", err.Error())
 	}
 	applications := make([]*models.Application, *result.Count)
 	for _, item := range items {
@@ -292,7 +294,7 @@ func (db *Database) DeleteApplication(clubID string, period string, eventID stri
 			"sk": {S: aws.String(prefixApplicantID(email))},
 		},
 	}); err != nil {
-		return err
+		return fmt.Errorf("Failed to delete application: %s", err.Error())
 	}
 	return nil
 }
@@ -314,11 +316,11 @@ func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error)
 
 	result, err := db.c.Query(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed query for all tags: %s", err.Error())
 	}
 	items := make([]*tagItem, *result.Count)
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &items); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to unmarshal tags: %s", err.Error())
 	}
 	tags := make([]*models.Tag, *result.Count)
 	for _, item := range items {
