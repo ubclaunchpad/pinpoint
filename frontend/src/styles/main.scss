@@ -1,20 +1,16 @@
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
 @import './base/all';
 @import './utils/all';
 @import './components/all';
 
-
 .navbardiv{
       padding-bottom: 80px;
       #navbar {
-        color: rgb(13, 26, 38);
         position: fixed;
         padding: 10px;
         line-height: 60px;
         width: 100%;
-        
-        -moz-box-shadow:    inset 0 0 10px #000000;
-        -webkit-box-shadow: inset 0 0 10px #000000;
-        box-shadow:         inset 0 0 10px #000000;
+        border: 1px solid black;
       }
 
       .pinpointlogo {
@@ -26,9 +22,6 @@
       #navbar ul {
         float: right;
         list-style: none;
-        text-align: right;
-        transition: transform 0.5s ease-out;
-        -webkit-transition: transform 0.5s ease-out;
       } 
 
       #navbar li {
@@ -37,34 +30,8 @@
       
       #navbar li a {
         color: rgb(13, 26, 38);
-        font-size: 0.8em;
         margin: 0 20px;
-        padding: 0 4px;
         position: relative;
-        transition: all 0.5s ease;
-        -webkit-transition: all 0.5s ease;
       }
-
-      
-      /* Animated Bottom Line */
-      #navbar li a:before, #navbar li a:after {
-        content: '';
-        position: absolute;
-        width: 0%;
-        height: 1px;
-        bottom: -1px;
-        background: rgb(13, 26, 38);
-      }
-      
-      #navbar li a:before {
-        left: 0;
-        transition: 0.5s;
-      }
-      
-      #navbar li a:hover:before {
-        background: rgb(13, 26, 38);
-        width: 100%;
-        transition: width 0.5s cubic-bezier((0.22, 0.61, 0.36, 1));
-      }
-      
 }
+

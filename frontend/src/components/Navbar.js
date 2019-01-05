@@ -29,7 +29,7 @@ class Navbar extends Component {
   render() {
     return (
       <div className="navbardiv">
-        <nav id="navbar" className="">
+        <nav id="navbar" className="animate-menu">
           <div className="nav-wrapper">
             <div className="logo">
               <a href="/">
