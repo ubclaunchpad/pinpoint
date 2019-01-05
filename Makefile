@@ -14,6 +14,7 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
+	bash .scripts/protoc-gen-go.sh
 	go get -u github.com/maxbrunsfeld/counterfeiter
 	go get -u github.com/vburenin/ifacemaker
 	dep ensure

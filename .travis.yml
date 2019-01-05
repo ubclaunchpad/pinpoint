@@ -13,6 +13,7 @@ matrix:
         - "1.11"
       install:
         - bash .scripts/install-protoc.sh
+        - bash .scripts/protoc-gen-go.sh
         - go get -u github.com/maxbrunsfeld/counterfeiter
         - go get -u github.com/vburenin/ifacemaker
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
