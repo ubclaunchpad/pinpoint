@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Pinpoint from 'pinpoint-client';
-// import logo from '../assets/logo.svg';
+import logo from '../assets/logo.svg';
+import ClubsSelection from './ClubsSelection';
 import Login from './Login';
 import Reset from './Reset';
 import Signup from './Signup';
@@ -15,16 +16,32 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <div>
-            <Navbar />
-          </div>
+          <Navbar />
           <Switch>
             <Route exact path="/">
+              <div className="app">
+                <header className="app-header">
+                  <img src={logo} className="app-logo" alt="logo" />
+                  <h1 className="app-title">Welcome to React</h1>
+                </header>
+                <p className="app-intro">
+                  To get started, edit
+                  <code>src/App.js</code>
+                  and save to reload.
+                </p>
+              </div>
+            </Route>
+            <Route exact path="/about">
               <p>
                 Pinpoint is a versatile club application managment application
               </p>
             </Route>
-            <Route exact path="/login" component={() => <Login client={client} />} />
+            <Route exact path="/me/clubs" component={ClubsSelection} />
+            <Route
+              exact
+              path="/login"
+              component={() => <Login client={client} />}
+            />
             <Route exact path="/reset" component={Reset} />
             <Route exact path="/signup" component={Signup} />
           </Switch>
