@@ -6,6 +6,7 @@ import logo from '../assets/logo.svg';
 import Login from './Login';
 import Reset from './Reset';
 import Signup from './Signup';
+import ApplicationPeriod from '../scenes/ApplicationPeriod';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -37,6 +38,7 @@ class App extends Component {
           <Route exact path="/login" component={() => <Login client={client} />} />
           <Route exact path="/reset" component={Reset} />
           <Route exact path="/signup" component={Signup} />
+          <Route exact path="/scenes/applicationperiod" component={ApplicationPeriod} />
         </Switch>
       </BrowserRouter>
     );
