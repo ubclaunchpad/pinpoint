@@ -9,13 +9,16 @@ $spacing-m:   24px;
 $spacing-l:   32px;
 $spacing-xl:  40px;
 $spacing-xxl: 48px;
+$spacing-xxxl: 80px;
 
 
 // todo - more classes, replace 1 with variables
 
 .pad {
   // navbar
-  &-nav { padding-top: 1; }
+  &-nav { 
+    padding-bottom: $spacing-xxxl;
+  }
 
   // left padding
   &-left, &-sides {
@@ -44,7 +47,9 @@ $spacing-xxl: 48px;
 
 .margin {
   // navbar
-  &-nav { margin-top: 1; }
+  &-nav { 
+    a { margin: 0 $spacing-s;}
+  }
 
   &-title {
     margin-bottom: $spacing-s;

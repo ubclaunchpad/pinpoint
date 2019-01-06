@@ -69,7 +69,6 @@ body {
 ///////////////////////////////////////////////////////////////
 
 // TODO: Remove most of this
-
 .input-small {
   width: 200px;
   height: 30px;
@@ -109,6 +108,32 @@ a {
   border-radius: 10px;
   border-color: black;
   border-width: 3px;
+}
+
+.pinpointlogo {
+  float: left;
+  height: 60px;
+}
+
+// Navbar
+.navbar {
+  position: fixed;
+  line-height: 60px;
+  width: 100%;
+  border: 1px solid black;
+
+  ul {
+    float: right;
+    list-style: none;
+  } 
+
+  li {
+    display: inline-block;
+    a {
+      color: black;
+      position: relative;
+    }
+  }
 }
 
 // Removes any focusing behaviour from style for pinpoint theme

@@ -3,35 +3,4 @@
 @import './utils/all';
 @import './components/all';
 
-.navbardiv{
-      padding-bottom: 80px;
-      #navbar {
-        position: fixed;
-        padding: 10px;
-        line-height: 60px;
-        width: 100%;
-        border: 1px solid black;
-      }
-
-      .pinpointlogo {
-        float: left;
-        margin-left: 10px;
-        height: 60px;
-      }
-
-      #navbar ul {
-        float: right;
-        list-style: none;
-      } 
-
-      #navbar li {
-        display: inline-block;
-      }
-      
-      #navbar li a {
-        color: rgb(13, 26, 38);
-        margin: 0 20px;
-        position: relative;
-      }
-}
 

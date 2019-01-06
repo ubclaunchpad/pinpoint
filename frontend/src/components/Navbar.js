@@ -28,20 +28,17 @@ class Navbar extends Component {
 
   render() {
     return (
-      <div className="navbardiv">
-        <nav id="navbar" className="animate-menu">
-          <div className="nav-wrapper">
-            <div className="logo">
-              <a href="/">
-                <img src={logo} className="pinpointlogo" alt="logo" />
-              </a>
-            </div>
-            <ul id="menu">
-              <li><a href="/">Home</a></li>
-              {this.checkLogin()}
-            </ul>
-
+      <div className="pad-nav border-m">
+        <nav className="animate-menu navbar">
+          <div className="logo">
+            <a href="/">
+              <img src={logo} className="pinpointlogo" alt="logo" />
+            </a>
           </div>
+          <ul className="margin-nav">
+            <li><a href="/">Home</a></li>
+            {this.checkLogin()}
+          </ul>
         </nav>
       </div>
     );
