@@ -19,7 +19,6 @@ deps:
 	go get -u github.com/vburenin/ifacemaker
 	dep ensure
 	( cd client ; npm install )
-	( cd frontend ; npm run preinstall )
 	( cd frontend ; npm install )
 
 # Execute tests
