@@ -2,13 +2,13 @@
 package fakes
 
 import (
-	context "context"
-	sync "sync"
+	"context"
+	"sync"
 
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
-	request "github.com/ubclaunchpad/pinpoint/protobuf/request"
-	response "github.com/ubclaunchpad/pinpoint/protobuf/response"
-	grpc "google.golang.org/grpc"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
+	"github.com/ubclaunchpad/pinpoint/protobuf/response"
+	"google.golang.org/grpc"
 )
 
 type FakeCoreClient struct {
