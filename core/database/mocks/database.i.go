@@ -2,10 +2,10 @@
 package mocks
 
 import (
-	sync "sync"
+	"sync"
 
-	database "github.com/ubclaunchpad/pinpoint/core/database"
-	model "github.com/ubclaunchpad/pinpoint/core/model"
+	"github.com/ubclaunchpad/pinpoint/core/database"
+	"github.com/ubclaunchpad/pinpoint/core/model"
 )
 
 type FakeDBClient struct {
