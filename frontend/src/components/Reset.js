@@ -6,11 +6,11 @@ class Reset extends Component {
     this.state = {
       email: '',
     };
-    this.updatetextfields = this.updatetextfields.bind(this);
+    this.updateTextFields = this.updateTextFields.bind(this);
     this.attemptSendReset = this.attemptSendReset.bind(this);
   }
 
-  updatetextfields(e) {
+  updateTextFields(e) {
     const { email } = this.state;
     console.log(email);
     const infoField = e.target.getAttribute('type');
@@ -31,7 +31,7 @@ class Reset extends Component {
         <p>Enter the e-mail linked to your account</p>
         <p>We&#x2019;ll send you an e-mail with a link to reset your password.</p>
         <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
-          <input className="input-box input-small" type="email" placeholder="E-mail address" onChange={this.updatetextfields} />
+          <input className="input-box input-small" type="email" placeholder="E-mail address" onChange={this.updateTextFields} />
         </div>
         <div>
           <button className="click-button button-medium animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
