@@ -39,7 +39,7 @@ class ApplicationPeriod extends Component {
     }
   }
 
-  updatetextfields(e) {
+  updateTextFields(e) {
     const infoField = e.target.getAttribute('id');
     this.setState({ [infoField]: e.target.value });
   }
