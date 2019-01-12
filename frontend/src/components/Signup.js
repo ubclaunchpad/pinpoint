@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Notification from './Notification';
 
 class Signup extends Component {
   constructor(props) {
@@ -9,9 +10,16 @@ class Signup extends Component {
       password: '',
       passwordConfirm: '',
       message: null,
+      notification: {
+        type: 'error',
+        showNotification: false,
+        message: "",
+        transient: false,
+      },
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
+    this.clickHandle = this.clickHandle.bind(this);
   }
 
   updateTextField(e) {
@@ -71,10 +79,21 @@ class Signup extends Component {
     }
   }
 
+  clickHandle() {
+    this.setState({ notification: {
+      type: "error",
+      message: "this is an error msg",
+      showNotification: true,
+      transient: false,
+    }});
+  }
+
 
   render() {
     return (
       <div className="flex-al-center">
+        <button onClick={this.clickHandle.bind(this)}>button</button>
+        <Notification {...this.state.notification}></Notification>
         <div className="title margin-title">Sign-up</div>
         { this.generateMessage() }
         <div className="flex-inlinegrid margin-ends-xs">
