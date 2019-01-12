@@ -2,13 +2,14 @@
 //   SPACING CLASSES   //
 /////////////////////////
 
-$spacing-xxs:  4px;
-$spacing-xs:   8px;
-$spacing-s:   16px;
-$spacing-m:   24px;
-$spacing-l:   32px;
-$spacing-xl:  40px;
-$spacing-xxl: 48px;
+$spacing-xxs:    4px;
+$spacing-xs:     8px;
+$spacing-s:     16px;
+$spacing-m:     24px;
+$spacing-l:     32px;
+$spacing-xl:    40px;
+$spacing-xxl:   48px;
+$spacing-xxxl: 300px;
 
 
 // todo - more classes, replace 1 with variables
@@ -20,6 +21,7 @@ $spacing-xxl: 48px;
   // left padding
   &-left, &-sides {
     &-m { padding-left: $spacing-m; }
+    &-xxxl { padding-left: $spacing-xxxl; }
   }
 
   // right padding
@@ -32,6 +34,7 @@ $spacing-xxl: 48px;
     &-xs { padding-top: $spacing-xs; }
     &-s { padding-top: $spacing-s; }
     &-m { padding-top: $spacing-m; }
+    &-xxl { padding-top: $spacing-xxl; }
   }
 
   // bottom margin

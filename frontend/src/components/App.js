@@ -7,6 +7,7 @@ import ClubsSelection from './ClubsSelection';
 import Login from './Login';
 import Reset from './Reset';
 import Signup from './Signup';
+import CreateApplicationPeriod from '../scenes/ApplicationPeriod/create';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -41,6 +42,7 @@ class App extends Component {
           />
           <Route exact path="/reset" component={Reset} />
           <Route exact path="/signup" component={Signup} />
+          <Route exact path="/scenes/applicationperiod" component={CreateApplicationPeriod} />
         </Switch>
       </BrowserRouter>
     );
