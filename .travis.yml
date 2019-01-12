@@ -64,9 +64,8 @@ matrix:
         - npm run lint
         - npm run sass-lint
       script:
-        # disable build for now until client issues can be resolved
-        # - npm run build
-        - npm test -- --coverage 
+        - npm run build
+        - npm test -- --coverage
 
     # Client
     - name: "Client Tests"
@@ -83,5 +82,5 @@ matrix:
       script:
         - npm test
 
-notifications: 
-  email: false 
+notifications:
+  email: false
