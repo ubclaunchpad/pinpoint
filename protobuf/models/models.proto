@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+// package model defines model datatypes
+package models;
+option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/models";
+
+message Event {
+  string period = 1;
+  string eventID = 2;
+  string name = 3;
+  string description = 4;
+  repeated Field fields = 5;
+}
+
+message Field {
+  string name = 1;
+  bool required = 2;
+  oneof properties {
+    LongText long_text = 3;
+    ShortText short_text = 4;
+  };
+}
+
+message LongText {
+  string im_long = 1;
+}
+
+message ShortText {
+  string im_short = 1;
+}
+
+message Applicant {
+  string period = 1;
+  string email = 2;
+  string name = 3;
+  repeated string tags = 4;
+}
+
+message Application {
+  string period = 1;
+  string eventID = 2;
+  string email = 3;
+  string name = 4;
+  map<string, FieldEntry> entries = 5;
+}
+
+message FieldEntry {
+  bytes value = 1;
+}
+
+message Tag {
+  string period = 1;
+  string tagName = 2;
+}
