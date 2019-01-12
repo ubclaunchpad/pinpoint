@@ -3,3 +3,8 @@
 
 # Force Unix EOLs, to prevent Windows from breaking them.
 *.* text eol=lf
+
+# Image Corruption Fix
+*.jpg binary
+*.png binary
+*.gif binary
