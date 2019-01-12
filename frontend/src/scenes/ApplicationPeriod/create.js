@@ -16,15 +16,27 @@ class ApplicationPeriod extends Component {
   }
 
   handleChangeStart(date) {
-    this.setState({
-      startDate: date,
-    });
+    const { endDate } = this.state;
+    if (endDate < date) {
+      this.setState({ hasError: true });
+      const { hasError } = this.state;
+      console.log('Start date cannot be greater than end date!', hasError);
+    } else {
+      this.setState({
+        startDate: date,
+      });
+    }
   }
 
   handleChangeEnd(date) {
-    this.setState({
-      endDate: date,
-    });
+    const { startDate } = this.state;
+    if (startDate > date) {
+      this.setState({ hasError: true });
+      const { hasError } = this.state;
+      console.log('Start date cannot be greater than end date!', hasError);
+    } else {
+      this.setState({ endDate: date });
+    }
   }
 
   updatetextfields(e) {
@@ -35,11 +47,6 @@ class ApplicationPeriod extends Component {
   render() {
     const { startDate } = this.state;
     const { endDate } = this.state;
-    if (startDate > endDate) {
-      this.setState({ hasError: true });
-      const { hasError } = this.state;
-      console.log('Start date cannot be greater than end date!', hasError);
-    }
     return (
       <div>
         <div className="flex dir-col pad-left-xxxl">
