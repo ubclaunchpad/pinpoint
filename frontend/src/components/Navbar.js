@@ -7,23 +7,23 @@ class Navbar extends Component {
     this.state = {
       loggedIn: false,
     };
-    this.checkLogin = this.checkLogin.bind(this);
+    this.loginStateDiv = this.loginStateDiv.bind(this);
     this.attemptLogOut = this.attemptLogOut.bind(this);
   }
 
-  checkLogin() {
+  loginStateDiv() {
     const { loggedIn } = this.state;
     if (loggedIn) {
       return (
         <span>
-          <li><a className="margin-nav" href="/me/clubs">My Clubs</a></li>
+          <li><a className="margin-sides-s" href="/me/clubs">My Clubs</a></li>
           <li><button className="click-button button-small animate-button" type="submit" onClick={this.attemptLogOut}>Log Out</button></li>
         </span>
       );
     }
     return (
       <span>
-        <li><a className="margin-nav" href="/signup">Sign Up</a></li>
+        <li><a className="margin-sides-s" href="/signup">Sign Up</a></li>
         <li><a href="/login">Log In</a></li>
       </span>
     );
@@ -42,9 +42,9 @@ class Navbar extends Component {
               <img src={logo} className="pinpointlogo" alt="logo" />
             </a>
           </div>
-          <ul className="margin-nav">
+          <ul className="margin-right-s">
             <li><a href="/">Home</a></li>
-            {this.checkLogin()}
+            {this.loginStateDiv()}
           </ul>
         </nav>
       </div>

@@ -48,7 +48,7 @@ $spacing-xxxl: 80px;
 .margin {
   // navbar
   &-nav { 
-    margin: 0 $spacing-s;
+    margin: 0;
   }
 
   &-title {
@@ -66,10 +66,10 @@ $spacing-xxxl: 80px;
 
   // right margin
   &-right, &-sides {
-    &-xs { margin-left: $spacing-xs; }
-    &-s { margin-left: $spacing-s; }
-    &-m { margin-left: $spacing-m; }
-    &-l { margin-left: $spacing-l; }
+    &-xs { margin-right: $spacing-xs; }
+    &-s { margin-right: $spacing-s; }
+    &-m { margin-right: $spacing-m; }
+    &-l { margin-right: $spacing-l; }
   }
 
   // top margin
