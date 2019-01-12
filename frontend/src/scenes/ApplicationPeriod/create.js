@@ -10,7 +10,7 @@ class ApplicationPeriod extends Component {
       endDate: new Date(),
       hasError: false,
     };
-    this.updatetextfields = this.updatetextfields.bind(this);
+    this.updateTextFields = this.updateTextFields.bind(this);
     this.handleChangeStart = this.handleChangeStart.bind(this);
     this.handleChangeEnd = this.handleChangeEnd.bind(this);
   }
@@ -40,7 +40,7 @@ class ApplicationPeriod extends Component {
   }
 
   updatetextfields(e) {
-    const infoField = e.target.getAttribute('type');
+    const infoField = e.target.getAttribute('id');
     this.setState({ [infoField]: e.target.value });
   }
 
@@ -53,7 +53,7 @@ class ApplicationPeriod extends Component {
           <div className="title margin-title">Create Application Period</div>
           <div className="heading1 flex-ai-start pad-top-xxl">Applications</div>
           <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
-            <input className="input-box input-large" type="applications" placeholder="Application" onChange={this.updatetextfields} />
+            <input className="input-box input-large" id="applications" placeholder="Application" onChange={this.updatetextfields} />
           </div>
           <div className="heading1 pad-top-xxl">Allow applicants to apply</div>
         </div>
