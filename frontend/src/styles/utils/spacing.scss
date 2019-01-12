@@ -48,7 +48,7 @@ $spacing-xxxl: 80px;
 .margin {
   // navbar
   &-nav { 
-    a { margin: 0 $spacing-s;}
+    margin: 0 $spacing-s;
   }
 
   &-title {
