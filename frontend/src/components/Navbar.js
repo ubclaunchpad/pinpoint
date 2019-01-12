@@ -11,22 +11,20 @@ class Navbar extends Component {
     this.attemptLogOut = this.attemptLogOut.bind(this);
   }
 
-  // Return navbar layout based on whether user is logged in or not
-  // For now default is logged in state for dev purpose
   checkLogin() {
     const { loggedIn } = this.state;
     if (loggedIn) {
       return (
         <span>
           <li><a className="margin-nav" href="/me/clubs">My Clubs</a></li>
-          <li><button className="margin-nav click-button button-medium animate-button" type="submit" onClick={this.attemptLogOut}>Log Out</button></li>
+          <li><button className="click-button button-small animate-button" type="submit" onClick={this.attemptLogOut}>Log Out</button></li>
         </span>
       );
     }
     return (
       <span>
         <li><a className="margin-nav" href="/signup">Sign Up</a></li>
-        <li><a className="margin-nav" href="/login">Log In</a></li>
+        <li><a href="/login">Log In</a></li>
       </span>
     );
   }
