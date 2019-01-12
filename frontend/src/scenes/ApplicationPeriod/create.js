@@ -61,6 +61,7 @@ class CreateApplicationPeriod extends Component {
           <div>
             <div>From</div>
             <DatePicker
+              className="input-box input-small"
               selected={startDate}
               onChange={this.handleChangeStart}
             />
@@ -68,6 +69,7 @@ class CreateApplicationPeriod extends Component {
           <div className="pad-left-m">
             <div>To</div>
             <DatePicker
+              className="input-box input-small"
               selected={endDate}
               onChange={this.handleChangeEnd}
             />
