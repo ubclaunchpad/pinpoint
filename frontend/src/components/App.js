@@ -6,7 +6,7 @@ import logo from '../assets/logo.svg';
 import Login from './Login';
 import Reset from './Reset';
 import Signup from './Signup';
-import ApplicationPeriod from '../scenes/ApplicationPeriod';
+import ApplicationPeriod from '../scenes/ApplicationPeriod/create';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
