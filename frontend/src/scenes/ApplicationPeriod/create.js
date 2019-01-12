@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-class ApplicationPeriod extends Component {
+class CreateApplicationPeriod extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,11 +51,11 @@ class ApplicationPeriod extends Component {
       <div>
         <div className="flex dir-col pad-left-xxxl">
           <div className="title margin-title">Create Application Period</div>
-          <div className="heading1 flex-ai-start pad-top-xxl">Applications</div>
+          <div className="h1 flex-ai-start pad-top-xxl">Applications</div>
           <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
             <input className="input-box input-large" id="applications" placeholder="Application" onChange={this.updatetextfields} />
           </div>
-          <div className="heading1 pad-top-xxl">Allow applicants to apply</div>
+          <div className="h1 pad-top-xxl">Allow applicants to apply</div>
         </div>
         <div className="flex dir-row pad-left-xxxl">
           <div>
@@ -78,4 +78,4 @@ class ApplicationPeriod extends Component {
   }
 }
 
-export default ApplicationPeriod;
+export default CreateApplicationPeriod;
