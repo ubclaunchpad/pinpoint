@@ -7,7 +7,11 @@ import ClubsSelection from './ClubsSelection';
 import Login from './Login';
 import Reset from './Reset';
 import Signup from './Signup';
+<<<<<<< HEAD
 import Navbar from './Navbar';
+=======
+import CreateApplicationPeriod from '../scenes/ApplicationPeriod/create';
+>>>>>>> master
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -35,6 +39,7 @@ class App extends Component {
               <p>
                 Pinpoint is a versatile club application managment application
               </p>
+<<<<<<< HEAD
             </Route>
             <Route exact path="/me/clubs" component={ClubsSelection} />
             <Route
@@ -46,6 +51,25 @@ class App extends Component {
             <Route exact path="/signup" component={Signup} />
           </Switch>
         </div>
+=======
+            </div>
+          </Route>
+          <Route exact path="/about">
+            <p>
+              Pinpoint is a versatile club application managment application
+            </p>
+          </Route>
+          <Route exact path="/me/clubs" component={ClubsSelection} />
+          <Route
+            exact
+            path="/login"
+            component={() => <Login client={client} />}
+          />
+          <Route exact path="/reset" component={Reset} />
+          <Route exact path="/signup" component={Signup} />
+          <Route exact path="/scenes/applicationperiod" component={CreateApplicationPeriod} />
+        </Switch>
+>>>>>>> master
       </BrowserRouter>
     );
   }
