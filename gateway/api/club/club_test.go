@@ -88,7 +88,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		args     args
 		wantCode int
 	}{
-		{"bad input", args{"", nil}, http.StatusBadRequest},
+		{"bad input", args{"/my_club/period/create", nil}, http.StatusBadRequest},
 		{"invalid start", args{
 			"/my_club/period/create",
 			&schema.CreatePeriod{
