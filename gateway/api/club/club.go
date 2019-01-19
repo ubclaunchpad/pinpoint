@@ -64,6 +64,7 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 	var _ = chi.URLParam(r, string(keyClub))
 	var _ = chi.URLParam(r, string(keyPeriod))
 
+	// read request body
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateEvent
 	if err := decoder.Decode(&data); err != nil {
