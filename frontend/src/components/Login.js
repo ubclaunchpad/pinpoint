@@ -69,7 +69,6 @@ class Login extends Component {
     }
   }
 
-
   render() {
     return (
       <div className="flex-al-center">
@@ -90,13 +89,12 @@ class Login extends Component {
         </div>
         <div className="loginhelp">
           <span>Don&#x2019;t have an account? &nbsp;</span>
-          <a href="/login">Sign up</a>
+          <a href="/signup">Sign up</a>
         </div>
       </div>
     );
   }
 }
-
 
 Login.propTypes = {
   client: PropTypes.instanceOf(Pinpoint.API).isRequired,

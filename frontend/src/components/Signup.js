@@ -60,7 +60,6 @@ class Signup extends Component {
       error: 'fa-times-circle',
     };
 
-
     if (message) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
@@ -70,7 +69,6 @@ class Signup extends Component {
       );
     }
   }
-
 
   render() {
     return (
