@@ -61,8 +61,11 @@ func (c *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 	// get associated period and club
-	var _ = chi.URLParam(r, string(keyClub))
-	var _ = chi.URLParam(r, string(keyPeriod))
+	var club = chi.URLParam(r, string(keyClub))
+	var period = chi.URLParam(r, string(keyPeriod))
+	c.l.Debugw("received request to create event",
+		"club", club,
+		"period", period)
 
 	// read request body
 	var decoder = json.NewDecoder(r.Body)
