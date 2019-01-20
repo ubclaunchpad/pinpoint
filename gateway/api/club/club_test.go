@@ -80,6 +80,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 	}
 
 	type args struct {
+		path   string
 		period *schema.CreatePeriod
 	}
 	tests := []struct {
@@ -87,27 +88,35 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		args     args
 		wantCode int
 	}{
-		{"bad input", args{nil}, http.StatusBadRequest},
-		{"invalid start", args{&schema.CreatePeriod{
-			Name:  "Winter Semester",
-			Start: "2018asdasdfawkjefe-09",
-			End:   "2018-08-09",
-		}}, http.StatusBadRequest},
-		{"invalid end", args{&schema.CreatePeriod{
-			Name:  "Winter Semester",
-			Start: "2018-08-09",
-			End:   "2018-08asdfasdfasdf-12",
-		}}, http.StatusBadRequest},
-		{"end before start", args{&schema.CreatePeriod{
-			Name:  "Winter Semester",
-			Start: "2018-08-15",
-			End:   "2018-08-10",
-		}}, http.StatusBadRequest},
-		{"successfully create period", args{&schema.CreatePeriod{
-			Name:  "Winter Semester",
-			Start: "2018-08-09",
-			End:   "2018-08-10",
-		}}, http.StatusCreated},
+		{"bad input", args{"/my_club/period/create", nil}, http.StatusBadRequest},
+		{"invalid start", args{
+			"/my_club/period/create",
+			&schema.CreatePeriod{
+				Name:  "Winter Semester",
+				Start: "2018asdasdfawkjefe-09",
+				End:   "2018-08-09",
+			}}, http.StatusBadRequest},
+		{"invalid end", args{
+			"/my_club/period/create",
+			&schema.CreatePeriod{
+				Name:  "Winter Semester",
+				Start: "2018-08-09",
+				End:   "2018-08asdfasdfasdf-12",
+			}}, http.StatusBadRequest},
+		{"end before start", args{
+			"/my_club/period/create",
+			&schema.CreatePeriod{
+				Name:  "Winter Semester",
+				Start: "2018-08-15",
+				End:   "2018-08-10",
+			}}, http.StatusBadRequest},
+		{"successfully create period", args{
+			"/my_club/period/create",
+			&schema.CreatePeriod{
+				Name:  "Winter Semester",
+				Start: "2018-08-09",
+				End:   "2018-08-10",
+			}}, http.StatusCreated},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -124,7 +133,7 @@ func TestClubRouter_createPeriod(t *testing.T) {
 				}
 			}
 			reader := bytes.NewReader(b)
-			req, err := http.NewRequest("POST", "/period/create", reader)
+			req, err := http.NewRequest("POST", tt.args.path, reader)
 			if err != nil {
 				t.Error(err)
 				return

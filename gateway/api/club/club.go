@@ -8,10 +8,16 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/ubclaunchpad/pinpoint/gateway/api/ctxutil"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"go.uber.org/zap"
+)
+
+const (
+	keyClub   ctxutil.Key = "club_name"
+	keyPeriod ctxutil.Key = "period_name"
 )
 
 // Router routes to all club endpoints
@@ -25,17 +31,25 @@ type Router struct {
 func NewClubRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
 	c := &Router{l.Named("clubs"), core, chi.NewRouter()}
 
-	// club-related endpoints
+	// club endpoints
 	c.mux.Post("/create", c.createClub)
 
-	// club-event-related endpoints
-	c.mux.Route("/event", func(r chi.Router) {
-		r.Post("/create", c.createEvent)
-	})
+	// specific club endpoints, e.g. /my_awesome_club/overview
+	c.mux.Route(fmt.Sprintf("/{%s}", keyClub), func(r chi.Router) {
+		r.Get("/overview", func(w http.ResponseWriter, r *http.Request) { /* TODO */ })
 
-	// club-period-related endpoints
-	c.mux.Route("/period", func(r chi.Router) {
-		r.Post("/create", c.createPeriod)
+		// club.period endpoints
+		r.Route("/period", func(r chi.Router) {
+			r.Post("/create", c.createPeriod)
+
+			// specific period endpoints, e.g. /my_awesome_club/period/spring_2018
+			r.Route(fmt.Sprintf("/{%s}", keyPeriod), func(r chi.Router) {
+				// club.period.event endpoints
+				r.Route("/event", func(r chi.Router) {
+					r.Post("/create", c.createEvent)
+				})
+			})
+		})
 	})
 
 	return c
@@ -46,6 +60,14 @@ func (c *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
+	// get associated period and club
+	var club = chi.URLParam(r, string(keyClub))
+	var period = chi.URLParam(r, string(keyPeriod))
+	c.l.Debugw("received request to create event",
+		"club", club,
+		"period", period)
+
+	// read request body
 	var decoder = json.NewDecoder(r.Body)
 	var data schema.CreateEvent
 	if err := decoder.Decode(&data); err != nil {
