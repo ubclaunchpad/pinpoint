@@ -21,7 +21,7 @@ To get started, make sure you have the following installed:
 
 - [Golang](https://golang.org/dl/) 1.11+
 - [Node.js](https://nodejs.org/en/download/) 8.12+
-- [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation)
+- [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+
 - [Docker CE](https://docs.docker.com/install/#supported-platforms) and [docker-compose](https://docs.docker.com/compose/install/)
 
 To fetch the codebase, use `go get`:
@@ -36,6 +36,21 @@ You will need [dep](https://github.com/golang/dep#installation) and [npm](https:
 
 ```bash
 $> make deps
+```
+
+### Building
+
+#### Golang Binaries
+
+```sh
+$> make pinpoint-core
+$> make pinpoint-gateway
+```
+
+#### Web Application
+
+```sh
+$> make web
 ```
 
 ### Spinning up Services Locally
@@ -58,6 +73,14 @@ $> make gateway
 
 By default, provided certificates in `dev/certs` are used. These were generated using [certstrap](https://github.com/square/certstrap).
 
+To run enable the local monitoring suite:
+
+```sh
+$> make monitoring
+$> make core FLAGS=--logpath=tmp/core.log
+$> make gateway FLAGS=--logpath=tmp/gateway.log
+```
+
 ### Updating the Golang gRPC API
 
 `gateway` and `core` uses the Golang API within the `protobuf` directory to communicate. If you make changes to the protobuf definitions in the `protobuf` directories, you will need to update this API:
@@ -70,14 +93,3 @@ $> make check  # ensure everything compiles
 You will need [protobuf](https://github.com/protocolbuffers/protobuf/releases) v3.6+ and the [Golang plugin](https://github.com/golang/protobuf#installation) installed.
 
 The script also uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to generate mocks.
-
-### Building
-
-#### Golang Binaries
-
-To build the Golang components, run the following commands:
-
-```sh
-$> make pinpoint-core
-$> make pinpoint-gateway
-```

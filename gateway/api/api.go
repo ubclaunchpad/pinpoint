@@ -10,6 +10,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
+	"github.com/ubclaunchpad/pinpoint/gateway/api/club"
+	"github.com/ubclaunchpad/pinpoint/gateway/api/user"
 	"github.com/ubclaunchpad/pinpoint/gateway/utils"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -115,7 +117,8 @@ func (a *API) setUpRouter() {
 // registerHandler sets up server routes
 func (a *API) registerHandlers() {
 	a.r.Get("/status", a.statusHandler)
-	a.r.Mount("/user", newUserRouter(a.l, a.c))
+	a.r.Mount("/user", user.NewUserRouter(a.l, a.c))
+	a.r.Mount("/club", club.NewClubRouter(a.l, a.c))
 }
 
 // runs Core and Gateway connection handshake

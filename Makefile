@@ -1,6 +1,7 @@
 VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
-DEV_COMPOSE=docker-compose -f dev/docker-compose.yml
+TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
+MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
 
 all: check
 
@@ -13,11 +14,12 @@ check:
 # Install dependencies
 .PHONY: deps
 deps:
+	bash .scripts/protoc-gen-go.sh
 	go get -u github.com/maxbrunsfeld/counterfeiter
 	go get -u github.com/vburenin/ifacemaker
 	dep ensure
-	( cd frontend ; npm install )
 	( cd client ; npm install )
+	( cd frontend ; npm install )
 
 # Execute tests
 .PHONY: test
@@ -30,17 +32,29 @@ test:
 .PHONY: testenv
 testenv:
 	mkdir -p tmp/data
-	$(DEV_COMPOSE) up -d
+	$(TEST_COMPOSE) up -d
 
 # Stop test environment
 .PHONY: testenv-stop
 testenv-stop:
-	$(DEV_COMPOSE) stop
+	$(TEST_COMPOSE) stop
+
+# Set up monitoring environment
+.PHONY: monitoring
+monitoring:
+	mkdir -p tmp/data
+	$(MON_COMPOSE) up -d
+
+# Stop monitoring environment
+.PHONY: monitoring-stop
+monitoring-stop:
+	$(MON_COMPOSE) stop
 
 # Clean up stuff
 .PHONY: clean
-clean: testenv-stop
-	$(DEV_COMPOSE) rm -f -s -v
+clean: testenv-stop monitoring-stop
+	$(TEST_COMPOSE) rm -f -s -v
+	$(MON_COMPOSE) rm -f -s -v
 	rm -rf tmp
 
 # Run linters and checks
@@ -60,6 +74,7 @@ gen: proto mocks
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
+	make proto-pkg PKG=models
 	make proto-pkg PKG=request
 	make proto-pkg PKG=response
 	# generate mock
@@ -72,7 +87,7 @@ proto-pkg:
 
 .PHONY: mocks
 mocks:
-	# generate database interface and mock 
+	# generate database interface and mock
 	ifacemaker \
 		-f ./core/database/*.go \
 		-s Database \
@@ -89,20 +104,20 @@ mocks:
 core:
 	go run core/main.go run --dev \
 		--tls.cert dev/certs/127.0.0.1.crt \
-		--tls.key dev/certs/127.0.0.1.key
+		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
 # Runs API gateway
 .PHONY: gateway
 gateway:
 	go run gateway/main.go run --dev \
-		--core.cert dev/certs/127.0.0.1.crt
+		--core.cert dev/certs/127.0.0.1.crt $(FLAGS)
 
 .PHONY: gateway-tls
 gateway-tls:
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt \
 		--tls.cert dev/certs/127.0.0.1.crt \
-		--tls.key dev/certs/127.0.0.1.key
+		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
 # Runs web app
 .PHONY: web
@@ -114,11 +129,11 @@ web:
 pinpoint-core:
 	go build -o ./bin/pinpoint-core \
     -ldflags "-X main.Version=$(VERSION)" \
-    ./core
+    ./core $(FLAGS)
 
 # Builds binary for pinpoint-gateway
 .PHONY: pinpoint-gateway
 pinpoint-gateway:
 	go build -o ./bin/pinpoint-gateway \
     -ldflags "-X main.Version=$(VERSION)" \
-    ./gateway
+    ./gateway $(FLAGS)

@@ -22,7 +22,7 @@ func NewMockAPI(l *zap.SugaredLogger, t *testing.T) (*API, *fakes.FakeCoreClient
 }
 
 func TestNew(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -57,7 +57,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestAPI_Run(t *testing.T) {
-	l, err := utils.NewLogger(true)
+	l, err := utils.NewLogger(true, "")
 	if err != nil {
 		t.Error(err)
 		return
