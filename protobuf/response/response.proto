@@ -11,3 +11,7 @@ message Status {}
 message Message {
   string message = 1;
 }
+
+message Token {
+  string token = 1;
+}

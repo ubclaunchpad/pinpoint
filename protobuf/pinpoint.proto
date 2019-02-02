@@ -12,4 +12,6 @@ service Core {
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}
   rpc Verify(request.Verify) returns (response.Message) {}
   rpc Login(request.Login) returns (response.Message) {}
+  rpc Authenticate(request.Empty) returns (response.Token) {}
+  rpc CheckToken(request.Token) returns (response.Message) {}
 }

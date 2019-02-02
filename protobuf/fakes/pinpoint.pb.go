@@ -12,6 +12,36 @@ import (
 )
 
 type FakeCoreClient struct {
+	AuthenticateStub        func(context.Context, *request.Empty, ...grpc.CallOption) (*response.Token, error)
+	authenticateMutex       sync.RWMutex
+	authenticateArgsForCall []struct {
+		arg1 context.Context
+		arg2 *request.Empty
+		arg3 []grpc.CallOption
+	}
+	authenticateReturns struct {
+		result1 *response.Token
+		result2 error
+	}
+	authenticateReturnsOnCall map[int]struct {
+		result1 *response.Token
+		result2 error
+	}
+	CheckTokenStub        func(context.Context, *request.Token, ...grpc.CallOption) (*response.Message, error)
+	checkTokenMutex       sync.RWMutex
+	checkTokenArgsForCall []struct {
+		arg1 context.Context
+		arg2 *request.Token
+		arg3 []grpc.CallOption
+	}
+	checkTokenReturns struct {
+		result1 *response.Message
+		result2 error
+	}
+	checkTokenReturnsOnCall map[int]struct {
+		result1 *response.Message
+		result2 error
+	}
 	CreateAccountStub        func(context.Context, *request.CreateAccount, ...grpc.CallOption) (*response.Message, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
@@ -89,6 +119,136 @@ type FakeCoreClient struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeCoreClient) Authenticate(arg1 context.Context, arg2 *request.Empty, arg3 ...grpc.CallOption) (*response.Token, error) {
+	fake.authenticateMutex.Lock()
+	ret, specificReturn := fake.authenticateReturnsOnCall[len(fake.authenticateArgsForCall)]
+	fake.authenticateArgsForCall = append(fake.authenticateArgsForCall, struct {
+		arg1 context.Context
+		arg2 *request.Empty
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("Authenticate", []interface{}{arg1, arg2, arg3})
+	fake.authenticateMutex.Unlock()
+	if fake.AuthenticateStub != nil {
+		return fake.AuthenticateStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.authenticateReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) AuthenticateCallCount() int {
+	fake.authenticateMutex.RLock()
+	defer fake.authenticateMutex.RUnlock()
+	return len(fake.authenticateArgsForCall)
+}
+
+func (fake *FakeCoreClient) AuthenticateCalls(stub func(context.Context, *request.Empty, ...grpc.CallOption) (*response.Token, error)) {
+	fake.authenticateMutex.Lock()
+	defer fake.authenticateMutex.Unlock()
+	fake.AuthenticateStub = stub
+}
+
+func (fake *FakeCoreClient) AuthenticateArgsForCall(i int) (context.Context, *request.Empty, []grpc.CallOption) {
+	fake.authenticateMutex.RLock()
+	defer fake.authenticateMutex.RUnlock()
+	argsForCall := fake.authenticateArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) AuthenticateReturns(result1 *response.Token, result2 error) {
+	fake.authenticateMutex.Lock()
+	defer fake.authenticateMutex.Unlock()
+	fake.AuthenticateStub = nil
+	fake.authenticateReturns = struct {
+		result1 *response.Token
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) AuthenticateReturnsOnCall(i int, result1 *response.Token, result2 error) {
+	fake.authenticateMutex.Lock()
+	defer fake.authenticateMutex.Unlock()
+	fake.AuthenticateStub = nil
+	if fake.authenticateReturnsOnCall == nil {
+		fake.authenticateReturnsOnCall = make(map[int]struct {
+			result1 *response.Token
+			result2 error
+		})
+	}
+	fake.authenticateReturnsOnCall[i] = struct {
+		result1 *response.Token
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CheckToken(arg1 context.Context, arg2 *request.Token, arg3 ...grpc.CallOption) (*response.Message, error) {
+	fake.checkTokenMutex.Lock()
+	ret, specificReturn := fake.checkTokenReturnsOnCall[len(fake.checkTokenArgsForCall)]
+	fake.checkTokenArgsForCall = append(fake.checkTokenArgsForCall, struct {
+		arg1 context.Context
+		arg2 *request.Token
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("CheckToken", []interface{}{arg1, arg2, arg3})
+	fake.checkTokenMutex.Unlock()
+	if fake.CheckTokenStub != nil {
+		return fake.CheckTokenStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.checkTokenReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) CheckTokenCallCount() int {
+	fake.checkTokenMutex.RLock()
+	defer fake.checkTokenMutex.RUnlock()
+	return len(fake.checkTokenArgsForCall)
+}
+
+func (fake *FakeCoreClient) CheckTokenCalls(stub func(context.Context, *request.Token, ...grpc.CallOption) (*response.Message, error)) {
+	fake.checkTokenMutex.Lock()
+	defer fake.checkTokenMutex.Unlock()
+	fake.CheckTokenStub = stub
+}
+
+func (fake *FakeCoreClient) CheckTokenArgsForCall(i int) (context.Context, *request.Token, []grpc.CallOption) {
+	fake.checkTokenMutex.RLock()
+	defer fake.checkTokenMutex.RUnlock()
+	argsForCall := fake.checkTokenArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) CheckTokenReturns(result1 *response.Message, result2 error) {
+	fake.checkTokenMutex.Lock()
+	defer fake.checkTokenMutex.Unlock()
+	fake.CheckTokenStub = nil
+	fake.checkTokenReturns = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CheckTokenReturnsOnCall(i int, result1 *response.Message, result2 error) {
+	fake.checkTokenMutex.Lock()
+	defer fake.checkTokenMutex.Unlock()
+	fake.CheckTokenStub = nil
+	if fake.checkTokenReturnsOnCall == nil {
+		fake.checkTokenReturnsOnCall = make(map[int]struct {
+			result1 *response.Message
+			result2 error
+		})
+	}
+	fake.checkTokenReturnsOnCall[i] = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeCoreClient) CreateAccount(arg1 context.Context, arg2 *request.CreateAccount, arg3 ...grpc.CallOption) (*response.Message, error) {
@@ -419,6 +579,10 @@ func (fake *FakeCoreClient) VerifyReturnsOnCall(i int, result1 *response.Message
 func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.authenticateMutex.RLock()
+	defer fake.authenticateMutex.RUnlock()
+	fake.checkTokenMutex.RLock()
+	defer fake.checkTokenMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	fake.getStatusMutex.RLock()

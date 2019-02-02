@@ -22,3 +22,7 @@ message Login {
   string email = 1;
   string password = 2;
 }
+
+message Token {
+  string token = 1;
+}
