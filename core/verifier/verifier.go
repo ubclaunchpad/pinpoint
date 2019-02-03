@@ -13,14 +13,14 @@ import (
 type Verifier struct {
 	Email  string
 	Hash   string
-	Expiry time.Time
+	Expiry int64
 
 	m *mailer.Mailer
 }
 
 // New sets up verification on passed email address
 func New(email string, m *mailer.Mailer) Verifier {
-	return Verifier{Email: email, Hash: generateHash(email), Expiry: time.Now().Add(24 * 7 * time.Hour)}
+	return Verifier{Email: email, Hash: generateHash(email), Expiry: int64(time.Now().Add(24 * 7 * time.Hour).Unix())}
 }
 
 // SendVerification sends a verification email
