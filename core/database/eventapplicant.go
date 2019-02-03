@@ -71,11 +71,11 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.Event, er
 }
 
 // DeleteEvent deletes an event and all of its applications
-func (db *Database) DeleteEvent(clubID string, event *models.Event) error {
+func (db *Database) DeleteEvent(clubID string, period string, eventID string) error {
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":id": {
-				S: aws.String(prefixPeriodEventID(event.Period, event.EventID)),
+				S: aws.String(prefixPeriodEventID(period, eventID)),
 			},
 		},
 		KeyConditionExpression: aws.String("pk = :id"),
@@ -283,6 +283,22 @@ func (db *Database) DeleteApplication(clubID string, period string, eventID stri
 	return nil
 }
 
+// AddTag adds a new Tag for that application period
+func (db *Database) AddTag(clubID string, tag *models.Tag) error {
+	var t = newDBTag(tag)
+	item, err := dynamodbattribute.MarshalMap(t)
+	if err != nil {
+		return fmt.Errorf("Failed to marshal tag: %s", err.Error())
+	}
+	if _, err := db.c.PutItem(&dynamodb.PutItemInput{
+		Item:      item,
+		TableName: getClubTable(clubID),
+	}); err != nil {
+		return fmt.Errorf("Failed to put tag: %s", err.Error())
+	}
+	return nil
+}
+
 // GetTags returns all the tags for an application period
 func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error) {
 	var result, err = db.c.Query(&dynamodb.QueryInput{
@@ -309,4 +325,18 @@ func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error)
 		tags = append(tags, newTag(item))
 	}
 	return tags, nil
+}
+
+// DeleteTag deletes a tag for the application period
+func (db *Database) DeleteTag(clubID string, period string, tag string) error {
+	if _, err := db.c.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: getClubTable(clubID),
+		Key: map[string]*dynamodb.AttributeValue{
+			"pk": {S: aws.String(prefixPeriodID(period))},
+			"sk": {S: aws.String(prefixTag(tag))},
+		},
+	}); err != nil {
+		return fmt.Errorf("Failed to delete tag: %s", err.Error())
+	}
+	return nil
 }
