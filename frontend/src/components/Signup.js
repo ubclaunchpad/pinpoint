@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 class Signup extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,7 @@ class Signup extends Component {
   }
 
   // TODO once endpoint is set up, currently does nothing
-  attemptSignup() {
+  async attemptSignup() {
     const {
       email,
       password,
@@ -32,13 +33,20 @@ class Signup extends Component {
       passwordConfirm,
     } = this.state;
 
+    const { client } = this.props;
+
     if (!email || !password || !name || !passwordConfirm) {
       this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
     } else if (passwordConfirm !== password) {
       this.setState({ message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
     } else {
-      // TODO Send signup information to backend here
-      this.setState({ message: { messageType: 'success', content: ' Success!' } });
+      const resp = await client.createAccount({ email, name, password });
+      if (resp.status === 200) {
+        const { router: { history } } = this.context;
+        history.push('/');
+      } else {
+        this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
+      }
     }
   }
 
