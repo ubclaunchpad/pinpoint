@@ -1,9 +1,6 @@
 package database
 
 import (
-	"time"
-
-	"github.com/golang/protobuf/ptypes"
 	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
@@ -30,9 +27,9 @@ type clubUserItem struct {
 }
 
 type emailVerificationItem struct {
-	Email  string    `json:"pk"`
-	Hash   string    `json:"sk"`
-	Expiry time.Time `json:"expiry"`
+	Email  string `json:"pk"`
+	Hash   string `json:"sk"`
+	Expiry int64  `json:"expiry"`
 }
 
 type eventItem struct {
@@ -127,22 +124,20 @@ func newClubUser(i *clubUserItem) *models.ClubUser {
 func newDBEmailVerification(ev *models.EmailVerification) *emailVerificationItem {
 	e := prefixUserEmail(ev.Email)
 	h := prefixVerificationHash(ev.Hash)
-	ex, _ := ptypes.Timestamp(ev.Expiry)
 	return &emailVerificationItem{
 		Email:  e,
 		Hash:   h,
-		Expiry: ex,
+		Expiry: ev.Expiry,
 	}
 }
 
 func newEmailVerification(i *emailVerificationItem) *models.EmailVerification {
 	e := removePrefix(i.Email)
 	h := removePrefix(i.Hash)
-	ex, _ := ptypes.TimestampProto(i.Expiry)
 	return &models.EmailVerification{
 		Email:  e,
 		Hash:   h,
-		Expiry: ex,
+		Expiry: i.Expiry,
 	}
 }
 

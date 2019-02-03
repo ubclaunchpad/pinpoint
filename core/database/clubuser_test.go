@@ -5,13 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
 func TestDatabase_AddNewUser_GetUser(t *testing.T) {
-	time1, _ := ptypes.TimestampProto(time.Now().Add(time.Hour))
-	time2, _ := ptypes.TimestampProto(time.Now().Add(-time.Hour))
 	type args struct {
 		u *models.User
 		e *models.EmailVerification
@@ -31,7 +28,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "asdf@ghi.com",
 				Hash:   "asdf",
-				Expiry: time1,
+				Expiry: int64(time.Now().Add(time.Hour).Unix()),
 			},
 		}, errs{true, true, true}},
 		{"valid", args{
@@ -43,7 +40,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "abc@def.com",
 				Hash:   "asdf",
-				Expiry: time1,
+				Expiry: int64(time.Now().Add(time.Hour).Unix()),
 			},
 		}, errs{false, false, false}},
 		{"expired", args{
@@ -55,7 +52,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "abc@def.com",
 				Hash:   "asdf",
-				Expiry: time2,
+				Expiry: int64(time.Now().Add(-time.Hour).Unix()),
 			},
 		}, errs{false, false, true}},
 	}

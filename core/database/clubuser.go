@@ -121,7 +121,7 @@ func (db *Database) GetEmailVerification(email string, hash string) (*models.Ema
 	})
 
 	// check expiry
-	if item.Expiry.Before(time.Now()) {
+	if time.Unix(ev.Expiry, 0).Before(time.Now()) {
 		return nil, fmt.Errorf("verification expired on %v", item.Expiry)
 	}
 
