@@ -37,6 +37,17 @@ class API {
     }
   }
 
+  async verify({ email, hash }) {
+    try {
+      const response = await this.req.post('/user/verify', { email, hash });
+      return response.data.token;
+    } catch (error) {
+      switch (error.response.status) {
+        default: throw new Error(`error ${error.response.status}`);
+      }
+    }
+  }
+
   async createClub({ name, desc }) {
     try {
       const response = await this.req.post('/club/create', { name, desc });

@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
-	"github.com/ubclaunchpad/pinpoint/protobuf"
+	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 )
@@ -81,13 +81,14 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
 	hash := r.FormValue("hash")
-	if hash == "" {
-		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))
+	if hash == "" || email == "" {
+		render.Render(w, r, res.ErrBadRequest(r, "Email and hash are required"))
 		return
 	}
 
-	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
+	resp, err := u.c.Verify(r.Context(), &request.Verify{Email: email, Hash: hash})
 	if err != nil {
 		render.Render(w, r, res.Err(r, err.Error(), http.StatusNotFound))
 		return
