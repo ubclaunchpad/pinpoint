@@ -4,6 +4,32 @@ syntax = "proto3";
 package models;
 option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/models";
 
+message User {
+  string email = 1;
+  string name = 2;
+  string hash = 3;
+  bool verified = 4;
+}
+
+message Club {
+  string clubID = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message ClubUser {
+  string clubID = 1;
+  string email = 2;
+  string name = 3;
+  string role = 4;
+}
+
+message EmailVerification {
+  string hash = 1;
+  string email = 2;
+  int64 expiry = 3;
+}
+
 message Event {
   string period = 1;
   string eventID = 2;

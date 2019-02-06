@@ -5,15 +5,15 @@ import (
 	"sync"
 
 	"github.com/ubclaunchpad/pinpoint/core/database"
-	"github.com/ubclaunchpad/pinpoint/core/model"
+	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
 type FakeDBClient struct {
-	AddNewClubStub        func(*model.Club, *model.ClubUser) error
+	AddNewClubStub        func(*models.Club, *models.ClubUser) error
 	addNewClubMutex       sync.RWMutex
 	addNewClubArgsForCall []struct {
-		arg1 *model.Club
-		arg2 *model.ClubUser
+		arg1 *models.Club
+		arg2 *models.ClubUser
 	}
 	addNewClubReturns struct {
 		result1 error
@@ -21,11 +21,11 @@ type FakeDBClient struct {
 	addNewClubReturnsOnCall map[int]struct {
 		result1 error
 	}
-	AddNewUserStub        func(*model.User, *model.EmailVerification) error
+	AddNewUserStub        func(*models.User, *models.EmailVerification) error
 	addNewUserMutex       sync.RWMutex
 	addNewUserArgsForCall []struct {
-		arg1 *model.User
-		arg2 *model.EmailVerification
+		arg1 *models.User
+		arg2 *models.EmailVerification
 	}
 	addNewUserReturns struct {
 		result1 error
@@ -55,68 +55,69 @@ type FakeDBClient struct {
 	deleteUserReturnsOnCall map[int]struct {
 		result1 error
 	}
-	GetAllClubUsersStub        func(string) ([]*model.ClubUser, error)
+	GetAllClubUsersStub        func(string) ([]*models.ClubUser, error)
 	getAllClubUsersMutex       sync.RWMutex
 	getAllClubUsersArgsForCall []struct {
 		arg1 string
 	}
 	getAllClubUsersReturns struct {
-		result1 []*model.ClubUser
+		result1 []*models.ClubUser
 		result2 error
 	}
 	getAllClubUsersReturnsOnCall map[int]struct {
-		result1 []*model.ClubUser
+		result1 []*models.ClubUser
 		result2 error
 	}
-	GetClubStub        func(string) (*model.Club, error)
+	GetClubStub        func(string) (*models.Club, error)
 	getClubMutex       sync.RWMutex
 	getClubArgsForCall []struct {
 		arg1 string
 	}
 	getClubReturns struct {
-		result1 *model.Club
+		result1 *models.Club
 		result2 error
 	}
 	getClubReturnsOnCall map[int]struct {
-		result1 *model.Club
+		result1 *models.Club
 		result2 error
 	}
-	GetEmailVerificationStub        func(string) (*model.EmailVerification, error)
+	GetEmailVerificationStub        func(string, string) (*models.EmailVerification, error)
 	getEmailVerificationMutex       sync.RWMutex
 	getEmailVerificationArgsForCall []struct {
 		arg1 string
+		arg2 string
 	}
 	getEmailVerificationReturns struct {
-		result1 *model.EmailVerification
+		result1 *models.EmailVerification
 		result2 error
 	}
 	getEmailVerificationReturnsOnCall map[int]struct {
-		result1 *model.EmailVerification
+		result1 *models.EmailVerification
 		result2 error
 	}
-	GetUserStub        func(string) (*model.User, error)
+	GetUserStub        func(string) (*models.User, error)
 	getUserMutex       sync.RWMutex
 	getUserArgsForCall []struct {
 		arg1 string
 	}
 	getUserReturns struct {
-		result1 *model.User
+		result1 *models.User
 		result2 error
 	}
 	getUserReturnsOnCall map[int]struct {
-		result1 *model.User
+		result1 *models.User
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeDBClient) AddNewClub(arg1 *model.Club, arg2 *model.ClubUser) error {
+func (fake *FakeDBClient) AddNewClub(arg1 *models.Club, arg2 *models.ClubUser) error {
 	fake.addNewClubMutex.Lock()
 	ret, specificReturn := fake.addNewClubReturnsOnCall[len(fake.addNewClubArgsForCall)]
 	fake.addNewClubArgsForCall = append(fake.addNewClubArgsForCall, struct {
-		arg1 *model.Club
-		arg2 *model.ClubUser
+		arg1 *models.Club
+		arg2 *models.ClubUser
 	}{arg1, arg2})
 	fake.recordInvocation("AddNewClub", []interface{}{arg1, arg2})
 	fake.addNewClubMutex.Unlock()
@@ -136,13 +137,13 @@ func (fake *FakeDBClient) AddNewClubCallCount() int {
 	return len(fake.addNewClubArgsForCall)
 }
 
-func (fake *FakeDBClient) AddNewClubCalls(stub func(*model.Club, *model.ClubUser) error) {
+func (fake *FakeDBClient) AddNewClubCalls(stub func(*models.Club, *models.ClubUser) error) {
 	fake.addNewClubMutex.Lock()
 	defer fake.addNewClubMutex.Unlock()
 	fake.AddNewClubStub = stub
 }
 
-func (fake *FakeDBClient) AddNewClubArgsForCall(i int) (*model.Club, *model.ClubUser) {
+func (fake *FakeDBClient) AddNewClubArgsForCall(i int) (*models.Club, *models.ClubUser) {
 	fake.addNewClubMutex.RLock()
 	defer fake.addNewClubMutex.RUnlock()
 	argsForCall := fake.addNewClubArgsForCall[i]
@@ -172,12 +173,12 @@ func (fake *FakeDBClient) AddNewClubReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeDBClient) AddNewUser(arg1 *model.User, arg2 *model.EmailVerification) error {
+func (fake *FakeDBClient) AddNewUser(arg1 *models.User, arg2 *models.EmailVerification) error {
 	fake.addNewUserMutex.Lock()
 	ret, specificReturn := fake.addNewUserReturnsOnCall[len(fake.addNewUserArgsForCall)]
 	fake.addNewUserArgsForCall = append(fake.addNewUserArgsForCall, struct {
-		arg1 *model.User
-		arg2 *model.EmailVerification
+		arg1 *models.User
+		arg2 *models.EmailVerification
 	}{arg1, arg2})
 	fake.recordInvocation("AddNewUser", []interface{}{arg1, arg2})
 	fake.addNewUserMutex.Unlock()
@@ -197,13 +198,13 @@ func (fake *FakeDBClient) AddNewUserCallCount() int {
 	return len(fake.addNewUserArgsForCall)
 }
 
-func (fake *FakeDBClient) AddNewUserCalls(stub func(*model.User, *model.EmailVerification) error) {
+func (fake *FakeDBClient) AddNewUserCalls(stub func(*models.User, *models.EmailVerification) error) {
 	fake.addNewUserMutex.Lock()
 	defer fake.addNewUserMutex.Unlock()
 	fake.AddNewUserStub = stub
 }
 
-func (fake *FakeDBClient) AddNewUserArgsForCall(i int) (*model.User, *model.EmailVerification) {
+func (fake *FakeDBClient) AddNewUserArgsForCall(i int) (*models.User, *models.EmailVerification) {
 	fake.addNewUserMutex.RLock()
 	defer fake.addNewUserMutex.RUnlock()
 	argsForCall := fake.addNewUserArgsForCall[i]
@@ -353,7 +354,7 @@ func (fake *FakeDBClient) DeleteUserReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeDBClient) GetAllClubUsers(arg1 string) ([]*model.ClubUser, error) {
+func (fake *FakeDBClient) GetAllClubUsers(arg1 string) ([]*models.ClubUser, error) {
 	fake.getAllClubUsersMutex.Lock()
 	ret, specificReturn := fake.getAllClubUsersReturnsOnCall[len(fake.getAllClubUsersArgsForCall)]
 	fake.getAllClubUsersArgsForCall = append(fake.getAllClubUsersArgsForCall, struct {
@@ -377,7 +378,7 @@ func (fake *FakeDBClient) GetAllClubUsersCallCount() int {
 	return len(fake.getAllClubUsersArgsForCall)
 }
 
-func (fake *FakeDBClient) GetAllClubUsersCalls(stub func(string) ([]*model.ClubUser, error)) {
+func (fake *FakeDBClient) GetAllClubUsersCalls(stub func(string) ([]*models.ClubUser, error)) {
 	fake.getAllClubUsersMutex.Lock()
 	defer fake.getAllClubUsersMutex.Unlock()
 	fake.GetAllClubUsersStub = stub
@@ -390,33 +391,33 @@ func (fake *FakeDBClient) GetAllClubUsersArgsForCall(i int) string {
 	return argsForCall.arg1
 }
 
-func (fake *FakeDBClient) GetAllClubUsersReturns(result1 []*model.ClubUser, result2 error) {
+func (fake *FakeDBClient) GetAllClubUsersReturns(result1 []*models.ClubUser, result2 error) {
 	fake.getAllClubUsersMutex.Lock()
 	defer fake.getAllClubUsersMutex.Unlock()
 	fake.GetAllClubUsersStub = nil
 	fake.getAllClubUsersReturns = struct {
-		result1 []*model.ClubUser
+		result1 []*models.ClubUser
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetAllClubUsersReturnsOnCall(i int, result1 []*model.ClubUser, result2 error) {
+func (fake *FakeDBClient) GetAllClubUsersReturnsOnCall(i int, result1 []*models.ClubUser, result2 error) {
 	fake.getAllClubUsersMutex.Lock()
 	defer fake.getAllClubUsersMutex.Unlock()
 	fake.GetAllClubUsersStub = nil
 	if fake.getAllClubUsersReturnsOnCall == nil {
 		fake.getAllClubUsersReturnsOnCall = make(map[int]struct {
-			result1 []*model.ClubUser
+			result1 []*models.ClubUser
 			result2 error
 		})
 	}
 	fake.getAllClubUsersReturnsOnCall[i] = struct {
-		result1 []*model.ClubUser
+		result1 []*models.ClubUser
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetClub(arg1 string) (*model.Club, error) {
+func (fake *FakeDBClient) GetClub(arg1 string) (*models.Club, error) {
 	fake.getClubMutex.Lock()
 	ret, specificReturn := fake.getClubReturnsOnCall[len(fake.getClubArgsForCall)]
 	fake.getClubArgsForCall = append(fake.getClubArgsForCall, struct {
@@ -440,7 +441,7 @@ func (fake *FakeDBClient) GetClubCallCount() int {
 	return len(fake.getClubArgsForCall)
 }
 
-func (fake *FakeDBClient) GetClubCalls(stub func(string) (*model.Club, error)) {
+func (fake *FakeDBClient) GetClubCalls(stub func(string) (*models.Club, error)) {
 	fake.getClubMutex.Lock()
 	defer fake.getClubMutex.Unlock()
 	fake.GetClubStub = stub
@@ -453,42 +454,43 @@ func (fake *FakeDBClient) GetClubArgsForCall(i int) string {
 	return argsForCall.arg1
 }
 
-func (fake *FakeDBClient) GetClubReturns(result1 *model.Club, result2 error) {
+func (fake *FakeDBClient) GetClubReturns(result1 *models.Club, result2 error) {
 	fake.getClubMutex.Lock()
 	defer fake.getClubMutex.Unlock()
 	fake.GetClubStub = nil
 	fake.getClubReturns = struct {
-		result1 *model.Club
+		result1 *models.Club
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetClubReturnsOnCall(i int, result1 *model.Club, result2 error) {
+func (fake *FakeDBClient) GetClubReturnsOnCall(i int, result1 *models.Club, result2 error) {
 	fake.getClubMutex.Lock()
 	defer fake.getClubMutex.Unlock()
 	fake.GetClubStub = nil
 	if fake.getClubReturnsOnCall == nil {
 		fake.getClubReturnsOnCall = make(map[int]struct {
-			result1 *model.Club
+			result1 *models.Club
 			result2 error
 		})
 	}
 	fake.getClubReturnsOnCall[i] = struct {
-		result1 *model.Club
+		result1 *models.Club
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetEmailVerification(arg1 string) (*model.EmailVerification, error) {
+func (fake *FakeDBClient) GetEmailVerification(arg1 string, arg2 string) (*models.EmailVerification, error) {
 	fake.getEmailVerificationMutex.Lock()
 	ret, specificReturn := fake.getEmailVerificationReturnsOnCall[len(fake.getEmailVerificationArgsForCall)]
 	fake.getEmailVerificationArgsForCall = append(fake.getEmailVerificationArgsForCall, struct {
 		arg1 string
-	}{arg1})
-	fake.recordInvocation("GetEmailVerification", []interface{}{arg1})
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("GetEmailVerification", []interface{}{arg1, arg2})
 	fake.getEmailVerificationMutex.Unlock()
 	if fake.GetEmailVerificationStub != nil {
-		return fake.GetEmailVerificationStub(arg1)
+		return fake.GetEmailVerificationStub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -503,46 +505,46 @@ func (fake *FakeDBClient) GetEmailVerificationCallCount() int {
 	return len(fake.getEmailVerificationArgsForCall)
 }
 
-func (fake *FakeDBClient) GetEmailVerificationCalls(stub func(string) (*model.EmailVerification, error)) {
+func (fake *FakeDBClient) GetEmailVerificationCalls(stub func(string, string) (*models.EmailVerification, error)) {
 	fake.getEmailVerificationMutex.Lock()
 	defer fake.getEmailVerificationMutex.Unlock()
 	fake.GetEmailVerificationStub = stub
 }
 
-func (fake *FakeDBClient) GetEmailVerificationArgsForCall(i int) string {
+func (fake *FakeDBClient) GetEmailVerificationArgsForCall(i int) (string, string) {
 	fake.getEmailVerificationMutex.RLock()
 	defer fake.getEmailVerificationMutex.RUnlock()
 	argsForCall := fake.getEmailVerificationArgsForCall[i]
-	return argsForCall.arg1
+	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeDBClient) GetEmailVerificationReturns(result1 *model.EmailVerification, result2 error) {
+func (fake *FakeDBClient) GetEmailVerificationReturns(result1 *models.EmailVerification, result2 error) {
 	fake.getEmailVerificationMutex.Lock()
 	defer fake.getEmailVerificationMutex.Unlock()
 	fake.GetEmailVerificationStub = nil
 	fake.getEmailVerificationReturns = struct {
-		result1 *model.EmailVerification
+		result1 *models.EmailVerification
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetEmailVerificationReturnsOnCall(i int, result1 *model.EmailVerification, result2 error) {
+func (fake *FakeDBClient) GetEmailVerificationReturnsOnCall(i int, result1 *models.EmailVerification, result2 error) {
 	fake.getEmailVerificationMutex.Lock()
 	defer fake.getEmailVerificationMutex.Unlock()
 	fake.GetEmailVerificationStub = nil
 	if fake.getEmailVerificationReturnsOnCall == nil {
 		fake.getEmailVerificationReturnsOnCall = make(map[int]struct {
-			result1 *model.EmailVerification
+			result1 *models.EmailVerification
 			result2 error
 		})
 	}
 	fake.getEmailVerificationReturnsOnCall[i] = struct {
-		result1 *model.EmailVerification
+		result1 *models.EmailVerification
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetUser(arg1 string) (*model.User, error) {
+func (fake *FakeDBClient) GetUser(arg1 string) (*models.User, error) {
 	fake.getUserMutex.Lock()
 	ret, specificReturn := fake.getUserReturnsOnCall[len(fake.getUserArgsForCall)]
 	fake.getUserArgsForCall = append(fake.getUserArgsForCall, struct {
@@ -566,7 +568,7 @@ func (fake *FakeDBClient) GetUserCallCount() int {
 	return len(fake.getUserArgsForCall)
 }
 
-func (fake *FakeDBClient) GetUserCalls(stub func(string) (*model.User, error)) {
+func (fake *FakeDBClient) GetUserCalls(stub func(string) (*models.User, error)) {
 	fake.getUserMutex.Lock()
 	defer fake.getUserMutex.Unlock()
 	fake.GetUserStub = stub
@@ -579,28 +581,28 @@ func (fake *FakeDBClient) GetUserArgsForCall(i int) string {
 	return argsForCall.arg1
 }
 
-func (fake *FakeDBClient) GetUserReturns(result1 *model.User, result2 error) {
+func (fake *FakeDBClient) GetUserReturns(result1 *models.User, result2 error) {
 	fake.getUserMutex.Lock()
 	defer fake.getUserMutex.Unlock()
 	fake.GetUserStub = nil
 	fake.getUserReturns = struct {
-		result1 *model.User
+		result1 *models.User
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeDBClient) GetUserReturnsOnCall(i int, result1 *model.User, result2 error) {
+func (fake *FakeDBClient) GetUserReturnsOnCall(i int, result1 *models.User, result2 error) {
 	fake.getUserMutex.Lock()
 	defer fake.getUserMutex.Unlock()
 	fake.GetUserStub = nil
 	if fake.getUserReturnsOnCall == nil {
 		fake.getUserReturnsOnCall = make(map[int]struct {
-			result1 *model.User
+			result1 *models.User
 			result2 error
 		})
 	}
 	fake.getUserReturnsOnCall[i] = struct {
-		result1 *model.User
+		result1 *models.User
 		result2 error
 	}{result1, result2}
 }
