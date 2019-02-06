@@ -20,7 +20,7 @@ type Verifier struct {
 
 // New sets up verification on passed email address
 func New(email string, m *mailer.Mailer) Verifier {
-	return Verifier{Email: email, Hash: generateHash(email), Expiry: int64(time.Now().Add(24 * 7 * time.Hour).Unix())}
+	return Verifier{Email: email, Hash: generateHash(email), Expiry: time.Now().Add(24 * 7 * time.Hour).Unix()}
 }
 
 // SendVerification sends a verification email

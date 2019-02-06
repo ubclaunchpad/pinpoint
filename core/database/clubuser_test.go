@@ -28,7 +28,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "asdf@ghi.com",
 				Hash:   "asdf",
-				Expiry: int64(time.Now().Add(time.Hour).Unix()),
+				Expiry: time.Now().Add(time.Hour).Unix(),
 			},
 		}, errs{true, true, true}},
 		{"valid", args{
@@ -40,7 +40,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "abc@def.com",
 				Hash:   "asdf",
-				Expiry: int64(time.Now().Add(time.Hour).Unix()),
+				Expiry: time.Now().Add(time.Hour).Unix(),
 			},
 		}, errs{false, false, false}},
 		{"expired", args{
@@ -52,7 +52,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 			&models.EmailVerification{
 				Email:  "abc@def.com",
 				Hash:   "asdf",
-				Expiry: int64(time.Now().Add(-time.Hour).Unix()),
+				Expiry: time.Now().Add(-time.Hour).Unix(),
 			},
 		}, errs{false, false, true}},
 	}
