@@ -12,9 +12,9 @@ import (
 	"github.com/ubclaunchpad/pinpoint/core/crypto"
 	"github.com/ubclaunchpad/pinpoint/core/database"
 	"github.com/ubclaunchpad/pinpoint/core/mailer"
-	"github.com/ubclaunchpad/pinpoint/core/model"
 	"github.com/ubclaunchpad/pinpoint/core/verifier"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
+	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"google.golang.org/grpc"
@@ -182,8 +182,8 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 
 	// create user
 	if err := s.db.AddNewUser(
-		&model.User{Email: req.Email, Name: req.Name, Salt: salt},
-		&model.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
+		&models.User{Email: req.Email, Name: req.Name, Hash: salt},
+		&models.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
 	); err != nil {
 		return nil, fmt.Errorf("failed to create user: %s", err.Error())
 	}
@@ -201,7 +201,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 
 // Verify looks up the given hash, and verifies the hash matching email
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
-	v, err := s.db.GetEmailVerification(req.GetHash())
+	v, err := s.db.GetEmailVerification(req.GetEmail(), req.GetHash())
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Mess
 	if err != nil {
 		return nil, fmt.Errorf("failed to authenticate user: %s", err.Error())
 	}
-	if crypto.ComparePasswords(user.Salt, req.GetPassword()) {
+	if crypto.ComparePasswords(user.Hash, req.GetPassword()) {
 		return &response.Message{Message: "user successfully logged in"}, nil
 	}
 	return nil, errors.New("user not authenticated")
