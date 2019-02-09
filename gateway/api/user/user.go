@@ -41,7 +41,6 @@ func (u *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 	var l = u.l.With("request-id", ctxutil.GetRequestID(r))
-	print("failing here blahblah")
 	// parse request data
 	decoder := json.NewDecoder(r.Body)
 	var user request.CreateAccount
