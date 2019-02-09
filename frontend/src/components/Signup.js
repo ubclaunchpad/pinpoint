@@ -39,11 +39,11 @@ class Signup extends Component {
     } else if (passwordConfirm !== password) {
       this.setState({ message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
     } else {
-      try{
-        const resp = await client.createAccount({ email, name, password });
-      } catch(e) {
+      try {
+        await client.createAccount({ email, name, password });
+      } catch (e) {
         this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
-      } 
+      }
     }
   }
 
