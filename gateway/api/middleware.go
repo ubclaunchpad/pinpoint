@@ -3,6 +3,8 @@ package api
 import (
 	"time"
 
+	"github.com/ubclaunchpad/pinpoint/gateway/api/ctxutil"
+
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
@@ -26,10 +28,6 @@ func (z loggerMiddleware) Handler(next http.Handler) http.Handler {
 		next.ServeHTTP(ww, r)
 		latency := time.Since(start)
 
-		var requestID string
-		if reqID := r.Context().Value(middleware.RequestIDKey); reqID != nil {
-			requestID = reqID.(string)
-		}
 		z.l.Info("request completed",
 			// request metadata
 			zap.String("path", r.URL.Path),
@@ -43,7 +41,6 @@ func (z loggerMiddleware) Handler(next http.Handler) http.Handler {
 
 			// additional metadata
 			zap.String("real-ip", r.RemoteAddr),
-			zap.String("request-id", requestID))
-	},
-	)
+			zap.String("request-id", ctxutil.GetRequestID(r)))
+	})
 }
