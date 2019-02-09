@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -57,9 +58,25 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 		"email", user.GetEmail()))
 }
 
+type logininfo struct {
+	Email    string `json: "email"`
+	Password string `json: "password"`
+}
+
 func (u *Router) login(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	password := r.FormValue("password")
+	bodyBytes, _ := ioutil.ReadAll(r.Body)
+	bodyString := string(bodyBytes)
+
+	var info logininfo
+	json.Unmarshal([]byte(bodyString), &info)
+	print(bodyString)
+
+	email := info.Email
+	password := info.Password
+
+	// email := r.FormValue("email")
+	// password := r.FormValue("password")
+
 	if email == "" || password == "" {
 		render.Render(w, r, res.ErrBadRequest(r, "missing fields - both email and password is required"))
 		return
@@ -78,6 +95,7 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, map[string]string{
 		"token": "1234",
 	})
+
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {

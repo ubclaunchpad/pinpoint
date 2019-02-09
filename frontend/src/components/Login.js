@@ -33,8 +33,8 @@ class Login extends Component {
     } else {
       const resp = await client.login({ email, password });
       if (resp.status === 200) {
-        const { router: { history } } = this.context;
-        history.push('/');
+        // const { router: { history } } = this.context;
+        // history.push('/');
       } else {
         this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
       }
