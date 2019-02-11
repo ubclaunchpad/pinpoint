@@ -1,25 +1,18 @@
 package res
 
-import (
-	"net/http"
-
-	"github.com/go-chi/render"
-)
+import "net/http"
 
 // MsgResponse is the template for a typical HTTP response for messages
 type MsgResponse struct {
-	BaseResponse
+	*baseResponse
 }
 
-// Render renders a MsgResponse
-func (m *MsgResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	render.Status(r, m.HTTPStatusCode)
-	return nil
+// Msg is a shortcut for non-error statuses
+func Msg(message string, code int, kvs ...interface{}) *MsgResponse {
+	return &MsgResponse{newBaseResponse(message, code, kvs)}
 }
 
-// Message is a shortcut for non-error statuses
-func Message(r *http.Request, message string, code int, kvs ...interface{}) render.Renderer {
-	return &MsgResponse{
-		BaseResponse: newBaseRequest(r, message, code, kvs),
-	}
+// MsgOK is a shortcut for an ok-status response
+func MsgOK(message string, kvs ...interface{}) *MsgResponse {
+	return &MsgResponse{newBaseResponse(message, http.StatusOK, kvs)}
 }
