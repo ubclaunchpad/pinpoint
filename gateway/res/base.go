@@ -67,6 +67,11 @@ func formatData(kvs []interface{}) (e string, d interface{}) {
 		}
 	}
 
+	// We need to make sure we *explicitly* return a nil-value interface, since
+	// if we assign a map, even if it is null, an empty interface will now assume
+	// a type value, making it non-nil, which means the `omitempty` directive will
+	// no longer trigger.
+	// See https://golang.org/doc/faq#nil_error
 	if len(data) < 1 {
 		return e, nil
 	}
