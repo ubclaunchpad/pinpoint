@@ -28,8 +28,28 @@ func newBaseResponse(
 	code int,
 	kvs []interface{},
 ) *BaseResponse {
+	e, data := formatData(kvs)
+	return &BaseResponse{
+		HTTPStatusCode: code,
+		Message:        message,
+		Err:            e,
+		Data:           data,
+	}
+}
+
+// Render implements chi/render.Render
+func (b *BaseResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	b.RequestID = reqID(r)
+	render.Status(r, b.HTTPStatusCode)
+	return nil
+}
+
+func formatData(kvs []interface{}) (e string, d interface{}) {
+	if len(kvs) < 1 {
+		return "", nil
+	}
+
 	var data = make(map[string]interface{})
-	var e string
 	for i := 0; i < len(kvs)-1; i += 2 {
 		var (
 			k = kvs[i].(string)
@@ -46,23 +66,15 @@ func newBaseResponse(
 			data[k] = v
 		}
 	}
-	return &BaseResponse{
-		HTTPStatusCode: code,
-		Message:        message,
-		Err:            e,
-		Data:           data,
-	}
-}
 
-// Render implements chi/render.Render
-func (b *BaseResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	b.RequestID = reqID(r)
-	render.Status(r, b.HTTPStatusCode)
-	return nil
+	if len(data) < 1 {
+		return e, nil
+	}
+	return e, data
 }
 
 func reqID(r *http.Request) string {
-	if r == nil {
+	if r == nil || r.Context() == nil {
 		return ""
 	}
 	return middleware.GetReqID(r.Context())
