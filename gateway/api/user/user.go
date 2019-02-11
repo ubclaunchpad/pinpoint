@@ -72,11 +72,9 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// No error means authenticated, proceed to generate token
-	w.WriteHeader(http.StatusOK)
 	// TODO: Generate token. See #10
-	render.JSON(w, r, map[string]string{
-		"token": "1234",
-	})
+	render.Render(w, r, res.MsgOK("user logged in",
+		"token", 1234))
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
