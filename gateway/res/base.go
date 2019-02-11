@@ -7,7 +7,8 @@ import (
 	"github.com/go-chi/render"
 )
 
-type baseResponse struct {
+// BaseResponse is the underlying structure of all API responses
+type BaseResponse struct {
 	// Basic metadata
 	HTTPStatusCode int    `json:"code"`
 	RequestID      string `json:"request_id,omitempty"`
@@ -26,7 +27,7 @@ func newBaseResponse(
 	message string,
 	code int,
 	kvs []interface{},
-) *baseResponse {
+) *BaseResponse {
 	var data = make(map[string]interface{})
 	var e string
 	for i := 0; i < len(kvs)-1; i += 2 {
@@ -45,7 +46,7 @@ func newBaseResponse(
 			data[k] = v
 		}
 	}
-	return &baseResponse{
+	return &BaseResponse{
 		HTTPStatusCode: code,
 		Message:        message,
 		Err:            e,
@@ -53,7 +54,8 @@ func newBaseResponse(
 	}
 }
 
-func (b *baseResponse) Render(w http.ResponseWriter, r *http.Request) error {
+// Render implements chi/render.Render
+func (b *BaseResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	b.RequestID = reqID(r)
 	render.Status(r, b.HTTPStatusCode)
 	return nil
