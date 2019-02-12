@@ -7,7 +7,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
@@ -55,22 +54,15 @@ func TestUserRouter_createUser(t *testing.T) {
 			Name:     "julia",
 			Email:    "k",
 			Password: "julia",
-		}}, errs{errors.New("Invalid email")}, http.StatusBadRequest},
+		}}, errs{status.Errorf(codes.InvalidArgument, "unable to validate credentials: %s", "Invalid email")}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
 			if tt.errs.createUserFail != nil {
-				if strings.Contains(tt.errs.createUserFail.Error(), "Invalid signup arguments") {
-					fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
-						return nil, tt.errs.createUserFail
-					}
-				}
-				if strings.Contains(tt.errs.createUserFail.Error(), "Invalid email") {
-					fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
-						return nil, status.Errorf(codes.InvalidArgument, "unable to validate credentials: %s", tt.errs.createUserFail.Error())
-					}
+				fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
+					return nil, tt.errs.createUserFail
 				}
 			}
 
