@@ -2,7 +2,6 @@ VERSION=`git rev-parse --short HEAD`
 DEV_ENV=export `less ./dev/.env | xargs`
 TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
 MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
-PROJECTNAME=$(shell basename "$(PWD)")
 
 ## all: Runs check
 all: check
@@ -142,6 +141,7 @@ pinpoint-gateway:
     -ldflags "-X main.Version=$(VERSION)" \
     ./gateway $(FLAGS)
 
+.PHONY: help
 help: Makefile
-	@echo " Choose a command run in "$(PROJECTNAME)":"
+	@echo " Choose a command run in pinpoint:"
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
