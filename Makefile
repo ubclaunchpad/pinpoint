@@ -3,15 +3,16 @@ DEV_ENV=export `less ./dev/.env | xargs`
 TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
 MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
 
+## all: Runs check
 all: check
 
-# Run simple checks
+## check: Run simple checks
 .PHONY: check
 check:
 	go vet ./...
 	go test -run xxxx ./...
 
-# Install dependencies
+## deps: Install dependencies
 .PHONY: deps
 deps:
 	bash .scripts/protoc-gen-go.sh
@@ -21,43 +22,43 @@ deps:
 	( cd client ; npm install )
 	( cd frontend ; npm install )
 
-# Execute tests
+## test: Execute tests
 .PHONY: test
 test:
 	go test -race -cover ./...
 	( cd frontend ; npm run test -- --coverage )
 	( cd client ; npm run test )
 
-# Set up test environment
+## testenv: Set up test environment
 .PHONY: testenv
 testenv:
 	mkdir -p tmp/data
 	$(TEST_COMPOSE) up -d
 
-# Stop test environment
+## testenv-stop: Stop test environment
 .PHONY: testenv-stop
 testenv-stop:
 	$(TEST_COMPOSE) stop
 
-# Set up monitoring environment
+## monitoring: Set up monitoring environment
 .PHONY: monitoring
 monitoring:
 	mkdir -p tmp/data
 	$(MON_COMPOSE) up -d
 
-# Stop monitoring environment
+## monitoring-stop: Stop monitoring environment
 .PHONY: monitoring-stop
 monitoring-stop:
 	$(MON_COMPOSE) stop
 
-# Clean up stuff
+## clean: Clean up stuff
 .PHONY: clean
 clean: testenv-stop monitoring-stop
 	$(TEST_COMPOSE) rm -f -s -v
 	$(MON_COMPOSE) rm -f -s -v
 	rm -rf tmp
 
-# Run linters and checks
+## lint: Run linters and checks
 .PHONY: lint
 lint: SHELL:=bash
 lint: check
@@ -66,11 +67,11 @@ lint: check
 	( cd frontend ; npm run lint )
 	( cd client ; npm run lint )
 
-# Regenerate all generated code
+## gen: Regenerate all generated code
 .PHONY: gen
 gen: proto mocks
 
-# Generate protobuf code from definitions
+## proto: Generate protobuf code from definitions
 .PHONY: proto
 proto:
 	protoc -I protobuf pinpoint.proto --go_out=plugins=grpc:protobuf
@@ -81,13 +82,14 @@ proto:
 	counterfeiter -o ./protobuf/fakes/pinpoint.pb.go \
 		./protobuf/pinpoint.pb.go CoreClient
 
+## proto-pkg: Runs protoc definitions 
 .PHONY: proto-pkg
 proto-pkg:
 	protoc -I protobuf $(PKG)/$(PKG).proto --go_out=plugins=grpc:$(GOPATH)/src
 
+## mocks: Generate database interface and mock
 .PHONY: mocks
 mocks:
-	# generate database interface and mock
 	ifacemaker \
 		-f ./core/database/*.go \
 		-s Database \
@@ -99,19 +101,20 @@ mocks:
 	counterfeiter -o ./core/database/mocks/database.i.go \
 		./core/database/database.i.go DBClient
 
-# Runs core service
+## core: Runs core service
 .PHONY: core
 core:
 	go run core/main.go run --dev \
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
-# Runs API gateway
+## gateway: Runs API gateway
 .PHONY: gateway
 gateway:
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt $(FLAGS)
 
+## gateway-tls: Runs gateway tls 
 .PHONY: gateway-tls
 gateway-tls:
 	go run gateway/main.go run --dev \
@@ -119,21 +122,25 @@ gateway-tls:
 		--tls.cert dev/certs/127.0.0.1.crt \
 		--tls.key dev/certs/127.0.0.1.key $(FLAGS)
 
-# Runs web app
+## web: Runs web app
 .PHONY: web
 web:
 	( cd frontend ; npm start )
 
-# Builds binary for pinpoint-core
+## pinpoint-core: Builds binary for pinpoint-core
 .PHONY: pinpoint-core
 pinpoint-core:
 	go build -o ./bin/pinpoint-core \
     -ldflags "-X main.Version=$(VERSION)" \
     ./core $(FLAGS)
 
-# Builds binary for pinpoint-gateway
+## pinpoint-gateway: Builds binary for pinpoint-gateway
 .PHONY: pinpoint-gateway
 pinpoint-gateway:
 	go build -o ./bin/pinpoint-gateway \
     -ldflags "-X main.Version=$(VERSION)" \
     ./gateway $(FLAGS)
+
+help: Makefile
+	@echo " Choose a command run in "$(PROJECTNAME)":"
+	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
