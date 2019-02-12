@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
@@ -14,6 +15,8 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestUserRouter_createUser(t *testing.T) {
@@ -43,19 +46,31 @@ func TestUserRouter_createUser(t *testing.T) {
 			Email:    "user@test.com",
 			Password: "password",
 		}}, errs{nil}, http.StatusCreated},
-		{"unsuccessfully create user", args{&request.CreateAccount{
+		{"internal server error", args{&request.CreateAccount{
 			Name:     "s",
 			Email:    "s",
 			Password: "s",
-		}}, errs{errors.New("Invalid arguments")}, http.StatusInternalServerError},
+		}}, errs{errors.New("Invalid signup arguments")}, http.StatusInternalServerError},
+		{"invalid email", args{&request.CreateAccount{
+			Name:     "julia",
+			Email:    "k",
+			Password: "julia",
+		}}, errs{errors.New("Invalid email")}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
 			if tt.errs.createUserFail != nil {
-				fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
-					return nil, errors.New("invalid signup arguments")
+				if strings.Contains(tt.errs.createUserFail.Error(), "Invalid signup arguments") {
+					fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
+						return nil, tt.errs.createUserFail
+					}
+				}
+				if strings.Contains(tt.errs.createUserFail.Error(), "Invalid email") {
+					fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
+						return nil, status.Errorf(codes.InvalidArgument, "unable to validate credentials: %s", tt.errs.createUserFail.Error())
+					}
 				}
 			}
 
