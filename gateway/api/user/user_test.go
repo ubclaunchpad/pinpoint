@@ -26,17 +26,29 @@ func TestUserRouter_createUser(t *testing.T) {
 	type args struct {
 		u *request.CreateAccount
 	}
+
+	type errs struct {
+		createUserFail bool
+	}
+
 	tests := []struct {
 		name     string
 		args     args
+		errs     errs
 		wantCode int
 	}{
-		{"bad input", args{nil}, http.StatusBadRequest},
+		{"bad input", args{nil}, errs{true}, http.StatusBadRequest},
 		{"successfully create user", args{&request.CreateAccount{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",
-		}}, http.StatusCreated},
+		}}, errs{false}, http.StatusCreated},
+
+		{"unsuccessfully create user", args{&request.CreateAccount{
+			Name:     "s",
+			Email:    "s",
+			Password: "s",
+		}}, errs{true}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -66,7 +78,7 @@ func TestUserRouter_createUser(t *testing.T) {
 
 			// Serve request
 			u.ServeHTTP(recorder, req)
-			if recorder.Code != tt.wantCode {
+			if recorder.Code != tt.wantCode && tt.errs.createUserFail == false {
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 
