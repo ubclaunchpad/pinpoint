@@ -28,7 +28,7 @@ func TestUserRouter_createUser(t *testing.T) {
 	}
 
 	type errs struct {
-		createUserFail bool
+		createUserFail error
 	}
 
 	tests := []struct {
@@ -37,24 +37,23 @@ func TestUserRouter_createUser(t *testing.T) {
 		errs     errs
 		wantCode int
 	}{
-		{"bad input", args{nil}, errs{false}, http.StatusBadRequest},
+		{"bad input", args{nil}, errs{nil}, http.StatusBadRequest},
 		{"successfully create user", args{&request.CreateAccount{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",
-		}}, errs{false}, http.StatusCreated},
-
+		}}, errs{nil}, http.StatusCreated},
 		{"unsuccessfully create user", args{&request.CreateAccount{
 			Name:     "s",
 			Email:    "s",
 			Password: "s",
-		}}, errs{true}, http.StatusInternalServerError},
+		}}, errs{errors.New("Invalid arguments")}, http.StatusInternalServerError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
-			if tt.errs.createUserFail {
+			if tt.errs.createUserFail != nil {
 				fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
 					return nil, errors.New("invalid signup arguments")
 				}
