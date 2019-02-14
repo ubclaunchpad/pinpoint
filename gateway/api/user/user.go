@@ -3,9 +3,13 @@ package user
 import (
 	"encoding/json"
 	"net/http"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/ubclaunchpad/pinpoint/gateway/auth"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
 	"github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -73,10 +77,24 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// No error means authenticated, proceed to generate token
+	expirationTime := time.Now().Add(30 * time.Minute)
+	claims := &auth.Claims{
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	tokenStr, err := claims.GenerateToken()
+	if err != nil {
+		render.Render(w, r, res.ErrInternalServer(r, "failed to generate token"))
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	// TODO: Generate token. See #10
-	render.JSON(w, r, map[string]string{
-		"token": "1234",
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   tokenStr,
+		Expires: expirationTime,
 	})
 }
 
