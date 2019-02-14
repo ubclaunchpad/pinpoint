@@ -2,12 +2,14 @@ package user
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/auth"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
@@ -15,6 +17,8 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 )
+
+var tokenAuth *jwtauth.JWTAuth
 
 // Router routes to all user endpoints
 type Router struct {
@@ -30,7 +34,22 @@ func NewUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
 	// these should all be public
 	u.mux.Post("/create", u.createUser)
 	u.mux.Post("/login", u.login)
-	u.mux.Get("/verify", u.verify)
+
+	// JWT Initialization
+	key, err := auth.GetAPIPrivateKey()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	tokenAuth = jwtauth.New("HS256", key, nil)
+
+	// Authenticated endpoints
+	u.mux.Group(func(r chi.Router) {
+		// Seek, verify and validate JWT tokens
+		r.Use(jwtauth.Verifier(tokenAuth))
+		// Handle valid/invalid tokens
+		r.Use(jwtauth.Authenticator)
+		r.Get("/verify", u.verify)
+	})
 
 	return u
 }
@@ -99,6 +118,8 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
+	// Use claims to grab email; claims["email"]. Related to #85, #128
+	// ie) _, claims, _ := jwtauth.FromContext(r.Context())
 	hash := r.FormValue("hash")
 	if hash == "" {
 		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))
