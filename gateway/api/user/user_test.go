@@ -50,6 +50,11 @@ func TestUserRouter_createUser(t *testing.T) {
 			Email:    "s",
 			Password: "s",
 		}}, errs{errors.New("Invalid signup arguments")}, http.StatusInternalServerError},
+		{"internal server error grpc", args{&request.CreateAccount{
+			Name:     "s",
+			Email:    "s",
+			Password: "s",
+		}}, errs{status.Errorf(codes.Internal, "unable to validate credentials: %s", "Invalid signup arguments")}, http.StatusInternalServerError},
 		{"invalid email", args{&request.CreateAccount{
 			Name:     "julia",
 			Email:    "k",
