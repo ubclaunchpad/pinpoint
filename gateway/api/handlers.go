@@ -11,7 +11,7 @@ import (
 func (a *API) statusHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := a.c.GetStatus(r.Context(), &request.Status{})
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, err.Error()))
+		render.Render(w, r, res.ErrInternalServer("failed to retrieve Core status", err))
 		return
 	}
 	render.JSON(w, r, resp)
