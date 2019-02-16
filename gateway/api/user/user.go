@@ -35,17 +35,15 @@ func NewUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
 	u.mux.Post("/create", u.createUser)
 	u.mux.Post("/login", u.login)
 
-	// JWT Initialization
-	key, err := auth.GetAPIPrivateKey()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	tokenAuth = jwtauth.New("HS256", key, nil)
-
 	// Authenticated endpoints
 	u.mux.Group(func(r chi.Router) {
+		// JWT Initialization
+		key, err := auth.GetAPIPrivateKey()
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 		// Seek, verify and validate JWT tokens
-		r.Use(jwtauth.Verifier(tokenAuth))
+		r.Use(jwtauth.Verifier(jwtauth.New("HS256", key, nil)))
 		// Handle valid/invalid tokens
 		r.Use(jwtauth.Authenticator)
 		r.Get("/verify", u.verify)
@@ -110,7 +108,9 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	render.Render(w, r, res.Message(r, tokenStr, http.StatusOK))
+	render.JSON(w, r, map[string]string{
+		"token": tokenStr,
+	})
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {

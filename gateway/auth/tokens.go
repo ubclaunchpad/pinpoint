@@ -6,15 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// the public key is used to verify the tokens
-// the private key is used for signing the tokens
-// TODO: fix data propagation
-// var (
-// 	verifyKey *rsa.PublicKey
-// 	signKey   *rsa.PrivateKey
-// )
-
-// @robert: how should I import dev package ?
+// Constant error messages
 const (
 	InvalidTokenErr = "invalid token"
 )
