@@ -3,26 +3,26 @@
 package database
 
 import (
-	"github.com/ubclaunchpad/pinpoint/core/model"
+	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
 // DBClient wraps the AWS DynamoDB database API
 type DBClient interface {
 	// AddNewUser creates a new user in the database
-	AddNewUser(u *model.User, e *model.EmailVerification) error
+	AddNewUser(u *models.User, e *models.EmailVerification) error
 	// GetUser returns a user from the database with the given email
-	GetUser(email string) (*model.User, error)
+	GetUser(email string) (*models.User, error)
 	// DeleteUser deletes a user from the database with the given email
 	DeleteUser(email string) error
 	// GetEmailVerification returns a pending email verification from the database
-	// with the given email
-	GetEmailVerification(hash string) (*model.EmailVerification, error)
+	// with the given email and hash
+	GetEmailVerification(email string, hash string) (*models.EmailVerification, error)
 	// AddNewClub creates a new club in the database with a user (creator) associated to it
-	AddNewClub(c *model.Club, cu *model.ClubUser) error
+	AddNewClub(c *models.Club, cu *models.ClubUser) error
 	// GetClub returns a club with the given id
-	GetClub(id string) (*model.Club, error)
+	GetClub(id string) (*models.Club, error)
 	// GetAllClubUsers returns a list of ClubUsers associated with a club
-	GetAllClubUsers(id string) ([]*model.ClubUser, error)
+	GetAllClubUsers(id string) ([]*models.ClubUser, error)
 	// DeleteClub deletes a club from the database with the given id
 	DeleteClub(id string) error
 }

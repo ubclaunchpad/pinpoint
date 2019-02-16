@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/ubclaunchpad/pinpoint/core/database/mocks"
-	"github.com/ubclaunchpad/pinpoint/core/model"
+	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
@@ -230,11 +230,11 @@ func TestService_Verify(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fk := &mocks.FakeDBClient{}
-			fk.GetEmailVerificationStub = func(hash string) (*model.EmailVerification, error) {
+			fk.GetEmailVerificationStub = func(email string, hash string) (*models.EmailVerification, error) {
 				if hash != expectedHash {
 					return nil, errors.New("oh no")
 				}
-				return &model.EmailVerification{Hash: hash}, nil
+				return &models.EmailVerification{Hash: hash}, nil
 			}
 			s := &Service{db: fk}
 
@@ -277,11 +277,11 @@ func TestService_Login(t *testing.T) {
 		},
 	}
 	fk := &mocks.FakeDBClient{}
-	fk.GetUserStub = func(email string) (*model.User, error) {
+	fk.GetUserStub = func(email string) (*models.User, error) {
 		if email != correctEmail {
-			return &model.User{Email: email, Name: "", Salt: "", Verified: false}, nil
+			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, nil
 		}
-		return &model.User{Email: correctEmail, Name: "", Salt: correctSalt, Verified: true}, nil
+		return &models.User{Email: correctEmail, Name: "", Hash: correctSalt, Verified: true}, nil
 	}
 	s := &Service{db: fk}
 	for _, tt := range tests {
