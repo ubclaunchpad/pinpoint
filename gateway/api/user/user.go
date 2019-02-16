@@ -56,8 +56,7 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 		l.Debugw("error occured creating user account", "error", err)
 		st, ok := status.FromError(err)
 		if !ok {
-			render.Render(w, r, res.ErrInternalServer("failed to create user account", err,
-				"error", err.Error()))
+			render.Render(w, r, res.ErrInternalServer("failed to create user account", err))
 			return
 		}
 
@@ -65,8 +64,7 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 		case codes.InvalidArgument:
 			render.Render(w, r, res.ErrBadRequest(st.Message()))
 		default:
-			render.Render(w, r, res.ErrInternalServer(st.Message(), err,
-				"error", err.Error()))
+			render.Render(w, r, res.ErrInternalServer(st.Message(), err))
 		}
 		return
 	}
