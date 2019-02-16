@@ -4,12 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"google.golang.org/grpc/codes"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/ubclaunchpad/pinpoint/gateway/api/ctxutil"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/status"
 )
 
 // Router routes to all user endpoints
@@ -36,10 +40,12 @@ func (u *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
+	var l = u.l.With("request-id", ctxutil.GetRequestID(r))
 	// parse request data
 	decoder := json.NewDecoder(r.Body)
 	var user request.CreateAccount
 	if err := decoder.Decode(&user); err != nil {
+		l.Debugw("error occured reading request", "error", err)
 		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
@@ -47,7 +53,19 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 	// create account in core
 	resp, err := u.c.CreateAccount(r.Context(), &user)
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer("failed to create user account", err))
+		l.Debugw("error occured creating user account", "error", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			render.Render(w, r, res.ErrInternalServer("failed to create user account", err))
+			return
+		}
+
+		switch st.Code() {
+		case codes.InvalidArgument:
+			render.Render(w, r, res.ErrBadRequest(st.Message()))
+		default:
+			render.Render(w, r, res.ErrInternalServer(st.Message(), err))
+		}
 		return
 	}
 

@@ -8,6 +8,9 @@ import (
 	"os"
 	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/ubclaunchpad/pinpoint/core/crypto"
 	"github.com/ubclaunchpad/pinpoint/core/database"
@@ -168,7 +171,7 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 // CreateAccount registers a user and sends an email verification email
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
 	if err := crypto.ValidateCredentialValues(req.Email, req.Password); err != nil {
-		return nil, fmt.Errorf("unable to validate credentials: %s", err.Error())
+		return nil, status.Errorf(codes.InvalidArgument, "unable to validate credentials: %s", err.Error())
 	}
 
 	// Generate password salt

@@ -14,6 +14,8 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
 	"github.com/ubclaunchpad/pinpoint/utils"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestUserRouter_createUser(t *testing.T) {
@@ -26,21 +28,48 @@ func TestUserRouter_createUser(t *testing.T) {
 	type args struct {
 		u *request.CreateAccount
 	}
+
+	type errs struct {
+		createUserFail error
+	}
+
 	tests := []struct {
 		name     string
 		args     args
+		errs     errs
 		wantCode int
 	}{
-		{"bad input", args{nil}, http.StatusBadRequest},
+		{"bad input", args{nil}, errs{nil}, http.StatusBadRequest},
 		{"successfully create user", args{&request.CreateAccount{
 			Name:     "Create",
 			Email:    "user@test.com",
 			Password: "password",
-		}}, http.StatusCreated},
+		}}, errs{nil}, http.StatusCreated},
+		{"internal server error", args{&request.CreateAccount{
+			Name:     "s",
+			Email:    "s",
+			Password: "s",
+		}}, errs{errors.New("Invalid signup arguments")}, http.StatusInternalServerError},
+		{"internal server error grpc", args{&request.CreateAccount{
+			Name:     "s",
+			Email:    "s",
+			Password: "s",
+		}}, errs{status.Errorf(codes.Internal, "unable to validate credentials: %s", "Invalid signup arguments")}, http.StatusInternalServerError},
+		{"invalid email", args{&request.CreateAccount{
+			Name:     "julia",
+			Email:    "k",
+			Password: "julia",
+		}}, errs{status.Errorf(codes.InvalidArgument, "unable to validate credentials: %s", "Invalid email")}, http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
+
+			if tt.errs.createUserFail != nil {
+				fake.CreateAccountStub = func(c context.Context, r *request.CreateAccount, opts ...grpc.CallOption) (*response.Message, error) {
+					return nil, tt.errs.createUserFail
+				}
+			}
 
 			// create user router
 			u := NewUserRouter(l, fake)

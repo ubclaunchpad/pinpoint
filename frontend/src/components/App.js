@@ -44,7 +44,7 @@ class App extends Component {
               component={() => <Login client={client} />}
             />
             <Route exact path="/reset" component={Reset} />
-            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/signup" component={() => <Signup client={client} />} />
             <Route exact path="/scenes/applicationperiod" component={CreateApplicationPeriod} />
           </Switch>
         </div>
