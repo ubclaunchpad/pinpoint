@@ -21,6 +21,7 @@ class API {
       return response.data.email;
     } catch (error) {
       switch (error.response.status) {
+        case 400: throw new Error(`${error.response.data.message}`);
         default: throw new Error(`error ${error.response.status}`);
       }
     }
