@@ -8,7 +8,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
+
+	"github.com/ubclaunchpad/pinpoint/gateway/auth"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
@@ -85,16 +89,18 @@ func TestUserRouter_verify(t *testing.T) {
 	}
 
 	type args struct {
-		hash string
+		email string
+		hash  string
+		jwt   string
 	}
 	tests := []struct {
 		name     string
 		args     args
 		wantCode int
 	}{
-		{"no hash", args{""}, http.StatusBadRequest},
-		{"ok hash", args{"tom"}, http.StatusAccepted},
-		{"bad hash", args{"robert"}, http.StatusNotFound},
+		{"no hash", args{"", "", createTestJwt("")}, http.StatusBadRequest},
+		{"ok hash", args{"tom@gmail.com", "tom", createTestJwt("tom@gmail.com")}, http.StatusAccepted},
+		{"bad hash", args{"robert@gmail.com", "robert", createTestJwt("robert@gmail.com")}, http.StatusNotFound},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,7 +122,7 @@ func TestUserRouter_verify(t *testing.T) {
 				t.Error(err)
 				return
 			}
-
+			req.Header.Set("Authorization", "BEARER "+tt.args.jwt)
 			// Record responses
 			recorder := httptest.NewRecorder()
 			u.ServeHTTP(recorder, req)
@@ -181,4 +187,19 @@ func TestUserRouter_login(t *testing.T) {
 			}
 		})
 	}
+}
+
+func createTestJwt(email string) string {
+	expirationTime := time.Now().Add(1 * time.Minute)
+	claims := &auth.Claims{
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	tokenStr, err := claims.GenerateToken()
+	if err != nil {
+		return ""
+	}
+	return tokenStr
 }

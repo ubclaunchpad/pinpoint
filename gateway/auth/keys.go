@@ -2,6 +2,9 @@ package auth
 
 import (
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 const (
@@ -12,7 +15,7 @@ const (
 // GetAPIPrivateKey returns the private RSA key to authenticate
 // HTTP requests sent to the daemon.
 func GetAPIPrivateKey() ([]byte, error) {
-	return getPrivateKeyFromPath(privateKeyPath)
+	return getPrivateKeyFromPath(getProjectRelativePath(privateKeyPath))
 }
 
 func getPrivateKeyFromPath(path string) ([]byte, error) {
@@ -26,7 +29,7 @@ func getPrivateKeyFromPath(path string) ([]byte, error) {
 
 // GetAPIPublicKey returns public RSA key
 func GetAPIPublicKey() ([]byte, error) {
-	return getPublicKeyFromPath(publicKeyPath)
+	return getPublicKeyFromPath(getProjectRelativePath(publicKeyPath))
 }
 
 func getPublicKeyFromPath(path string) ([]byte, error) {
@@ -35,4 +38,13 @@ func getPublicKeyFromPath(path string) ([]byte, error) {
 		return nil, err
 	}
 	return verifyBytes, nil
+}
+
+func getProjectRelativePath(path string) string {
+	wd, _ := os.Getwd()
+	for !strings.HasSuffix(wd, "pinpoint") {
+		wd = filepath.Dir(wd)
+	}
+
+	return wd + "/" + path
 }
