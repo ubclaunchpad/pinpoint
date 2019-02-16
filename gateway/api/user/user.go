@@ -110,16 +110,13 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenStr,
-		Expires: expirationTime,
-	})
+	render.Render(w, r, res.Message(r, tokenStr, http.StatusOK))
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
 	// Use claims to grab email; claims["email"]. Related to #85, #128
-	// ie) _, claims, _ := jwtauth.FromContext(r.Context())
+	// _, claims, _ := jwtauth.FromContext(r.Context())
+	// log.Print("email: ", claims["email"])
 	hash := r.FormValue("hash")
 	if hash == "" {
 		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))

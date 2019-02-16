@@ -1,10 +1,7 @@
 package auth
 
 import (
-	"crypto/rsa"
 	"io/ioutil"
-
-	jwt "github.com/dgrijalva/jwt-go"
 )
 
 const (
@@ -14,28 +11,28 @@ const (
 
 // GetAPIPrivateKey returns the private RSA key to authenticate
 // HTTP requests sent to the daemon.
-func GetAPIPrivateKey() (*rsa.PrivateKey, error) {
+func GetAPIPrivateKey() ([]byte, error) {
 	return getPrivateKeyFromPath(privateKeyPath)
 }
 
-func getPrivateKeyFromPath(path string) (*rsa.PrivateKey, error) {
+func getPrivateKeyFromPath(path string) ([]byte, error) {
 	signBytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	return jwt.ParseRSAPrivateKeyFromPEM(signBytes)
+	return signBytes, nil
 }
 
 // GetAPIPublicKey returns public RSA key
-func GetAPIPublicKey() (*rsa.PublicKey, error) {
+func GetAPIPublicKey() ([]byte, error) {
 	return getPublicKeyFromPath(publicKeyPath)
 }
 
-func getPublicKeyFromPath(path string) (*rsa.PublicKey, error) {
+func getPublicKeyFromPath(path string) ([]byte, error) {
 	verifyBytes, err := ioutil.ReadFile(publicKeyPath)
 	if err != nil {
 		return nil, err
 	}
-	return jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
+	return verifyBytes, nil
 }

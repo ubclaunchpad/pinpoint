@@ -27,7 +27,7 @@ type Claims struct {
 
 // GenerateToken creates a JWT token using signKey (ie private rsa key)
 func (c *Claims) GenerateToken() (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, c)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 	signKey, err := GetAPIPrivateKey()
 	if err != nil {
 		return "", err
@@ -37,9 +37,6 @@ func (c *Claims) GenerateToken() (string, error) {
 }
 
 // ValidateToken ensures token is valid and returns its metadata
-// modified copy from inertia lol
-// I am not really sure how the ParseWithClaims work,
-// particulary what are we passing "&Claims{}""
 func ValidateToken(tokenString string, lookup jwt.Keyfunc) (*Claims, error) {
 	// Parse takes the token string and a function for looking up the key.
 	// For default lookup function, use GetAPIPrivateKey()
