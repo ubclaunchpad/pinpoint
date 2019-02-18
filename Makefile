@@ -18,6 +18,7 @@ deps:
 	bash .scripts/protoc-gen-go.sh
 	go get -u github.com/maxbrunsfeld/counterfeiter
 	go get -u github.com/vburenin/ifacemaker
+	go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	dep ensure
 	( cd client ; npm install )
 	( cd frontend ; npm install )
@@ -146,10 +147,12 @@ help: Makefile
 	@echo " Choose a command run in pinpoint:"
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 
-.PHONY: gen
-## gen: Generates API code from swagger tool 
-gen: ( cd api ; swagger generate server -t gen -f ./swagger/swagger.yml -A spotter )
+.PHONY: swagger-gen
+## swagger-gen: Generates API code from swagger tool 
+swagger-gen: 
+	swagger generate server -t gen -f ./docs/swagger/swagger.yml -A pinpoint
 
-.PHONY: api
-## api: Serve the API UI - shows all api endpoints
-api: swagger serve ./swagger/swagger.yml
+.PHONY: api-docs
+## api-docs: Serve the API UI - shows all api endpoints
+api-docs: 
+	swagger serve ./docs/swagger/swagger.yml
