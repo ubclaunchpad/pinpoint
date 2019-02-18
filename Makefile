@@ -145,3 +145,11 @@ pinpoint-gateway:
 help: Makefile
 	@echo " Choose a command run in pinpoint:"
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+
+.PHONY: gen
+## gen: Generates API code from swagger tool 
+gen: ( cd api ; swagger generate server -t gen -f ./swagger/swagger.yml -A spotter )
+
+.PHONY: api
+## api: Serve the API UI - shows all api endpoints
+api: swagger serve ./swagger/swagger.yml
