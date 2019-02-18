@@ -147,9 +147,9 @@ help: Makefile
 	@echo " Choose a command run in pinpoint:"
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 
-.PHONY: swagger-gen
-## swagger-gen: Generates API code from swagger tool 
-swagger-gen: 
+.PHONY: swagger
+## swagger: Generates API code from swagger tool 
+swagger: 
 	swagger generate server -t gen -f ./docs/swagger/swagger.yml -A pinpoint
 
 .PHONY: api-docs
