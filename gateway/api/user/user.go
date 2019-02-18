@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
-	"github.com/ubclaunchpad/pinpoint/protobuf"
+	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 )
@@ -41,20 +41,19 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var user request.CreateAccount
 	if err := decoder.Decode(&user); err != nil {
-		render.Render(w, r, res.ErrBadRequest(r, "invalid request"))
+		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
 
 	// create account in core
 	resp, err := u.c.CreateAccount(r.Context(), &user)
 	if err != nil {
-		render.Render(w, r, res.ErrInternalServer(r, "failed to create user account",
-			"error", err.Error()))
+		render.Render(w, r, res.ErrInternalServer("failed to create user account", err))
 		return
 	}
 
 	// success!
-	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusCreated,
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusCreated,
 		"email", user.GetEmail()))
 }
 
@@ -78,38 +77,35 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	// password := r.FormValue("password")
 
 	if email == "" || password == "" {
-		render.Render(w, r, res.ErrBadRequest(r, "missing fields - both email and password is required"))
+		render.Render(w, r, res.ErrBadRequest("missing fields - both email and password is required"))
 		return
 	}
 
 	if _, err := u.c.Login(r.Context(), &request.Login{
 		Email: email, Password: password,
 	}); err != nil {
-		render.Render(w, r, res.ErrUnauthorized(r, err.Error()))
+		render.Render(w, r, res.ErrUnauthorized(err.Error()))
 		return
 	}
 
 	// No error means authenticated, proceed to generate token
-	w.WriteHeader(http.StatusOK)
 	// TODO: Generate token. See #10
-	render.JSON(w, r, map[string]string{
-		"token": "1234",
-	})
-
+	render.Render(w, r, res.MsgOK("user logged in",
+		"token", 1234))
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
 	hash := r.FormValue("hash")
 	if hash == "" {
-		render.Render(w, r, res.ErrBadRequest(r, "hash is required"))
+		render.Render(w, r, res.ErrBadRequest("hash is required"))
 		return
 	}
 
 	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
 	if err != nil {
-		render.Render(w, r, res.Err(r, err.Error(), http.StatusNotFound))
+		render.Render(w, r, res.ErrNotFound(err.Error()))
 		return
 	}
 
-	render.Render(w, r, res.Message(r, resp.GetMessage(), http.StatusAccepted))
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusAccepted))
 }
