@@ -28,9 +28,11 @@ paths:
             $ref: "#/definitions/user"
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
   /user/login:
     post:
       summary: Login to user account
@@ -44,9 +46,11 @@ paths:
             $ref: "#/definitions/login"
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
   /user/verify:
     get:
       summary: Verify club 
@@ -55,9 +59,11 @@ paths:
         - user
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
 
   /club/overview:
     get:
@@ -67,9 +73,11 @@ paths:
         - club
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
   /club/create:
     post:
       summary: Create a new club
@@ -83,30 +91,36 @@ paths:
             $ref: "#/definitions/club"
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
-  # /{club}/period/create:
-  #   post:
-  #     summary: Create a period for a club 
-  #     description: teehee
-  #     tags:
-  #       - club
-  #       - period
-  #     parameters:
-  #       - name: period
-  #         in: body
-  #         schema:
-  #           $ref: "#/definitions/period"
-  #       - name: club
-  #         in: path
-  #         type: string
-  #         required: required
-  #     responses:
-  #       200:
-  #         $ref: '#/definitions/OK'
-  #       default:
-  #         $ref: '#/definitions/Error'
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
+  /{club}/period/create:
+    post:
+      summary: Create a period for a club 
+      description: teehee
+      tags:
+        - club
+        - period
+      parameters:
+        - name: period
+          in: body
+          schema:
+            $ref: "#/definitions/period"
+          required: true
+        - name: club
+          in: path
+          type: string
+          format: string
+          required: true
+      responses:
+        200:
+          $ref: '#/definitions/club'
+        default:
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
   /{club}/period/{period}/event/create:
     post:
       summary: Create an event for a club's period
@@ -119,7 +133,7 @@ paths:
         - name: event
           in: body
           schema:
-            $ref: "#/definitions/event"
+            $ref: '#/definitions/event'
           required: true
         - name: club
           in: path
@@ -133,70 +147,16 @@ paths:
           required: true
       responses:
         200:
-          $ref: '#/definitions/OK'
+          $ref: '#/definitions/club'
         default:
-          $ref: '#/definitions/Error'
-
-# components:
-#   schemas:
-#     OKResponse:
-#       required: [ code, message ]
-#       properties:
-#         code:
-#           type: integer
-#           example: 200
-#           description: HTTP status code
-#         message:
-#           type: string
-#           example: Successfully did something!
-#           description: summary of response
-#         request_id:
-#           type: string
-#           example: teeheebook/2Mch7LMzhj-000023
-#           description: generated request ID corresponding to request
-#         data:
-#           type: object
-#           additionalProperties: true
-#           description: response data and additional context
-#     ErrResponse:
-#       required: [ code, message, error ]
-#       properties:
-#         code:
-#           type: integer
-#           example: 400
-#           description: HTTP status code
-#         message:
-#           type: string
-#           example: (example) could not do something
-#           description: summary of response
-#         error:
-#           type: string
-#           example: (example) value x is missing
-#           description: detailed about error message
-#         request_id:
-#           type: string
-#           example: example/2Mch7LMzhj-000023
-#           description: generated request ID corresponding to request
-#         data:
-#           type: object
-#           additionalProperties: true
-#           description: additional context about error
-#           example:
-#             example: here is some additional information
+          description: error response
+          schema:
+            $ref: "#/definitions/error"
 
 definitions:
-  OK:
-    description: Successful club action!
-    schema: 
-      type: array
-      items:
-        $ref: "#/definitions/club"
-  Error:
-    description: Something went wrong - refer to the error code and message for more details
-    schema:
-      $ref: '#/definitions/error'
   # Models
   error:
+    description: Something went wrong - refer to the error code and message for more details
     type: object
     required:
       - message
@@ -231,6 +191,7 @@ definitions:
         type: string
         minLength: 1
   club:
+    description: Successful club action!
     type: object
     properties:
       name:
