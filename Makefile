@@ -19,6 +19,7 @@ deps:
 	go get -u github.com/maxbrunsfeld/counterfeiter
 	go get -u github.com/vburenin/ifacemaker
 	go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	npm install -g redoc-cli
 	dep ensure
 	( cd client ; npm install )
 	( cd frontend ; npm install )
@@ -150,9 +151,20 @@ help: Makefile
 .PHONY: swagger
 ## swagger: Generates API code from swagger tool 
 swagger: 
-	swagger generate server -t gen -f ./docs/swagger/swagger.yml -A pinpoint
+	swagger generate server -t swag-gen -f ./docs_src/api/swagger.yml -A pinpoint
 
 .PHONY: api-docs
 ## api-docs: Serve the API UI - shows all api endpoints
 api-docs: 
-	swagger serve ./docs/swagger/swagger.yml
+	swagger serve ./docs_src/api/swagger.yml
+
+## docs-api: build API reference from Swagger definitions in /docs_src/api
+.PHONY: docs-api
+docs-api: 
+	@echo [INFO] Generating API documentation
+	@redoc-cli bundle ./docs_src/api/swagger.yml -o ./docs/api/index.html
+
+## run-docs-api: run doc server from ./docs_src for the API reference website only
+.PHONY: run-docs-api
+run-docs-api:
+	redoc-cli serve ./docs_src/api/swagger.yml -w
