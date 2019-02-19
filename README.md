@@ -38,6 +38,11 @@ You will need [dep](https://github.com/golang/dep#installation) and [npm](https:
 $> make deps
 ```
 
+### Makefile
+
+The [Makefile](/Makefile) offers a lot of useful commands for development. Run
+`make help` to see the commands that are available.
+
 ### Building
 
 #### Golang Binaries

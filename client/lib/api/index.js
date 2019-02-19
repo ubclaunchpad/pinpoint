@@ -21,6 +21,7 @@ class API {
       return response.data.email;
     } catch (error) {
       switch (error.response.status) {
+        case 400: throw new Error(`${error.response.data.message}`);
         default: throw new Error(`error ${error.response.status}`);
       }
     }
@@ -29,7 +30,8 @@ class API {
   async login({ email, password }) {
     try {
       const response = await this.req.post('/user/login', { email, password });
-      return response.data.token;
+      console.log(response);
+      return response;
     } catch (error) {
       switch (error.response.status) {
         default: throw new Error(`error ${error.response.status}`);

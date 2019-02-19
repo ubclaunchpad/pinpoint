@@ -2,312 +2,139 @@
 
 
 [[projects]]
-  digest = "1:9213d472050d724bda15b7005ff5592d9d0e0bf4edf16fccf1406c2cb3559450"
   name = "github.com/aws/aws-sdk-go"
-  packages = [
-    "aws",
-    "aws/awserr",
-    "aws/awsutil",
-    "aws/client",
-    "aws/client/metadata",
-    "aws/corehandlers",
-    "aws/credentials",
-    "aws/credentials/ec2rolecreds",
-    "aws/credentials/endpointcreds",
-    "aws/credentials/processcreds",
-    "aws/credentials/stscreds",
-    "aws/crr",
-    "aws/csm",
-    "aws/defaults",
-    "aws/ec2metadata",
-    "aws/endpoints",
-    "aws/request",
-    "aws/session",
-    "aws/signer/v4",
-    "internal/ini",
-    "internal/sdkio",
-    "internal/sdkrand",
-    "internal/sdkuri",
-    "internal/shareddefaults",
-    "private/protocol",
-    "private/protocol/json/jsonutil",
-    "private/protocol/jsonrpc",
-    "private/protocol/query",
-    "private/protocol/query/queryutil",
-    "private/protocol/rest",
-    "private/protocol/xml/xmlutil",
-    "service/dynamodb",
-    "service/dynamodb/dynamodbattribute",
-    "service/sts",
-  ]
-  pruneopts = "UT"
-  revision = "a2484497433aa110263c045df2f1d49336b38cfd"
-  version = "v1.16.22"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/processcreds","aws/credentials/stscreds","aws/crr","aws/csm","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/ini","internal/sdkio","internal/sdkrand","internal/sdkuri","internal/shareddefaults","private/protocol","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/dynamodb","service/dynamodb/dynamodbattribute","service/sts"]
+  revision = "81f3829f5a9d041041bdf56e55926691309d7699"
+  version = "v1.16.26"
 
 [[projects]]
-  digest = "1:cb53653e4e410ef91f3a83568464ef966e1732ad9a00b2719571f90eae9a15a7"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   name = "github.com/go-chi/chi"
-  packages = [
-    ".",
-    "middleware",
-  ]
-  pruneopts = "UT"
+  packages = [".","middleware"]
   revision = "08d9051ef6546d57c5dca8eae13e6df362e2d568"
   version = "v3.3.4"
 
 [[projects]]
-  digest = "1:dfa416a1bb8139f30832543340f972f65c0db9932034cb6a1b42c5ac615a3fb8"
   name = "github.com/go-chi/cors"
   packages = ["."]
-  pruneopts = "UT"
   revision = "dba6525398619dead495962a916728e7ee2ca322"
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:54d7b4b9ab2bb2bae35b55eea900bc8fe15cba05a95fc78bf7fd7b82a9a07afa"
+  name = "github.com/go-chi/jwtauth"
+  packages = ["."]
+  revision = "47840abb19b36dcf4d3ab4123b605b28ea511bc8"
+  version = "v4.0.2"
+
+[[projects]]
   name = "github.com/go-chi/render"
   packages = ["."]
-  pruneopts = "UT"
   revision = "3215478343fbc559bd3fc08f7031bb134d6bdad5"
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:9d6dc4d6de69b330d0de86494d6db90c09848c003d5db748f40c925f865c8534"
   name = "github.com/golang/protobuf"
-  packages = [
-    "jsonpb",
-    "proto",
-    "ptypes",
-    "ptypes/any",
-    "ptypes/duration",
-    "ptypes/struct",
-    "ptypes/timestamp",
-  ]
-  pruneopts = "UT"
+  packages = ["jsonpb","proto","ptypes","ptypes/any","ptypes/duration","ptypes/struct","ptypes/timestamp"]
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:6d9ec638c0f60d01a25e43940f20dff30cf8b468371ea4df54cbc5b73e07e223"
   name = "github.com/grpc-ecosystem/go-grpc-middleware"
-  packages = [
-    ".",
-    "logging",
-    "logging/zap",
-    "logging/zap/ctxzap",
-    "tags",
-    "tags/zap",
-  ]
-  pruneopts = "UT"
+  packages = [".","logging","logging/zap","logging/zap/ctxzap","tags","tags/zap"]
   revision = "c250d6563d4d4c20252cd865923440e829844f4e"
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
-  pruneopts = "UT"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
 
 [[projects]]
-  digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
-  pruneopts = "UT"
   revision = "c2b33e84"
 
 [[projects]]
-  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
   name = "github.com/joho/godotenv"
   packages = ["."]
-  pruneopts = "UT"
   revision = "23d116af351c84513e1946b527c88823e476be13"
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  pruneopts = "UT"
   revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
   version = "v0.0.3"
 
 [[projects]]
-  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  pruneopts = "UT"
   revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
   version = "v1.0.3"
 
 [[projects]]
-  digest = "1:3c1a69cdae3501bf75e76d0d86dc6f2b0a7421bc205c0cb7b96b19eed464a34d"
   name = "go.uber.org/atomic"
   packages = ["."]
-  pruneopts = "UT"
   revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
   version = "v1.3.2"
 
 [[projects]]
-  digest = "1:60bf2a5e347af463c42ed31a493d817f8a72f102543060ed992754e689805d1a"
   name = "go.uber.org/multierr"
   packages = ["."]
-  pruneopts = "UT"
   revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:adccce69c151272d5053505aee552c6a1ac4e7bf6d18f0206ed7453187f6284d"
   name = "go.uber.org/zap"
-  packages = [
-    ".",
-    "buffer",
-    "internal/bufferpool",
-    "internal/color",
-    "internal/exit",
-    "zapcore",
-    "zaptest/observer",
-  ]
-  pruneopts = "UT"
+  packages = [".","buffer","internal/bufferpool","internal/color","internal/exit","zapcore","zaptest/observer"]
   revision = "ff33455a0e382e8a81d14dd7c922020b6b5e7982"
   version = "v1.9.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:1ecf2a49df33be51e757d0033d5d51d5f784f35f68e5a38f797b2d3f03357d71"
   name = "golang.org/x/crypto"
-  packages = [
-    "bcrypt",
-    "blowfish",
-  ]
-  pruneopts = "UT"
-  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
+  packages = ["bcrypt","blowfish"]
+  revision = "b8fe1690c61389d7d2a8074a507d1d40c5d30448"
 
 [[projects]]
   branch = "master"
-  digest = "1:fc7b6b4384e1e849d99eab58eca4f8c0a76bad4699117d5077a9a5c3c83e289e"
   name = "golang.org/x/net"
-  packages = [
-    "context",
-    "http/httpguts",
-    "http2",
-    "http2/hpack",
-    "idna",
-    "internal/timeseries",
-    "trace",
-  ]
-  pruneopts = "UT"
-  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
+  packages = ["context","http/httpguts","http2","http2/hpack","idna","internal/timeseries","trace"]
+  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
 
 [[projects]]
   branch = "master"
-  digest = "1:f6f6d9d6f80c9e32acc0f4f3b904e0b9f5b18a7757c2ef941121bd79a10e7bdf"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  pruneopts = "UT"
-  revision = "11f53e03133963fb11ae0588e08b5e0b85be8be5"
+  revision = "afcc84fd7533758f95a6e93ae710aa945a0b7e73"
 
 [[projects]]
-  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
   name = "golang.org/x/text"
-  packages = [
-    "collate",
-    "collate/build",
-    "internal/colltab",
-    "internal/gen",
-    "internal/tag",
-    "internal/triegen",
-    "internal/ucd",
-    "language",
-    "secure/bidirule",
-    "transform",
-    "unicode/bidi",
-    "unicode/cldr",
-    "unicode/norm",
-    "unicode/rangetable",
-  ]
-  pruneopts = "UT"
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:077c1c599507b3b3e9156d17d36e1e61928ee9b53a5b420f10f28ebd4a0b275c"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  pruneopts = "UT"
-  revision = "db91494dd46c1fdcbbde05e5ff5eb56df8f7d79a"
+  revision = "4b09977fb92221987e99d190c8f88f2c92727a29"
 
 [[projects]]
-  digest = "1:9ab5a33d8cb5c120602a34d2e985ce17956a4e8c2edce7e6961568f95e40c09a"
   name = "google.golang.org/grpc"
-  packages = [
-    ".",
-    "balancer",
-    "balancer/base",
-    "balancer/roundrobin",
-    "binarylog/grpc_binarylog_v1",
-    "codes",
-    "connectivity",
-    "credentials",
-    "credentials/internal",
-    "encoding",
-    "encoding/proto",
-    "grpclog",
-    "internal",
-    "internal/backoff",
-    "internal/binarylog",
-    "internal/channelz",
-    "internal/envconfig",
-    "internal/grpcrand",
-    "internal/grpcsync",
-    "internal/syscall",
-    "internal/transport",
-    "keepalive",
-    "metadata",
-    "naming",
-    "peer",
-    "resolver",
-    "resolver/dns",
-    "resolver/passthrough",
-    "stats",
-    "status",
-    "tap",
-  ]
-  pruneopts = "UT"
+  packages = [".","balancer","balancer/base","balancer/roundrobin","binarylog/grpc_binarylog_v1","codes","connectivity","credentials","credentials/internal","encoding","encoding/proto","grpclog","internal","internal/backoff","internal/binarylog","internal/channelz","internal/envconfig","internal/grpcrand","internal/grpcsync","internal/syscall","internal/transport","keepalive","metadata","naming","peer","resolver","resolver/dns","resolver/passthrough","stats","status","tap"]
   revision = "a02b0774206b209466313a0b525d2c738fe407eb"
   version = "v1.18.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = [
-    "github.com/aws/aws-sdk-go/aws",
-    "github.com/aws/aws-sdk-go/aws/client",
-    "github.com/aws/aws-sdk-go/aws/credentials",
-    "github.com/aws/aws-sdk-go/aws/session",
-    "github.com/aws/aws-sdk-go/service/dynamodb",
-    "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
-    "github.com/go-chi/chi",
-    "github.com/go-chi/chi/middleware",
-    "github.com/go-chi/cors",
-    "github.com/go-chi/render",
-    "github.com/golang/protobuf/proto",
-    "github.com/grpc-ecosystem/go-grpc-middleware",
-    "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap",
-    "github.com/grpc-ecosystem/go-grpc-middleware/tags",
-    "github.com/joho/godotenv",
-    "github.com/spf13/cobra",
-    "go.uber.org/zap",
-    "go.uber.org/zap/zapcore",
-    "go.uber.org/zap/zaptest/observer",
-    "golang.org/x/crypto/bcrypt",
-    "golang.org/x/net/context",
-    "google.golang.org/grpc",
-    "google.golang.org/grpc/codes",
-    "google.golang.org/grpc/credentials",
-    "google.golang.org/grpc/metadata",
-  ]
+  inputs-digest = "94c8a158028431513335a888a835ebf8337995ef67cbaeab08c4ed3541f0a5ed"
   solver-name = "gps-cdcl"
   solver-version = 1
