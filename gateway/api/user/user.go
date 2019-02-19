@@ -9,6 +9,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
@@ -105,13 +106,9 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 
 	var info logininfo
 	json.Unmarshal([]byte(bodyString), &info)
-	print(bodyString)
 
 	email := info.Email
 	password := info.Password
-
-	// email := r.FormValue("email")
-	// password := r.FormValue("password")
 
 	if email == "" || password == "" {
 		render.Render(w, r, res.ErrBadRequest("missing fields - both email and password is required"))
