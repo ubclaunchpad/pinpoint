@@ -9,17 +9,22 @@ $spacing-m:   24px;
 $spacing-l:   32px;
 $spacing-xl:  40px;
 $spacing-xxl: 48px;
+$spacing-nav: 60px;
+$spacing-xxxl: 300px;
 
 
 // todo - more classes, replace 1 with variables
 
 .pad {
   // navbar
-  &-nav { padding-top: 1; }
+  &-nav { 
+    padding-bottom: $spacing-nav;
+  }
 
   // left padding
   &-left, &-sides {
     &-m { padding-left: $spacing-m; }
+    &-xxxl { padding-left: $spacing-xxxl; }
   }
 
   // right padding
@@ -32,6 +37,7 @@ $spacing-xxl: 48px;
     &-xs { padding-top: $spacing-xs; }
     &-s { padding-top: $spacing-s; }
     &-m { padding-top: $spacing-m; }
+    &-xxl { padding-top: $spacing-xxl; }
   }
 
   // bottom margin
@@ -44,7 +50,9 @@ $spacing-xxl: 48px;
 
 .margin {
   // navbar
-  &-nav { margin-top: 1; }
+  &-nav { 
+    margin: 0;
+  }
 
   &-title {
     margin-bottom: $spacing-s;
@@ -61,10 +69,10 @@ $spacing-xxl: 48px;
 
   // right margin
   &-right, &-sides {
-    &-xs { margin-left: $spacing-xs; }
-    &-s { margin-left: $spacing-s; }
-    &-m { margin-left: $spacing-m; }
-    &-l { margin-left: $spacing-l; }
+    &-xs { margin-right: $spacing-xs; }
+    &-s { margin-right: $spacing-s; }
+    &-m { margin-right: $spacing-m; }
+    &-l { margin-right: $spacing-l; }
   }
 
   // top margin

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Notification from './Notification';
 
 class Signup extends Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       name: '',
       email: '',
@@ -32,7 +32,7 @@ class Signup extends Component {
   }
 
   // TODO once endpoint is set up, currently does nothing
-  attemptSignup() {
+  async attemptSignup() {
     const {
       email,
       password,
@@ -40,13 +40,18 @@ class Signup extends Component {
       passwordConfirm,
     } = this.state;
 
+    const { client } = this.props;
+
     if (!email || !password || !name || !passwordConfirm) {
       this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
     } else if (passwordConfirm !== password) {
       this.setState({ message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
     } else {
-      // TODO Send signup information to backend here
-      this.setState({ message: { messageType: 'success', content: ' Success!' } });
+      try {
+        await client.createAccount({ email, name, password });
+      } catch (e) {
+        this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
+      }
     }
   }
 
@@ -68,7 +73,6 @@ class Signup extends Component {
       error: 'fa-times-circle',
     };
 
-
     if (message) {
       return (
         <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
@@ -88,7 +92,6 @@ class Signup extends Component {
     }});
   }
 
-
   render() {
     return (
       <div className="flex-al-center">
@@ -106,7 +109,7 @@ class Signup extends Component {
           <input type="checkbox" />
           <span>Send me e-mail updates</span>
         </div>
-        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptSignup}>Sign up</button>
+        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptSignup}><a href="/login">Sign up</a></button>
         <div className="margin-top-xs">
           <span>Already have a pinpoint account? &nbsp;</span>
           <a href="/login">Sign In</a>
