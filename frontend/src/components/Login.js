@@ -23,16 +23,17 @@ class Login extends Component {
     this.setState({ message: null, [loginField]: e.target.value });
   }
 
-  // TODO once endpoint is set up, currently does nothing
+  // Checks user log in credentials
   async attemptLogin() {
     const { email, password } = this.state;
-    const { client } = this.props;
+    const { client, attemptLogIn } = this.props;
 
     if (!email || !password) {
       this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
     } else {
       const resp = await client.login({ email, password });
       if (resp.status === 200) {
+        attemptLogIn();
         const { router: { history } } = this.context;
         history.push('/');
       } else {

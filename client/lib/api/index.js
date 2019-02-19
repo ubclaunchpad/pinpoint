@@ -28,12 +28,15 @@ class API {
   }
 
   async login({ email, password }) {
+    let response = {};
     try {
-      const response = await this.req.post('/user/login', { email, password });
-      console.log(response);
+      response = await this.req.post('/user/login', { email, password });
       return response;
     } catch (error) {
       switch (error.response.status) {
+        case 401:
+          response.status = 401;
+          return response;
         default: throw new Error(`error ${error.response.status}`);
       }
     }
