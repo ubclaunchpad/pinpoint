@@ -121,7 +121,7 @@ describe('API', () => {
       }).then(onFulfilled);
       moxios.wait(() => {
         const response = onFulfilled.getCall(0).args[0];
-        expect(response).toEqual('1234');
+        expect(response.data.token).toEqual('1234');
         done();
       });
     });
