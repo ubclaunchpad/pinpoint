@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Pinpoint from 'pinpoint-client';
+import Notification from './Notification';
 
 class Login extends Component {
   static contextTypes = {
@@ -12,15 +13,25 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      message: null,
+      notification: {
+        type: 'info',
+        showNotification: false,
+        message: '',
+      },
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
   }
 
   updateTextField(e) {
-    const loginField = e.target.getAttribute('type');
-    this.setState({ message: null, [loginField]: e.target.value });
+    const loginField = e.target.getAttribute('name');
+    this.setState({
+      notification: {
+        ...this.state.notification,
+        showNotification: false,
+      },
+      [loginField]: e.target.value,
+    });
   }
 
   // TODO once endpoint is set up, currently does nothing
@@ -29,54 +40,39 @@ class Login extends Component {
     const { client } = this.props;
 
     if (!email || !password) {
-      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      this.setState({
+        notification: {
+          type: 'error',
+          message: 'Please fill in all fields.',
+          showNotification: true,
+        },
+      });
     } else {
       const resp = await client.login({ email, password });
       if (resp.status === 200) {
         const { router: { history } } = this.context;
         history.push('/');
       } else {
-        this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
+        this.setState({
+          notification: {
+            type: 'error',
+            message: 'Incorrect Credentials.',
+            showNotification: true,
+          },
+        });
       }
     }
   }
 
-  // content: string input
-  // messageType: "info", "success", "warning", "error"
-  generateMessage() {
-    const { message } = this.state;
-    const colors = {
-      info: 'blue',
-      success: 'green',
-      warning: 'orange',
-      error: 'red',
-    };
-
-    const shape = {
-      info: 'fa-info-circle',
-      success: 'fa-check',
-      warning: 'fa-warning',
-      error: 'fa-times-circle',
-    };
-
-    if (message) {
-      return (
-        <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
-          <i className={`fa ${shape[message.messageType]}`} />
-          {message.content}
-        </div>
-      );
-    }
-  }
-
   render() {
+    const { notification } = this.state;
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign In</div>
-        { this.generateMessage() }
+        <Notification {...notification} />
         <div className="flex-inlinegrid margin-ends-xs">
-          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextField} />
-          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="password" name="password" placeholder="Password" onChange={this.updateTextField} />
         </div>
 
         <div>
