@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -177,7 +177,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 	// Generate password salt
 	salt, err := crypto.HashAndSalt(req.Password)
 	if err != nil {
-		return nil, fmt.Errorf("failed to salt password: %s", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to salt password: %s", err.Error())
 	}
 
 	// set up verification code for user
@@ -188,12 +188,18 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 		&models.User{Email: req.Email, Name: req.Name, Hash: salt},
 		&models.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
 	); err != nil {
-		return nil, fmt.Errorf("failed to create user: %s", err.Error())
+		if strings.Contains(err.Error(), "Keys cannot be empty") {
+			return nil, status.Errorf(codes.InvalidArgument, "failed to create user: %s", err.Error())
+		}
+		return nil, status.Errorf(codes.Internal, "failed to create user: %s", err.Error())
 	}
 
 	// send verification email
 	if err = v.SendVerification(); err != nil {
-		return nil, fmt.Errorf("failed to create email verification: %s", err.Error())
+		if strings.Contains(err.Error(), "mail: misformatted target email address") {
+			return nil, status.Errorf(codes.InvalidArgument, "failed to create email verification: %s", err.Error())
+		}
+		return nil, status.Errorf(codes.Internal, "failed to create email verification: %s", err.Error())
 	}
 
 	// If no error, respond success
@@ -206,7 +212,13 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
 	v, err := s.db.GetEmailVerification(req.GetEmail(), req.GetHash())
 	if err != nil {
-		return nil, err
+		if strings.Contains(err.Error(), "Email or hash can not be empty") {
+			return nil, status.Errorf(codes.InvalidArgument, "failed to verify email: %s", err.Error())
+		}
+		if strings.Contains(err.Error(), "verification code not found") {
+			return nil, status.Errorf(codes.NotFound, "failed to verify email: %s", err.Error())
+		}
+		return nil, status.Errorf(codes.Internal, "failed to verify email: %s", err.Error())
 	}
 	return &response.Message{Message: "successfully verified " + v.Email}, nil
 }
@@ -215,10 +227,13 @@ func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Me
 func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Message, error) {
 	user, err := s.db.GetUser(req.GetEmail())
 	if err != nil {
-		return nil, fmt.Errorf("failed to authenticate user: %s", err.Error())
+		if strings.Contains(err.Error(), "Email can not be empty") {
+			return nil, status.Errorf(codes.InvalidArgument, "failed to authenticate user: %s", err.Error())
+		}
+		return nil, status.Errorf(codes.Internal, "failed to authenticate user: %s", err.Error())
 	}
 	if crypto.ComparePasswords(user.Hash, req.GetPassword()) {
 		return &response.Message{Message: "user successfully logged in"}, nil
 	}
-	return nil, errors.New("user not authenticated")
+	return nil, status.Errorf(codes.InvalidArgument, "failed to authenticate user: %s", "passwords did not match")
 }
