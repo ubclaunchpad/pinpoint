@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
 class Notification extends Component {
-	constructor(props, context) {
-		super(props, context);
-	}
-
 	getColorClass() {
 		let colors = {
 			info: 'blue',
@@ -28,8 +24,8 @@ class Notification extends Component {
 	render() {
 		if (this.props.showNotification) {
 			return (
-				<div className={`pad-ends-xs highlight-${getColorClass()}`}>
-					<i className={`fa ${this.getIconClass()`} />
+				<div className={`pad-ends-xs highlight-${this.getColorClass()}`}>
+					<i className={`fa ${this.getIconClass()}`} />&nbsp;
 					{this.props.message}
 				</div>
 			);
