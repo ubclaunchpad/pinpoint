@@ -9,7 +9,6 @@ class Signup extends Component {
       email: '',
       password: '',
       passwordConfirm: '',
-      message: null,
       notification: {
         type: 'error',
         showNotification: false,
@@ -19,16 +18,17 @@ class Signup extends Component {
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
-    this.clickHandle = this.clickHandle.bind(this);
   }
 
   updateTextField(e) {
-    const field = e.target.getAttribute('type');
-    if (e.target.getAttribute('id') === 'confirm-password') {
-      this.setState({ message: null, passwordConfirm: e.target.value });
-    } else {
-      this.setState({ message: null, [field]: e.target.value });
-    }
+    const field = e.target.getAttribute('name');
+    this.setState({
+      notification: {
+        ...this.notification,
+        showNotification: false,
+      },
+      [field]: e.target.value,
+    })
   }
 
   // TODO once endpoint is set up, currently does nothing
@@ -43,67 +43,49 @@ class Signup extends Component {
     const { client } = this.props;
 
     if (!email || !password || !name || !passwordConfirm) {
-      this.setState({ message: { messageType: 'error', content: ' Please fill in all fields.' } });
+      this.setState({
+        notification: {
+          type: 'error',
+          message: 'Please fill in all fields.',
+          showNotification: true,
+          transient: false,
+        }
+      });
     } else if (passwordConfirm !== password) {
-      this.setState({ message: { messageType: 'error', content: ' Please make sure your passwords match.' } });
+      this.setState({
+        notification: {
+          type: 'error',
+          message: 'Please make sure your passwords match.',
+          showNotification: true,
+          transient: false,
+        }
+      })
     } else {
       try {
         await client.createAccount({ email, name, password });
       } catch (e) {
-        this.setState({ message: { messageType: 'error', content: ' Incorrect Credentials.' } });
+        this.setState({
+          notification: {
+            type: 'error',
+            message: 'Failed to create a new account.',
+            showNotification: true,
+            transient: false,
+          }
+        })
       }
     }
-  }
-
-  // content: string input
-  // messageType: "info", "success", "warning", "error"
-  generateMessage() {
-    const { message } = this.state;
-    const colors = {
-      info: 'blue',
-      success: 'green',
-      warning: 'orange',
-      error: 'red',
-    };
-
-    const shape = {
-      info: 'fa-info-circle',
-      success: 'fa-check',
-      warning: 'fa-warning',
-      error: 'fa-times-circle',
-    };
-
-    if (message) {
-      return (
-        <div className={`pad-ends-xs highlight-${colors[message.messageType]}`}>
-          <i className={`fa ${shape[message.messageType]}`} />
-          {message.content}
-        </div>
-      );
-    }
-  }
-
-  clickHandle() {
-    this.setState({ notification: {
-      type: "error",
-      message: "this is an error msg",
-      showNotification: true,
-      transient: false,
-    }});
   }
 
   render() {
     return (
       <div className="flex-al-center">
-        <button onClick={this.clickHandle.bind(this)}>button</button>
-        <Notification {...this.state.notification}></Notification>
         <div className="title margin-title">Sign-up</div>
-        { this.generateMessage() }
+        <Notification {...this.state.notification}></Notification>
         <div className="flex-inlinegrid margin-ends-xs">
-          <input className="input-box input-small" type="name" placeholder="Name" onChange={this.updateTextField} />
-          <input className="input-box input-small" type="email" placeholder="Email" onChange={this.updateTextField} />
-          <input className="input-box input-small" type="password" placeholder="Password" onChange={this.updateTextField} />
-          <input id="confirm-password" className="input-box input-small" type="password" placeholder="Confirm Password" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="name" name="name" placeholder="Name" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="password" name="password" placeholder="Password" onChange={this.updateTextField} />
+          <input className="input-box input-small" type="password" name="confirmPassword" placeholder="Confirm Password" onChange={this.updateTextField} />
         </div>
         <div className="margin-top-xs">
           <input type="checkbox" />
