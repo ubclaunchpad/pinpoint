@@ -13,11 +13,7 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      notification: {
-        type: 'info',
-        showNotification: false,
-        message: '',
-      },
+      notification: null,
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
@@ -27,10 +23,7 @@ class Login extends Component {
     const { notification } = this.state;
     const loginField = e.target.getAttribute('name');
     this.setState({
-      notification: {
-        ...notification,
-        showNotification: false,
-      },
+      notification: null,
       [loginField]: e.target.value,
     });
   }
@@ -45,7 +38,6 @@ class Login extends Component {
         notification: {
           type: 'error',
           message: 'Please fill in all fields.',
-          showNotification: true,
         },
       });
     } else {
@@ -58,7 +50,6 @@ class Login extends Component {
           notification: {
             type: 'error',
             message: 'Incorrect Credentials.',
-            showNotification: true,
           },
         });
       }

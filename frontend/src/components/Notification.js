@@ -25,12 +25,12 @@ class Notification extends Component {
   }
 
   render() {
-    const { showNotification, message } = this.props;
-    if (showNotification) {
+    const { message } = this.props;
+    if (message !== '') {
       return (
         <div className={`pad-ends-xs highlight-${this.getColorClass()}`}>
           <i className={`fa ${this.getIconClass()}`} />
-&nbsp;
+          &nbsp;
           {message}
         </div>
       );
@@ -41,13 +41,11 @@ class Notification extends Component {
 
 Notification.propTypes = {
   type: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
-  showNotification: PropTypes.bool,
   message: PropTypes.string,
 };
 
 Notification.defaultProps = {
   type: 'info', // info, success, warning, error
-  showNotification: false,
   message: '',
 };
 

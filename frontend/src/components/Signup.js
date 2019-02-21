@@ -8,12 +8,8 @@ class Signup extends Component {
       name: '',
       email: '',
       password: '',
-      passwordConfirm: '',
-      notification: {
-        type: 'error',
-        showNotification: false,
-        message: '',
-      },
+      confirmPassword: '',
+      notification: null,
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptSignup = this.attemptSignup.bind(this);
@@ -22,10 +18,7 @@ class Signup extends Component {
   updateTextField(e) {
     const field = e.target.getAttribute('name');
     this.setState({
-      notification: {
-        ...this.notification,
-        showNotification: false,
-      },
+      notification: null,
       [field]: e.target.value,
     });
   }
@@ -36,25 +29,23 @@ class Signup extends Component {
       email,
       password,
       name,
-      passwordConfirm,
+      confirmPassword,
     } = this.state;
 
     const { client } = this.props;
 
-    if (!email || !password || !name || !passwordConfirm) {
+    if (!email || !password || !name || !confirmPassword) {
       this.setState({
         notification: {
           type: 'error',
           message: 'Please fill in all fields.',
-          showNotification: true,
         },
       });
-    } else if (passwordConfirm !== password) {
+    } else if (confirmPassword !== password) {
       this.setState({
         notification: {
           type: 'error',
           message: 'Please make sure your passwords match.',
-          showNotification: true,
         },
       });
     } else {
@@ -65,7 +56,6 @@ class Signup extends Component {
           notification: {
             type: 'error',
             message: 'Failed to create a new account.',
-            showNotification: true,
           },
         });
       }
