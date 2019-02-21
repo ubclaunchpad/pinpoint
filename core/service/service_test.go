@@ -226,11 +226,19 @@ func TestService_Verify(t *testing.T) {
 			args{nil, &request.Verify{Hash: "incorrect hash"}},
 			true,
 		},
+		{
+			"get error on empty hash",
+			args{nil, &request.Verify{Hash: ""}},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fk := &mocks.FakeDBClient{}
 			fk.GetEmailVerificationStub = func(email string, hash string) (*models.EmailVerification, error) {
+				if hash == "" {
+					return nil, errors.New("Email or hash can not be empty")
+				}
 				if hash != expectedHash {
 					return nil, errors.New("oh no")
 				}
@@ -278,8 +286,11 @@ func TestService_Login(t *testing.T) {
 	}
 	fk := &mocks.FakeDBClient{}
 	fk.GetUserStub = func(email string) (*models.User, error) {
+		if email == "" {
+			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("Email can not be empty")
+		}
 		if email != correctEmail {
-			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, nil
+			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("incorrect email")
 		}
 		return &models.User{Email: correctEmail, Name: "", Hash: correctSalt, Verified: true}, nil
 	}

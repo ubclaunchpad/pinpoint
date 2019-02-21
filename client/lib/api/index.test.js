@@ -15,43 +15,44 @@ describe('API', () => {
     const a = new api.API();
     expect(a.req).toBeTruthy();
   });
+});
 
-  describe('getStatus', () => {
-    test('ok', (done) => {
-      const a = new api.API();
-      moxios.stubRequest('/status', {
-        status: 200,
-        response: {
-          resp: 'active',
-        },
-      });
+describe('getStatus', () => {
+  test('ok', (done) => {
+    const a = new api.API();
+    moxios.stubRequest('/status', {
+      status: 200,
+      response: {
+        resp: 'active',
+      },
+    });
 
-      const onFulfilled = sinon.spy();
-      a.getStatus().then(onFulfilled);
-      moxios.wait(() => {
-        const response = onFulfilled.getCall(0).args[0];
-        expect(response).toEqual('active');
+    const onFulfilled = sinon.spy();
+    a.getStatus().then(onFulfilled);
+    moxios.wait(() => {
+      const response = onFulfilled.getCall(0).args[0];
+      expect(response).toEqual('active');
+      done();
+    });
+  });
+
+  test('fail', (done) => {
+    const a = new api.API();
+    moxios.stubRequest('/status', {
+      status: 400,
+      response: {},
+    });
+
+    const onFulfilled = sinon.spy();
+    a.getStatus().then(onFulfilled)
+      .then(() => {
+        expect(true).toBe(false);
+      })
+      .catch(err => {
+        expect(err).toEqual(Error('error 400'));
         done();
       });
-    });
-
-    test('fail', (done) => {
-      const a = new api.API();
-      moxios.stubRequest('/status', {
-        status: 400,
-        response: {},
-      });
-
-      const onFulfilled = sinon.spy();
-      a.getStatus().then(onFulfilled)
-        .then(() => {
-          expect(true).toBe(false);
-        })
-        .catch(err => {
-          expect(err).toEqual(Error('error 400'));
-          done();
-        });
-    });
+  });
 });
 
 describe('createAccount', () => {
