@@ -34,24 +34,24 @@ describe('API', () => {
         done();
       });
     });
+
     test('fail', (done) => {
       const a = new api.API();
       moxios.stubRequest('/status', {
         status: 400,
         response: {},
       });
-    });
 
-    const onFulfilled = sinon.spy();
-    a.getStatus().then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
-      .catch(err => {
-        expect(err).toEqual(Error('error 400'));
-        done();
-      });
-  });
+      const onFulfilled = sinon.spy();
+      a.getStatus().then(onFulfilled)
+        .then(() => {
+          expect(true).toBe(false);
+        })
+        .catch(err => {
+          expect(err).toEqual(Error('error 400'));
+          done();
+        });
+    });
 });
 
 describe('createAccount', () => {
