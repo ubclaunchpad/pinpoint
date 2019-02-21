@@ -12,7 +12,7 @@ class Signup extends Component {
       notification: {
         type: 'error',
         showNotification: false,
-        message: "",
+        message: '',
         transient: false,
       },
     };
@@ -28,7 +28,7 @@ class Signup extends Component {
         showNotification: false,
       },
       [field]: e.target.value,
-    })
+    });
   }
 
   // TODO once endpoint is set up, currently does nothing
@@ -49,7 +49,7 @@ class Signup extends Component {
           message: 'Please fill in all fields.',
           showNotification: true,
           transient: false,
-        }
+        },
       });
     } else if (passwordConfirm !== password) {
       this.setState({
@@ -58,8 +58,8 @@ class Signup extends Component {
           message: 'Please make sure your passwords match.',
           showNotification: true,
           transient: false,
-        }
-      })
+        },
+      });
     } else {
       try {
         await client.createAccount({ email, name, password });
@@ -70,17 +70,18 @@ class Signup extends Component {
             message: 'Failed to create a new account.',
             showNotification: true,
             transient: false,
-          }
-        })
+          },
+        });
       }
     }
   }
 
   render() {
+    const { notification } = this.state;
     return (
       <div className="flex-al-center">
         <div className="title margin-title">Sign-up</div>
-        <Notification {...this.state.notification}></Notification>
+        <Notification {...notification} />
         <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="name" name="name" placeholder="Name" onChange={this.updateTextField} />
           <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
