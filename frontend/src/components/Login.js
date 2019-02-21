@@ -20,7 +20,6 @@ class Login extends Component {
   }
 
   updateTextField(e) {
-    const { notification } = this.state;
     const loginField = e.target.getAttribute('name');
     this.setState({
       notification: null,
