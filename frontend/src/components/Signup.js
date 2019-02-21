@@ -13,7 +13,6 @@ class Signup extends Component {
         type: 'error',
         showNotification: false,
         message: '',
-        transient: false,
       },
     };
     this.updateTextField = this.updateTextField.bind(this);
@@ -48,7 +47,6 @@ class Signup extends Component {
           type: 'error',
           message: 'Please fill in all fields.',
           showNotification: true,
-          transient: false,
         },
       });
     } else if (passwordConfirm !== password) {
@@ -57,7 +55,6 @@ class Signup extends Component {
           type: 'error',
           message: 'Please make sure your passwords match.',
           showNotification: true,
-          transient: false,
         },
       });
     } else {
@@ -69,7 +66,6 @@ class Signup extends Component {
             type: 'error',
             message: 'Failed to create a new account.',
             showNotification: true,
-            transient: false,
           },
         });
       }

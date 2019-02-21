@@ -43,14 +43,12 @@ Notification.propTypes = {
   type: PropTypes.oneOf(['info', 'success', 'warning', 'error']),
   showNotification: PropTypes.bool,
   message: PropTypes.string,
-  transient: PropTypes.bool,
 };
 
 Notification.defaultProps = {
   type: 'info', // info, success, warning, error
   showNotification: false,
   message: '',
-  transient: false,
 };
 
 export default Notification;
