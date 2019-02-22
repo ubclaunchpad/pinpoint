@@ -237,10 +237,10 @@ func TestService_Verify(t *testing.T) {
 			fk := &mocks.FakeDBClient{}
 			fk.GetEmailVerificationStub = func(email string, hash string) (*models.EmailVerification, error) {
 				if hash == "" {
-					return nil, errors.New("Email or hash can not be empty")
+					return nil, errors.New("email or hash can not be empty")
 				}
 				if hash != expectedHash {
-					return nil, errors.New("oh no")
+					return nil, errors.New("verification code not found")
 				}
 				return &models.EmailVerification{Hash: hash}, nil
 			}
@@ -274,8 +274,8 @@ func TestService_Login(t *testing.T) {
 			false,
 		},
 		{
-			"unauthorized error with wrong email and password",
-			args{&request.Login{Email: "random@email.com", Password: "supersecurepassword"}},
+			"unauthorized error with wrong email",
+			args{&request.Login{Email: "random@email.com", Password: correctPassword}},
 			true,
 		},
 		{
@@ -283,11 +283,16 @@ func TestService_Login(t *testing.T) {
 			args{&request.Login{Email: "", Password: ""}},
 			true,
 		},
+		{
+			"get error with wrong password",
+			args{&request.Login{Email: correctEmail, Password: "wrongpass"}},
+			true,
+		},
 	}
 	fk := &mocks.FakeDBClient{}
 	fk.GetUserStub = func(email string) (*models.User, error) {
 		if email == "" {
-			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("Email can not be empty")
+			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("email cannot be empty")
 		}
 		if email != correctEmail {
 			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("incorrect email")

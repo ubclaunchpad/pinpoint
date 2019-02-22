@@ -188,7 +188,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 		&models.User{Email: req.Email, Name: req.Name, Hash: salt},
 		&models.EmailVerification{Email: req.Email, Hash: v.Hash, Expiry: v.Expiry},
 	); err != nil {
-		if strings.Contains(err.Error(), "Keys cannot be empty") {
+		if strings.Contains(err.Error(), "keys cannot be empty") {
 			return nil, status.Errorf(codes.InvalidArgument, "failed to create user: %s", err.Error())
 		}
 		return nil, status.Errorf(codes.Internal, "failed to create user: %s", err.Error())
@@ -212,7 +212,7 @@ func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount)
 func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Message, error) {
 	v, err := s.db.GetEmailVerification(req.GetEmail(), req.GetHash())
 	if err != nil {
-		if strings.Contains(err.Error(), "Email or hash can not be empty") {
+		if strings.Contains(err.Error(), "email or hash can not be empty") {
 			return nil, status.Errorf(codes.InvalidArgument, "failed to verify email: %s", err.Error())
 		}
 		if strings.Contains(err.Error(), "verification code not found") {
@@ -227,7 +227,7 @@ func (s *Service) Verify(ctx context.Context, req *request.Verify) (*response.Me
 func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Message, error) {
 	user, err := s.db.GetUser(req.GetEmail())
 	if err != nil {
-		if strings.Contains(err.Error(), "Email can not be empty") {
+		if strings.Contains(err.Error(), "email can not be empty") {
 			return nil, status.Errorf(codes.InvalidArgument, "failed to authenticate user: %s", err.Error())
 		}
 		return nil, status.Errorf(codes.Internal, "failed to authenticate user: %s", err.Error())
@@ -235,5 +235,5 @@ func (s *Service) Login(ctx context.Context, req *request.Login) (*response.Mess
 	if crypto.ComparePasswords(user.Hash, req.GetPassword()) {
 		return &response.Message{Message: "user successfully logged in"}, nil
 	}
-	return nil, status.Errorf(codes.InvalidArgument, "failed to authenticate user: %s", "passwords did not match")
+	return nil, status.Error(codes.Unauthenticated, "failed to authenticate user: passwords did not match")
 }

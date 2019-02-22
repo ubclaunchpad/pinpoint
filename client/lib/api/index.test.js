@@ -1,9 +1,13 @@
 const moxios = require('moxios');
 const sinon = require('sinon');
 const api = require('.');
+let a;
+let onFulfilled;
 
 beforeEach(() => {
   moxios.install();
+  a = new api.API();
+  onFulfilled = sinon.spy();
 });
 
 afterEach(() => {
@@ -12,14 +16,12 @@ afterEach(() => {
 
 describe('API', () => {
   test('constructor', () => {
-    const a = new api.API();
     expect(a.req).toBeTruthy();
   });
 });
 
 describe('getStatus', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/status', {
       status: 200,
       response: {
@@ -27,7 +29,6 @@ describe('getStatus', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.getStatus().then(onFulfilled);
     moxios.wait(() => {
       const response = onFulfilled.getCall(0).args[0];
@@ -37,13 +38,11 @@ describe('getStatus', () => {
   });
 
   test('fail', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/status', {
       status: 400,
       response: {},
     });
 
-    const onFulfilled = sinon.spy();
     a.getStatus().then(onFulfilled)
       .then(() => {
         expect(true).toBe(false);
@@ -57,7 +56,6 @@ describe('getStatus', () => {
 
 describe('createAccount', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/user/create', {
       status: 200,
       response: {
@@ -65,7 +63,6 @@ describe('createAccount', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createAccount({
       email: 'bob@gmail.com',
       password: 'blah',
@@ -79,13 +76,11 @@ describe('createAccount', () => {
   });
 
   test('fail', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/user/create', {
       status: 300,
       response: {},
     });
 
-    const onFulfilled = sinon.spy();
     a.createAccount({
       email: 'bob@gmail.com',
       password: 'blah',
@@ -103,7 +98,6 @@ describe('createAccount', () => {
 
 describe('login', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/user/login', {
       status: 200,
       response: {
@@ -111,7 +105,6 @@ describe('login', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.login({
       email: 'bob@gmail.com',
       password: 'blah',
@@ -123,7 +116,6 @@ describe('login', () => {
     });
   });
   test('fail', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/user/login', {
       status: 500,
       response: {
@@ -131,7 +123,6 @@ describe('login', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.login({
       email: 'bob@gmail.com',
       password: 'blah',
@@ -148,7 +139,6 @@ describe('login', () => {
 
 describe('createClub', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/club/create', {
       status: 200,
       response: {
@@ -156,7 +146,6 @@ describe('createClub', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createClub({
       name: 'UBC Launchpad',
       desc: 'The best software engineering club',
@@ -169,7 +158,6 @@ describe('createClub', () => {
   });
 
   test('fail', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/club/create', {
       status: 404,
       response: {
@@ -177,7 +165,6 @@ describe('createClub', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createClub({
       name: 'UBC Launchpad',
       desc: 'The best software engineering club',
@@ -194,7 +181,6 @@ describe('createClub', () => {
 
 describe('createPeriod', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/club/period/create', {
       status: 200,
       response: {
@@ -202,7 +188,6 @@ describe('createPeriod', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createPeriod({
       name: 'Winter Semester',
       start: '2018-08-09',
@@ -216,7 +201,6 @@ describe('createPeriod', () => {
   });
 
   test('fail', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/club/period/create', {
       status: 400,
       response: {
@@ -224,7 +208,6 @@ describe('createPeriod', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createPeriod({
       name: 'Winter Semester',
       start: '2018-08-09',
@@ -242,7 +225,6 @@ describe('createPeriod', () => {
 
 describe('createPeriodFail', () => {
   test('ok', (done) => {
-    const a = new api.API();
     moxios.stubRequest('/club/period/create', {
       status: 400,
       response: {
@@ -250,7 +232,6 @@ describe('createPeriodFail', () => {
       },
     });
 
-    const onFulfilled = sinon.spy();
     a.createPeriod({
       name: 'Winter Semester',
       start: '2018-08-09',
