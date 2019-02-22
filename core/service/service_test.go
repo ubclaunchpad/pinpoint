@@ -207,6 +207,7 @@ func TestService_CreateAccount(t *testing.T) {
 
 func TestService_Verify(t *testing.T) {
 	expectedHash := "NmSdjumzjHOF7IAnafAK74LAPug="
+	correctEmail := "correct@me.com"
 	type args struct {
 		ctx context.Context
 		req *request.Verify
@@ -218,17 +219,22 @@ func TestService_Verify(t *testing.T) {
 	}{
 		{
 			"get success given expected hash",
-			args{nil, &request.Verify{Hash: expectedHash}},
+			args{nil, &request.Verify{Email: correctEmail, Hash: expectedHash}},
 			false,
 		},
 		{
-			"get error",
-			args{nil, &request.Verify{Hash: "incorrect hash"}},
+			"get error on incorrect hash",
+			args{nil, &request.Verify{Email: correctEmail, Hash: "incorrect hash"}},
 			true,
 		},
 		{
 			"get error on empty hash",
-			args{nil, &request.Verify{Hash: ""}},
+			args{nil, &request.Verify{Email: correctEmail, Hash: ""}},
+			true,
+		},
+		{
+			"get error on incorrect email",
+			args{nil, &request.Verify{Email: "hi", Hash: expectedHash}},
 			true,
 		},
 	}
@@ -238,6 +244,9 @@ func TestService_Verify(t *testing.T) {
 			fk.GetEmailVerificationStub = func(email string, hash string) (*models.EmailVerification, error) {
 				if hash == "" {
 					return nil, errors.New("email or hash can not be empty")
+				}
+				if email != correctEmail {
+					return nil, errors.New("could not verify")
 				}
 				if hash != expectedHash {
 					return nil, errors.New("verification code not found")
@@ -292,7 +301,7 @@ func TestService_Login(t *testing.T) {
 	fk := &mocks.FakeDBClient{}
 	fk.GetUserStub = func(email string) (*models.User, error) {
 		if email == "" {
-			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("email cannot be empty")
+			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("email can not be empty")
 		}
 		if email != correctEmail {
 			return &models.User{Email: email, Name: "", Hash: "", Verified: false}, errors.New("incorrect email")
