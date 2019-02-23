@@ -150,12 +150,14 @@ pinpoint-gateway:
 
 ## swagger: Generates API code from swagger tool
 .PHONY: swagger
-swagger: 
-	swagger generate server -t swag-gen -f ./docs_src/api/swagger.yml -A pinpoint
+swagger:
+	brew install openapi-generator
+	openapi-generator generate -i ./docs_src/api/swagger.yml -g go-server -o ./swag-gen
 
 ## docs-api: build API reference from Swagger definitions in /docs_src/api
 .PHONY: docs-api
-docs-api: 
+docs-api:
+	openapi-generator validate -i ./docs_src/api/swagger.yml
 	@echo [INFO] Generating API documentation
 	@redoc-cli bundle ./docs_src/api/swagger.yml -o ./docs/api/index.html
 
