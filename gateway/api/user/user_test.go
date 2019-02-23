@@ -5,13 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/ubclaunchpad/pinpoint/gateway/auth"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -174,6 +175,7 @@ func TestUserRouter_login(t *testing.T) {
 	}
 
 	type args struct {
+		body            bool
 		email, password string
 	}
 	tests := []struct {
@@ -181,8 +183,9 @@ func TestUserRouter_login(t *testing.T) {
 		args     args
 		wantCode int
 	}{
-		{"no args", args{"", ""}, http.StatusBadRequest},
-		{"regular user", args{"demo", "demopassword"}, http.StatusOK},
+		{"no body", args{false, "", ""}, http.StatusBadRequest},
+		{"no args", args{true, "", ""}, http.StatusBadRequest},
+		{"regular user", args{true, "demo", "demopassword"}, http.StatusOK},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -197,8 +200,17 @@ func TestUserRouter_login(t *testing.T) {
 				return nil, errors.New("user not authenticated")
 			}
 
+			var r io.Reader
+			if tt.args.body {
+				b, _ := json.Marshal(map[string]string{
+					"email":    tt.args.email,
+					"password": tt.args.password,
+				})
+				r = bytes.NewReader(b)
+			}
+
 			// Create request
-			req, err := http.NewRequest("POST", "/login?email="+tt.args.email+"&password="+tt.args.password, nil)
+			req, err := http.NewRequest("POST", "/login", r)
 			if err != nil {
 				t.Error(err)
 				return
@@ -208,6 +220,8 @@ func TestUserRouter_login(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			u.ServeHTTP(recorder, req)
 			if recorder.Code != tt.wantCode {
+				resp, _ := ioutil.ReadAll(recorder.Result().Body)
+				t.Log(string(resp))
 				t.Errorf("expected %d, got %d", tt.wantCode, recorder.Code)
 			}
 

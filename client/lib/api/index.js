@@ -33,6 +33,7 @@ class API {
       return response.data.token;
     } catch (error) {
       switch (error.response.status) {
+        case 401: throw new Error('Incorrect Credentials');
         default: throw new Error(`error ${error.response.status}`);
       }
     }
