@@ -28,15 +28,12 @@ class API {
   }
 
   async login({ email, password }) {
-    let response = {};
     try {
-      response = await this.req.post('/user/login', { email, password });
-      return response;
+      const response = await this.req.post('/user/login', { email, password });
+      return response.data.token;
     } catch (error) {
       switch (error.response.status) {
-        case 401:
-          response.status = 401;
-          return response;
+        case 401: throw new Error('Incorrect Credentials');
         default: throw new Error(`error ${error.response.status}`);
       }
     }
