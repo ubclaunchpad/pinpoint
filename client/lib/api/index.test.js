@@ -43,10 +43,8 @@ describe('getStatus', () => {
       response: {},
     });
 
+    expect.assertions(1);
     a.getStatus().then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
       .catch(err => {
         expect(err).toEqual(Error('error 400'));
         done();
@@ -81,14 +79,12 @@ describe('createAccount', () => {
       response: {},
     });
 
+    expect.assertions(1);
     a.createAccount({
       email: 'bob@gmail.com',
       password: 'blah',
       name: 'bob',
     }).then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
       .catch(err => {
         expect(err).toEqual(Error('error 300'));
         done();
@@ -115,6 +111,7 @@ describe('login', () => {
       done();
     });
   });
+
   test('fail', (done) => {
     moxios.stubRequest('/user/login', {
       status: 500,
@@ -123,13 +120,11 @@ describe('login', () => {
       },
     });
 
+    expect.assertions(1);
     a.login({
       email: 'bob@gmail.com',
       password: 'blah',
     }).then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
       .catch(err => {
         expect(err).toEqual(Error('error 500'));
         done();
@@ -165,13 +160,11 @@ describe('createClub', () => {
       },
     });
 
+    expect.assertions(1);
     a.createClub({
       name: 'UBC Launchpad',
       desc: 'The best software engineering club',
     }).then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
       .catch(err => {
         expect(err).toEqual(Error('error 404'));
         done();
@@ -208,38 +201,12 @@ describe('createPeriod', () => {
       },
     });
 
+    expect.assertions(1);
     a.createPeriod({
       name: 'Winter Semester',
       start: '2018-08-09',
       end: '2018-08-12',
     }).then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
-      .catch(err => {
-        expect(err).toEqual(Error('error 400'));
-        done();
-      });
-  });
-});
-
-describe('createPeriodFail', () => {
-  test('ok', (done) => {
-    moxios.stubRequest('/club/period/create', {
-      status: 400,
-      response: {
-        PeriodID: '1234',
-      },
-    });
-
-    a.createPeriod({
-      name: 'Winter Semester',
-      start: '2018-08-09',
-      end: '2018-08-12',
-    }).then(onFulfilled)
-      .then(() => {
-        expect(true).toBe(false);
-      })
       .catch(err => {
         expect(err).toEqual(Error('error 400'));
         done();
