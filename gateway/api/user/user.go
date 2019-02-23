@@ -95,8 +95,8 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 type logininfo struct {
-	Email    string `json: "email"`
-	Password string `json: "password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (u *Router) login(w http.ResponseWriter, r *http.Request) {

@@ -34,7 +34,8 @@ class App extends Component {
 
   setLoginState(token) {
     const { userToken } = this.state;
-    console.log(userToken); // temporarily bypass elint, remove once used for retrieving user data from backend
+    // temporarily bypass elint, remove once used for retrieving user data from backend
+    console.log(userToken);
     this.setState({ loggedIn: true, userToken: token });
     this.cookies.set('userSession', token, { path: '/' });
   }
