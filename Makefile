@@ -3,6 +3,11 @@ DEV_ENV=export `less ./dev/.env | xargs`
 TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
 MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
 
+.PHONY: help
+help: Makefile
+	@echo " Choose a command run in pinpoint:"
+	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+
 ## all: Runs check
 all: check
 
@@ -143,20 +148,10 @@ pinpoint-gateway:
     -ldflags "-X main.Version=$(VERSION)" \
     ./gateway $(FLAGS)
 
-.PHONY: help
-help: Makefile
-	@echo " Choose a command run in pinpoint:"
-	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
-
+## swagger: Generates API code from swagger tool
 .PHONY: swagger
-## swagger: Generates API code from swagger tool 
 swagger: 
 	swagger generate server -t swag-gen -f ./docs_src/api/swagger.yml -A pinpoint
-
-.PHONY: api-docs
-## api-docs: Serve the API UI - shows all api endpoints
-api-docs: 
-	swagger serve ./docs_src/api/swagger.yml
 
 ## docs-api: build API reference from Swagger definitions in /docs_src/api
 .PHONY: docs-api
