@@ -3,6 +3,11 @@ DEV_ENV=export `less ./dev/.env | xargs`
 TEST_COMPOSE=docker-compose -f dev/testenv.yml -p test
 MON_COMPOSE=docker-compose -f dev/monitoring.yml -p monitoring
 
+.PHONY: help
+help: Makefile
+	@echo " Choose a command run in pinpoint:"
+	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+
 ## all: Runs check
 all: check
 
@@ -18,6 +23,8 @@ deps:
 	bash .scripts/protoc-gen-go.sh
 	go get -u github.com/maxbrunsfeld/counterfeiter
 	go get -u github.com/vburenin/ifacemaker
+	go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	npm install -g redoc-cli
 	dep ensure
 	( cd client ; npm install )
 	( cd frontend ; npm install )
@@ -141,7 +148,20 @@ pinpoint-gateway:
     -ldflags "-X main.Version=$(VERSION)" \
     ./gateway $(FLAGS)
 
-.PHONY: help
-help: Makefile
-	@echo " Choose a command run in pinpoint:"
-	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+## swagger: Generates API code from swagger tool
+.PHONY: swagger
+swagger:
+	brew install openapi-generator
+	openapi-generator generate -i ./docs_src/api/swagger.yml -g go-server -o ./swag-gen
+
+## docs-api: build API reference from Swagger definitions in /docs_src/api
+.PHONY: docs-api
+docs-api:
+	openapi-generator validate -i ./docs_src/api/swagger.yml
+	@echo [INFO] Generating API documentation
+	@redoc-cli bundle ./docs_src/api/swagger.yml -o ./docs/api/index.html
+
+## run-docs-api: run doc server from ./docs_src for the API reference website only
+.PHONY: run-docs-api
+run-docs-api:
+	redoc-cli serve ./docs_src/api/swagger.yml -w
