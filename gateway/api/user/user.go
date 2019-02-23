@@ -94,17 +94,22 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 		"email", user.GetEmail()))
 }
 
-type logininfo struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	var l = u.l.With("request-id", ctxutil.GetRequestID(r))
-	decoder := json.NewDecoder(r.Body)
-	var info logininfo
+	if r.Body == nil {
+		render.Render(w, r, res.ErrBadRequest("missing request body"))
+		return
+	}
+
+	var decoder = json.NewDecoder(r.Body)
+	var info struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
 	if err := decoder.Decode(&info); err != nil {
-		l.Debugw("error occurred parsing user login form entry", "error", err)
+		render.Render(w, r, res.ErrBadRequest("error occurred parsing user login form entry",
+			"error", err))
+		return
 	}
 
 	if info.Email == "" || info.Password == "" {
@@ -133,12 +138,9 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	l.Infow("logged in", "user", info.Email)
 	render.Render(w, r, res.MsgOK("user logged in",
 		"token", tokenStr))
-	render.JSON(w, r, map[string]string{
-		"token": tokenStr,
-	})
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
