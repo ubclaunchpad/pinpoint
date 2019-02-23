@@ -14,7 +14,6 @@ class Login extends Component {
       email: '',
       password: '',
       notification: null,
-      userToken: null,
     };
     this.updateTextField = this.updateTextField.bind(this);
     this.attemptLogin = this.attemptLogin.bind(this);
@@ -29,29 +28,26 @@ class Login extends Component {
   }
 
   // Checks user log in credentials
-  async attemptLogin(token) {
-    const { email, password, userToken } = this.state;
-    const { client, attemptLogIn } = this.props;
+  async attemptLogin() {
+    const { email, password } = this.state;
+    const { client, setLoginState } = this.props;
     if (!email || !password) {
       this.setState({
         notification: {
           type: 'error',
           message: 'Please fill in all fields.',
         },
-        userToken: token,
       });
-      console.log(userToken); // temporarily bypass unused state for eslint
     } else {
       try {
-        const resp = await client.login({ email, password });
-        attemptLogIn(resp);
+        setLoginState(await client.login({ email, password }));
         const { router: { history } } = this.context;
         history.push('/');
       } catch {
         this.setState({
           notification: {
             type: 'error',
-            message: 'Incorrect Credentials.',
+            message: 'Incorrect Credentials',
           },
         });
       }

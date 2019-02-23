@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -101,22 +100,20 @@ type logininfo struct {
 }
 
 func (u *Router) login(w http.ResponseWriter, r *http.Request) {
-	bodyBytes, _ := ioutil.ReadAll(r.Body)
-	bodyString := string(bodyBytes)
-
+	var l = u.l.With("request-id", ctxutil.GetRequestID(r))
+	decoder := json.NewDecoder(r.Body)
 	var info logininfo
-	json.Unmarshal([]byte(bodyString), &info)
+	if err := decoder.Decode(&info); err != nil {
+		l.Debugw("error occurred parsing user login form entry", "error", err)
+	}
 
-	email := info.Email
-	password := info.Password
-
-	if email == "" || password == "" {
+	if info.Email == "" || info.Password == "" {
 		render.Render(w, r, res.ErrBadRequest("missing fields - both email and password is required"))
 		return
 	}
 
 	if _, err := u.c.Login(r.Context(), &request.Login{
-		Email: email, Password: password,
+		Email: info.Email, Password: info.Password,
 	}); err != nil {
 		render.Render(w, r, res.ErrUnauthorized(err.Error()))
 		return
@@ -125,7 +122,7 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	// No error means authenticated, proceed to generate token
 	expirationTime := time.Now().Add(30 * time.Minute)
 	claims := &auth.Claims{
-		Email: email,
+		Email: info.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

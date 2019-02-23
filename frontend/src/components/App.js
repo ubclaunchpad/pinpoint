@@ -18,10 +18,11 @@ class App extends Component {
     super(props, context);
     this.state = {
       loggedIn: false,
+      userToken: null,
     };
     this.cookies = new Cookies();
     this.attemptLogOut = this.attemptLogOut.bind(this);
-    this.attemptLogIn = this.attemptLogIn.bind(this);
+    this.setLoginState = this.setLoginState.bind(this);
   }
 
   // Check cookie session here to keep logon whenever user reloads page
@@ -31,14 +32,16 @@ class App extends Component {
     }
   }
 
+  setLoginState(token) {
+    const { userToken } = this.state;
+    console.log(userToken); // temporarily bypass elint, remove once used for retrieving user data from backend
+    this.setState({ loggedIn: true, userToken: token });
+    this.cookies.set('userSession', token, { path: '/' });
+  }
+
   attemptLogOut() {
     this.setState({ loggedIn: false });
     this.cookies.remove('userSession');
-  }
-
-  attemptLogIn(token) {
-    this.setState({ loggedIn: true });
-    this.cookies.set('userSession', token, { path: '/' });
   }
 
   render() {
@@ -71,7 +74,7 @@ class App extends Component {
             <Route
               exact
               path="/login"
-              component={() => <Login client={client} attemptLogIn={this.attemptLogIn} />}
+              component={() => <Login client={client} setLoginState={this.setLoginState} />}
             />
             <Route exact path="/reset" component={Reset} />
             <Route exact path="/signup" component={() => <Signup client={client} />} />
