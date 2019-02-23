@@ -43,7 +43,7 @@ func (db *Database) AddNewUser(u *models.User, e *models.EmailVerification) erro
 // GetUser returns a user from the database with the given email
 func (db *Database) GetUser(email string) (*models.User, error) {
 	if email == "" {
-		return nil, errors.New("Email can not be empty")
+		return nil, errors.New("email can not be empty")
 	}
 	var e = aws.String(prefixUserEmail(email))
 	result, err := db.c.GetItem(&dynamodb.GetItemInput{
@@ -85,7 +85,7 @@ func (db *Database) DeleteUser(email string) error {
 // with the given email and hash
 func (db *Database) GetEmailVerification(email string, hash string) (*models.EmailVerification, error) {
 	if email == "" || hash == "" {
-		return nil, errors.New("Email or hash can not be empty")
+		return nil, errors.New("email or hash can not be empty")
 	}
 	var e = aws.String(prefixUserEmail(email))
 	var h = aws.String(prefixVerificationHash(hash))
@@ -131,7 +131,7 @@ func (db *Database) GetEmailVerification(email string, hash string) (*models.Ema
 // AddNewClub creates a new club in the database with a user (creator) associated to it
 func (db *Database) AddNewClub(c *models.Club, cu *models.ClubUser) error {
 	if c.ClubID == "" || cu.ClubID == "" || cu.Email == "" {
-		return errors.New("Keys cannot be empty")
+		return errors.New("keys cannot be empty")
 	}
 	cItem, err := dynamodbattribute.MarshalMap(newDBClub(c))
 	if err != nil {
