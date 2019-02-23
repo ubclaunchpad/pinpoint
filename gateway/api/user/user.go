@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-
 	"google.golang.org/grpc/codes"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
@@ -96,15 +95,30 @@ func (u *Router) createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Router) login(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	if email == "" || password == "" {
+	var l = u.l.With("request-id", ctxutil.GetRequestID(r))
+	if r.Body == nil {
+		render.Render(w, r, res.ErrBadRequest("missing request body"))
+		return
+	}
+
+	var decoder = json.NewDecoder(r.Body)
+	var info struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	if err := decoder.Decode(&info); err != nil {
+		render.Render(w, r, res.ErrBadRequest("error occurred parsing user login form entry",
+			"error", err))
+		return
+	}
+
+	if info.Email == "" || info.Password == "" {
 		render.Render(w, r, res.ErrBadRequest("missing fields - both email and password is required"))
 		return
 	}
 
 	if _, err := u.c.Login(r.Context(), &request.Login{
-		Email: email, Password: password,
+		Email: info.Email, Password: info.Password,
 	}); err != nil {
 		render.Render(w, r, res.ErrUnauthorized(err.Error()))
 		return
@@ -113,7 +127,7 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 	// No error means authenticated, proceed to generate token
 	expirationTime := time.Now().Add(30 * time.Minute)
 	claims := &auth.Claims{
-		Email: email,
+		Email: info.Email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -124,12 +138,9 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	l.Infow("logged in", "user", info.Email)
 	render.Render(w, r, res.MsgOK("user logged in",
 		"token", tokenStr))
-	render.JSON(w, r, map[string]string{
-		"token": tokenStr,
-	})
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {

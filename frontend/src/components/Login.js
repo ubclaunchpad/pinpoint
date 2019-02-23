@@ -27,11 +27,10 @@ class Login extends Component {
     });
   }
 
-  // TODO once endpoint is set up, currently does nothing
+  // Checks user log in credentials
   async attemptLogin() {
     const { email, password } = this.state;
-    const { client } = this.props;
-
+    const { client, setLoginState } = this.props;
     if (!email || !password) {
       this.setState({
         notification: {
@@ -40,15 +39,15 @@ class Login extends Component {
         },
       });
     } else {
-      const resp = await client.login({ email, password });
-      if (resp.status === 200) {
+      try {
+        setLoginState(await client.login({ email, password }));
         const { router: { history } } = this.context;
         history.push('/');
-      } else {
+      } catch {
         this.setState({
           notification: {
             type: 'error',
-            message: 'Incorrect Credentials.',
+            message: 'Incorrect Credentials',
           },
         });
       }
