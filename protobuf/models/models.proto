@@ -30,30 +30,29 @@ message EmailVerification {
   int64 expiry = 3;
 }
 
-message Event {
+message EventProps {
   string period = 1;
   string eventID = 2;
   string name = 3;
-  string description = 4;
-  repeated Field fields = 5;
+  string club = 4;
+  string description = 5;
+  repeated FieldProps fields = 6;
 }
 
-message Field {
+message FieldProps {
   string name = 1;
   bool required = 2;
+  string blurb = 3;
+  string description = 4;
   oneof properties {
-    LongText long_text = 3;
-    ShortText short_text = 4;
+    LongTextProps long_text = 5;
+    ShortTextProps short_text = 6;
   };
 }
 
-message LongText {
-  string im_long = 1;
-}
+message LongTextProps { }
 
-message ShortText {
-  string im_short = 1;
-}
+message ShortTextProps { }
 
 message Applicant {
   string period = 1;

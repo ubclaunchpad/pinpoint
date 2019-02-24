@@ -1,6 +1,7 @@
 package club
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	pinpoint "github.com/ubclaunchpad/pinpoint/protobuf"
+	"github.com/ubclaunchpad/pinpoint/protobuf/models"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap"
 )
 
@@ -75,7 +78,47 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("%+v\n", data)
+
+	var fields = make([]*models.FieldProps, len(data.Fields))
+	for i, f := range data.Fields {
+		var pbf = &models.FieldProps{}
+		switch f.Type {
+		case schema.FieldTypeLongText:
+			var lt = &models.FieldProps_LongText{}
+			if err := json.Unmarshal(f.Properties, lt); err != nil {
+				render.Render(w, r, res.ErrBadRequest("invalid data for event field properties",
+					"field", f.Type, "error", err))
+				return
+			}
+			pbf.Properties = lt
+		case schema.FieldTypeShortText:
+			var st = &models.FieldProps_ShortText{}
+			if err := json.Unmarshal(f.Properties, st); err != nil {
+				render.Render(w, r, res.ErrBadRequest("invalid data for event field properties",
+					"field", f.Type, "error", err))
+				return
+			}
+			pbf.Properties = st
+		default:
+			render.Render(w, r, res.ErrBadRequest("invalid type for event field properties",
+				"field", f.Type))
+			return
+		}
+		fields[i] = pbf
+	}
+
 	// TODO: create event in core
+	c.c.CreateEvent(context.Background(), &request.CreateEvent{
+		Event: &models.EventProps{
+			Period:      period,
+			EventID:     "", // TODO what the?
+			Name:        data.Name,
+			Club:        club,
+			Description: "", //TODO
+			Fields:      fields,
+		},
+	})
 
 	render.Render(w, r, res.Msg("Event created successfully", http.StatusCreated))
 }
