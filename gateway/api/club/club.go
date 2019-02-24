@@ -78,8 +78,6 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("%+v\n", data)
-
 	var fields = make([]*models.FieldProps, len(data.Fields))
 	for i, f := range data.Fields {
 		var pbf = &models.FieldProps{}
