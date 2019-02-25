@@ -19,6 +19,6 @@ const (
 type FieldProps struct {
 	Type string `json:"type"`
 
-	// Properties is one of protobuf ...
+	// Properties is one of LongText or ShortText in protobuf
 	Properties json.RawMessage `json:"properties"`
 }

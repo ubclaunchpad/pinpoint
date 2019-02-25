@@ -85,13 +85,13 @@ func TestClubRouter_createEvent(t *testing.T) {
 		args     args
 		wantCode int
 	}{
-		{"bad input", args{"/my_club/period/my_period/event/create", nil}, http.StatusBadRequest},
+		{"bad param", args{"/my_club/period/my_period/event/create", nil}, http.StatusBadRequest},
 		{"invalid fields", args{
 			"/my_club/period/my_period/event/create",
 			&schema.CreateEvent{
 				Name: "Winter Semester",
 				Fields: []schema.FieldProps{
-					{"", []byte(`{"lt": ""}`)},
+					{"", []byte(`{"julia": "has failed"}`)},
 				},
 			}}, http.StatusBadRequest},
 		{"successfully created event", args{

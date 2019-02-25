@@ -12,7 +12,6 @@ service Core {
 
   // clubs
   rpc CreateEvent(request.CreateEvent) returns (response.Message) {}
-  rpc SubmitEvent(request.SubmitEvent) returns (response.Message) {}
 
   // users
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}

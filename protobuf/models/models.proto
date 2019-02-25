@@ -36,23 +36,24 @@ message EventProps {
   string name = 3;
   string club = 4;
   string description = 5;
+  message FieldProps {
+    string name = 1;
+    bool required = 2;
+    string blurb = 3;
+    string description = 4;
+    oneof prsoperties {
+      LongText long_text = 5;
+      ShortText short_text = 6;
+    };
+    message LongText {
+      string maxLen = 1;
+     }
+    message ShortText {
+      string maxLen = 1;
+     }
+  }
   repeated FieldProps fields = 6;
 }
-
-message FieldProps {
-  string name = 1;
-  bool required = 2;
-  string blurb = 3;
-  string description = 4;
-  oneof properties {
-    LongTextProps long_text = 5;
-    ShortTextProps short_text = 6;
-  };
-}
-
-message LongTextProps { }
-
-message ShortTextProps { }
 
 message Applicant {
   string period = 1;

@@ -87,21 +87,6 @@ type FakeCoreClient struct {
 		result1 *response.Message
 		result2 error
 	}
-	SubmitEventStub        func(context.Context, *request.SubmitEvent, ...grpc.CallOption) (*response.Message, error)
-	submitEventMutex       sync.RWMutex
-	submitEventArgsForCall []struct {
-		arg1 context.Context
-		arg2 *request.SubmitEvent
-		arg3 []grpc.CallOption
-	}
-	submitEventReturns struct {
-		result1 *response.Message
-		result2 error
-	}
-	submitEventReturnsOnCall map[int]struct {
-		result1 *response.Message
-		result2 error
-	}
 	VerifyStub        func(context.Context, *request.Verify, ...grpc.CallOption) (*response.Message, error)
 	verifyMutex       sync.RWMutex
 	verifyArgsForCall []struct {
@@ -446,71 +431,6 @@ func (fake *FakeCoreClient) LoginReturnsOnCall(i int, result1 *response.Message,
 	}{result1, result2}
 }
 
-func (fake *FakeCoreClient) SubmitEvent(arg1 context.Context, arg2 *request.SubmitEvent, arg3 ...grpc.CallOption) (*response.Message, error) {
-	fake.submitEventMutex.Lock()
-	ret, specificReturn := fake.submitEventReturnsOnCall[len(fake.submitEventArgsForCall)]
-	fake.submitEventArgsForCall = append(fake.submitEventArgsForCall, struct {
-		arg1 context.Context
-		arg2 *request.SubmitEvent
-		arg3 []grpc.CallOption
-	}{arg1, arg2, arg3})
-	fake.recordInvocation("SubmitEvent", []interface{}{arg1, arg2, arg3})
-	fake.submitEventMutex.Unlock()
-	if fake.SubmitEventStub != nil {
-		return fake.SubmitEventStub(arg1, arg2, arg3...)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	fakeReturns := fake.submitEventReturns
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeCoreClient) SubmitEventCallCount() int {
-	fake.submitEventMutex.RLock()
-	defer fake.submitEventMutex.RUnlock()
-	return len(fake.submitEventArgsForCall)
-}
-
-func (fake *FakeCoreClient) SubmitEventCalls(stub func(context.Context, *request.SubmitEvent, ...grpc.CallOption) (*response.Message, error)) {
-	fake.submitEventMutex.Lock()
-	defer fake.submitEventMutex.Unlock()
-	fake.SubmitEventStub = stub
-}
-
-func (fake *FakeCoreClient) SubmitEventArgsForCall(i int) (context.Context, *request.SubmitEvent, []grpc.CallOption) {
-	fake.submitEventMutex.RLock()
-	defer fake.submitEventMutex.RUnlock()
-	argsForCall := fake.submitEventArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
-}
-
-func (fake *FakeCoreClient) SubmitEventReturns(result1 *response.Message, result2 error) {
-	fake.submitEventMutex.Lock()
-	defer fake.submitEventMutex.Unlock()
-	fake.SubmitEventStub = nil
-	fake.submitEventReturns = struct {
-		result1 *response.Message
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeCoreClient) SubmitEventReturnsOnCall(i int, result1 *response.Message, result2 error) {
-	fake.submitEventMutex.Lock()
-	defer fake.submitEventMutex.Unlock()
-	fake.SubmitEventStub = nil
-	if fake.submitEventReturnsOnCall == nil {
-		fake.submitEventReturnsOnCall = make(map[int]struct {
-			result1 *response.Message
-			result2 error
-		})
-	}
-	fake.submitEventReturnsOnCall[i] = struct {
-		result1 *response.Message
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeCoreClient) Verify(arg1 context.Context, arg2 *request.Verify, arg3 ...grpc.CallOption) (*response.Message, error) {
 	fake.verifyMutex.Lock()
 	ret, specificReturn := fake.verifyReturnsOnCall[len(fake.verifyArgsForCall)]
@@ -589,8 +509,6 @@ func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	defer fake.handshakeMutex.RUnlock()
 	fake.loginMutex.RLock()
 	defer fake.loginMutex.RUnlock()
-	fake.submitEventMutex.RLock()
-	defer fake.submitEventMutex.RUnlock()
 	fake.verifyMutex.RLock()
 	defer fake.verifyMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

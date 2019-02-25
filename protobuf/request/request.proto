@@ -29,7 +29,3 @@ message Login {
 message CreateEvent {
   models.EventProps event = 1;
 }
-
-message SubmitEvent {
-  models.FieldProps fields = 1;
-}
