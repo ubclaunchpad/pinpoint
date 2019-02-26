@@ -10,7 +10,7 @@ matrix:
     - name: "Codegen Check"
       language: go
       go:
-        - "1.11"
+        - "1.12"
       install:
         - bash .scripts/install-protoc.sh
         - bash .scripts/protoc-gen-go.sh
@@ -31,7 +31,7 @@ matrix:
     - name: "Core and Gateway Tests"
       language: go
       go:
-        - "1.11"
+        - "1.12"
       env:
         - TEST="golang"
       install:
