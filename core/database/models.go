@@ -141,7 +141,7 @@ func newEmailVerification(i *emailVerificationItem) *models.EmailVerification {
 	}
 }
 
-func newDBEvent(event *models.Event) *eventItem {
+func newDBEvent(event *models.EventProps) *eventItem {
 	peid := prefixPeriodEventID(event.Period, event.EventID)
 	return &eventItem{
 		PeidPK:      peid,
@@ -152,9 +152,9 @@ func newDBEvent(event *models.Event) *eventItem {
 	}
 }
 
-func newEvent(item *eventItem) *models.Event {
+func newEvent(item *eventItem) *models.EventProps {
 	p, e := getPeriodAndEventID(item.PeidPK)
-	return &models.Event{
+	return &models.EventProps{
 		Period:      p,
 		EventID:     e,
 		Name:        item.Name,
