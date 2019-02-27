@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package pinpoint;
 
-import "request/request.proto";
-import "response/response.proto";
+import "protobuf/request/request.proto";
+import "protobuf/response/response.proto";
 
 // Protobuf definitions for pinpoint's core service
 service Core {
