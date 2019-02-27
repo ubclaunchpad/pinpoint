@@ -46,11 +46,9 @@ message EventProps {
       ShortText short_text = 6;
     };
     message LongText {
-      int64 max_len = 1;
-     }
-    message ShortText {
       int32 max_len = 1;
      }
+    message ShortText {}
   }
   repeated FieldProps fields = 6;
 }
