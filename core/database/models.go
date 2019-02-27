@@ -33,11 +33,11 @@ type emailVerificationItem struct {
 }
 
 type eventItem struct {
-	PeidPK      string          `json:"pk"`
-	PeidSK      string          `json:"sk"`
-	Name        string          `json:"name"`
-	Description string          `json:"description"`
-	Fields      []*models.Field `json:"fields"`
+	PeidPK      string                          `json:"pk"`
+	PeidSK      string                          `json:"sk"`
+	Name        string                          `json:"name"`
+	Description string                          `json:"description"`
+	Fields      []*models.EventProps_FieldProps `json:"fields"`
 }
 
 type applicantItem struct {
