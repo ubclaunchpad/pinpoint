@@ -168,7 +168,8 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 	return &response.Empty{}, nil
 }
 
-func (s *Service) CreateEvent(ctx context.Context, req *request.NewEvent) (*response.Message, error) {
+// CreateEvent creates a form
+func (s *Service) CreateEvent(ctx context.Context, req *request.CreateEvent) (*response.Message, error) {
 	// TODO
 	return nil, nil
 }

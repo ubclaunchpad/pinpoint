@@ -4,8 +4,10 @@ import "encoding/json"
 
 // CreateEvent defines a request to create an event
 type CreateEvent struct {
-	Name   string       `json:"name"`
-	Fields []FieldProps `json:"fields"`
+	Name        string       `json:"name"`
+	EventID     string       `json:"event_id"`
+	Description string       `json:"description"`
+	Fields      []FieldProps `json:"fields"`
 }
 
 const (

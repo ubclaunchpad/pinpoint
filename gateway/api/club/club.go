@@ -78,12 +78,12 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var fields = make([]*models.FieldProps, len(data.Fields))
+	var fields = make([]*models.EventProps_FieldProps, len(data.Fields))
 	for i, f := range data.Fields {
-		var pbf = &models.FieldProps{}
+		var pbf = &models.EventProps_FieldProps{}
 		switch f.Type {
 		case schema.FieldTypeLongText:
-			var lt = &models.FieldProps_LongText{}
+			var lt = &models.EventProps_FieldProps_LongText_{}
 			if err := json.Unmarshal(f.Properties, lt); err != nil {
 				render.Render(w, r, res.ErrBadRequest("invalid data for event field properties",
 					"field", f.Type, "error", err))
@@ -91,7 +91,7 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 			}
 			pbf.Properties = lt
 		case schema.FieldTypeShortText:
-			var st = &models.FieldProps_ShortText{}
+			var st = &models.EventProps_FieldProps_ShortText_{}
 			if err := json.Unmarshal(f.Properties, st); err != nil {
 				render.Render(w, r, res.ErrBadRequest("invalid data for event field properties",
 					"field", f.Type, "error", err))
@@ -110,10 +110,10 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 	c.c.CreateEvent(context.Background(), &request.CreateEvent{
 		Event: &models.EventProps{
 			Period:      period,
-			EventID:     "", // TODO what the?
+			EventID:     data.EventID,
 			Name:        data.Name,
 			Club:        club,
-			Description: "", //TODO
+			Description: data.Description,
 			Fields:      fields,
 		},
 	})

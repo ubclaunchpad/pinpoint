@@ -41,15 +41,15 @@ message EventProps {
     bool required = 2;
     string blurb = 3;
     string description = 4;
-    oneof prsoperties {
+    oneof properties {
       LongText long_text = 5;
       ShortText short_text = 6;
     };
     message LongText {
-      string maxLen = 1;
+      int64 max_len = 1;
      }
     message ShortText {
-      string maxLen = 1;
+      int32 max_len = 1;
      }
   }
   repeated FieldProps fields = 6;
