@@ -91,7 +91,7 @@ func TestClubRouter_createEvent(t *testing.T) {
 			&schema.CreateEvent{
 				Name: "Winter Semester",
 				Fields: []schema.FieldProps{
-					{"", []byte(`{"julia": "has failed"}`)},
+					{Type: "", Properties: []byte(`{"julia": "has failed"}`)},
 				},
 			}}, http.StatusBadRequest},
 		{"successfully created event", args{
@@ -99,7 +99,7 @@ func TestClubRouter_createEvent(t *testing.T) {
 			&schema.CreateEvent{
 				Name: "Winter Semester",
 				Fields: []schema.FieldProps{
-					{"long_text", []byte(`{"1": "2"}`)},
+					{Type: "long_text", Properties: []byte(`{"1": "2"}`)},
 				},
 			}}, http.StatusCreated},
 	}
