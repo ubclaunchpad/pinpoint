@@ -168,6 +168,12 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 	return &response.Empty{}, nil
 }
 
+// CreateEvent creates a form
+func (s *Service) CreateEvent(ctx context.Context, req *request.CreateEvent) (*response.Message, error) {
+	// TODO
+	return nil, nil
+}
+
 // CreateAccount registers a user and sends an email verification email
 func (s *Service) CreateAccount(ctx context.Context, req *request.CreateAccount) (*response.Message, error) {
 	if err := crypto.ValidateCredentialValues(req.Email, req.Password); err != nil {

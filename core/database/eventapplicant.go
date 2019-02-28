@@ -10,7 +10,7 @@ import (
 )
 
 // AddNewEvent creates a new event in the club table
-func (db *Database) AddNewEvent(clubID string, event *models.Event) error {
+func (db *Database) AddNewEvent(clubID string, event *models.EventProps) error {
 	var e = newDBEvent(event)
 	item, err := dynamodbattribute.MarshalMap(e)
 	if err != nil {
@@ -26,7 +26,7 @@ func (db *Database) AddNewEvent(clubID string, event *models.Event) error {
 }
 
 // GetEvent returns an event from the database
-func (db *Database) GetEvent(clubID string, period string, eventID string) (*models.Event, error) {
+func (db *Database) GetEvent(clubID string, period string, eventID string) (*models.EventProps, error) {
 	var peid = aws.String(prefixPeriodEventID(period, eventID))
 	var result, err = db.c.GetItem(&dynamodb.GetItemInput{
 		TableName: getClubTable(clubID),
@@ -46,7 +46,7 @@ func (db *Database) GetEvent(clubID string, period string, eventID string) (*mod
 }
 
 // GetEvents returns all the events of an application period
-func (db *Database) GetEvents(clubID string, period string) ([]*models.Event, error) {
+func (db *Database) GetEvents(clubID string, period string) ([]*models.EventProps, error) {
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -63,7 +63,7 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.Event, er
 	if err := dynamodbattribute.UnmarshalListOfMaps(result.Items, &items); err != nil {
 		return nil, fmt.Errorf("Failed to unmarshal events: %s", err.Error())
 	}
-	var events = make([]*models.Event, *result.Count)
+	var events = make([]*models.EventProps, *result.Count)
 	for _, item := range items {
 		events = append(events, newEvent(item))
 	}

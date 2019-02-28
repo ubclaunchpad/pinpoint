@@ -4,6 +4,8 @@ syntax = "proto3";
 package request;
 option go_package = "github.com/ubclaunchpad/pinpoint/protobuf/request";
 
+import "models/models.proto";
+
 message Empty {}
 
 message Status {}
@@ -22,4 +24,8 @@ message Verify {
 message Login {
   string email = 1;
   string password = 2;
+}
+
+message CreateEvent {
+  models.EventProps event = 1;
 }

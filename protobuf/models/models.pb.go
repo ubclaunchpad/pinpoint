@@ -36,7 +36,7 @@ func (m *User) Reset()         { *m = User{} }
 func (m *User) String() string { return proto.CompactTextString(m) }
 func (*User) ProtoMessage()    {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{0}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{0}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_User.Unmarshal(m, b)
@@ -97,7 +97,7 @@ func (m *Club) Reset()         { *m = Club{} }
 func (m *Club) String() string { return proto.CompactTextString(m) }
 func (*Club) ProtoMessage()    {}
 func (*Club) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{1}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{1}
 }
 func (m *Club) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Club.Unmarshal(m, b)
@@ -152,7 +152,7 @@ func (m *ClubUser) Reset()         { *m = ClubUser{} }
 func (m *ClubUser) String() string { return proto.CompactTextString(m) }
 func (*ClubUser) ProtoMessage()    {}
 func (*ClubUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{2}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{2}
 }
 func (m *ClubUser) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClubUser.Unmarshal(m, b)
@@ -213,7 +213,7 @@ func (m *EmailVerification) Reset()         { *m = EmailVerification{} }
 func (m *EmailVerification) String() string { return proto.CompactTextString(m) }
 func (*EmailVerification) ProtoMessage()    {}
 func (*EmailVerification) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{3}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{3}
 }
 func (m *EmailVerification) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EmailVerification.Unmarshal(m, b)
@@ -254,226 +254,250 @@ func (m *EmailVerification) GetExpiry() int64 {
 	return 0
 }
 
-type Event struct {
-	Period               string   `protobuf:"bytes,1,opt,name=period,proto3" json:"period,omitempty"`
-	EventID              string   `protobuf:"bytes,2,opt,name=eventID,proto3" json:"eventID,omitempty"`
-	Name                 string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Description          string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Fields               []*Field `protobuf:"bytes,5,rep,name=fields,proto3" json:"fields,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type EventProps struct {
+	Period               string                   `protobuf:"bytes,1,opt,name=period,proto3" json:"period,omitempty"`
+	EventID              string                   `protobuf:"bytes,2,opt,name=eventID,proto3" json:"eventID,omitempty"`
+	Name                 string                   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Club                 string                   `protobuf:"bytes,4,opt,name=club,proto3" json:"club,omitempty"`
+	Description          string                   `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Fields               []*EventProps_FieldProps `protobuf:"bytes,6,rep,name=fields,proto3" json:"fields,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
 }
 
-func (m *Event) Reset()         { *m = Event{} }
-func (m *Event) String() string { return proto.CompactTextString(m) }
-func (*Event) ProtoMessage()    {}
-func (*Event) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{4}
+func (m *EventProps) Reset()         { *m = EventProps{} }
+func (m *EventProps) String() string { return proto.CompactTextString(m) }
+func (*EventProps) ProtoMessage()    {}
+func (*EventProps) Descriptor() ([]byte, []int) {
+	return fileDescriptor_models_895f01a599ca3d1a, []int{4}
 }
-func (m *Event) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Event.Unmarshal(m, b)
+func (m *EventProps) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventProps.Unmarshal(m, b)
 }
-func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Event.Marshal(b, m, deterministic)
+func (m *EventProps) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventProps.Marshal(b, m, deterministic)
 }
-func (dst *Event) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Event.Merge(dst, src)
+func (dst *EventProps) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventProps.Merge(dst, src)
 }
-func (m *Event) XXX_Size() int {
-	return xxx_messageInfo_Event.Size(m)
+func (m *EventProps) XXX_Size() int {
+	return xxx_messageInfo_EventProps.Size(m)
 }
-func (m *Event) XXX_DiscardUnknown() {
-	xxx_messageInfo_Event.DiscardUnknown(m)
+func (m *EventProps) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventProps.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Event proto.InternalMessageInfo
+var xxx_messageInfo_EventProps proto.InternalMessageInfo
 
-func (m *Event) GetPeriod() string {
+func (m *EventProps) GetPeriod() string {
 	if m != nil {
 		return m.Period
 	}
 	return ""
 }
 
-func (m *Event) GetEventID() string {
+func (m *EventProps) GetEventID() string {
 	if m != nil {
 		return m.EventID
 	}
 	return ""
 }
 
-func (m *Event) GetName() string {
+func (m *EventProps) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Event) GetDescription() string {
+func (m *EventProps) GetClub() string {
+	if m != nil {
+		return m.Club
+	}
+	return ""
+}
+
+func (m *EventProps) GetDescription() string {
 	if m != nil {
 		return m.Description
 	}
 	return ""
 }
 
-func (m *Event) GetFields() []*Field {
+func (m *EventProps) GetFields() []*EventProps_FieldProps {
 	if m != nil {
 		return m.Fields
 	}
 	return nil
 }
 
-type Field struct {
-	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Required bool   `protobuf:"varint,2,opt,name=required,proto3" json:"required,omitempty"`
+type EventProps_FieldProps struct {
+	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Required    bool   `protobuf:"varint,2,opt,name=required,proto3" json:"required,omitempty"`
+	Blurb       string `protobuf:"bytes,3,opt,name=blurb,proto3" json:"blurb,omitempty"`
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// Types that are valid to be assigned to Properties:
-	//	*Field_LongText
-	//	*Field_ShortText
-	Properties           isField_Properties `protobuf_oneof:"properties"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	//	*EventProps_FieldProps_LongText_
+	//	*EventProps_FieldProps_ShortText_
+	Properties           isEventProps_FieldProps_Properties `protobuf_oneof:"properties"`
+	XXX_NoUnkeyedLiteral struct{}                           `json:"-"`
+	XXX_unrecognized     []byte                             `json:"-"`
+	XXX_sizecache        int32                              `json:"-"`
 }
 
-func (m *Field) Reset()         { *m = Field{} }
-func (m *Field) String() string { return proto.CompactTextString(m) }
-func (*Field) ProtoMessage()    {}
-func (*Field) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{5}
+func (m *EventProps_FieldProps) Reset()         { *m = EventProps_FieldProps{} }
+func (m *EventProps_FieldProps) String() string { return proto.CompactTextString(m) }
+func (*EventProps_FieldProps) ProtoMessage()    {}
+func (*EventProps_FieldProps) Descriptor() ([]byte, []int) {
+	return fileDescriptor_models_895f01a599ca3d1a, []int{4, 0}
 }
-func (m *Field) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Field.Unmarshal(m, b)
+func (m *EventProps_FieldProps) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventProps_FieldProps.Unmarshal(m, b)
 }
-func (m *Field) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Field.Marshal(b, m, deterministic)
+func (m *EventProps_FieldProps) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventProps_FieldProps.Marshal(b, m, deterministic)
 }
-func (dst *Field) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Field.Merge(dst, src)
+func (dst *EventProps_FieldProps) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventProps_FieldProps.Merge(dst, src)
 }
-func (m *Field) XXX_Size() int {
-	return xxx_messageInfo_Field.Size(m)
+func (m *EventProps_FieldProps) XXX_Size() int {
+	return xxx_messageInfo_EventProps_FieldProps.Size(m)
 }
-func (m *Field) XXX_DiscardUnknown() {
-	xxx_messageInfo_Field.DiscardUnknown(m)
+func (m *EventProps_FieldProps) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventProps_FieldProps.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Field proto.InternalMessageInfo
+var xxx_messageInfo_EventProps_FieldProps proto.InternalMessageInfo
 
-func (m *Field) GetName() string {
+func (m *EventProps_FieldProps) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Field) GetRequired() bool {
+func (m *EventProps_FieldProps) GetRequired() bool {
 	if m != nil {
 		return m.Required
 	}
 	return false
 }
 
-type isField_Properties interface {
-	isField_Properties()
+func (m *EventProps_FieldProps) GetBlurb() string {
+	if m != nil {
+		return m.Blurb
+	}
+	return ""
 }
 
-type Field_LongText struct {
-	LongText *LongText `protobuf:"bytes,3,opt,name=long_text,json=longText,proto3,oneof"`
+func (m *EventProps_FieldProps) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
 }
 
-type Field_ShortText struct {
-	ShortText *ShortText `protobuf:"bytes,4,opt,name=short_text,json=shortText,proto3,oneof"`
+type isEventProps_FieldProps_Properties interface {
+	isEventProps_FieldProps_Properties()
 }
 
-func (*Field_LongText) isField_Properties() {}
+type EventProps_FieldProps_LongText_ struct {
+	LongText *EventProps_FieldProps_LongText `protobuf:"bytes,5,opt,name=long_text,json=longText,proto3,oneof"`
+}
 
-func (*Field_ShortText) isField_Properties() {}
+type EventProps_FieldProps_ShortText_ struct {
+	ShortText *EventProps_FieldProps_ShortText `protobuf:"bytes,6,opt,name=short_text,json=shortText,proto3,oneof"`
+}
 
-func (m *Field) GetProperties() isField_Properties {
+func (*EventProps_FieldProps_LongText_) isEventProps_FieldProps_Properties() {}
+
+func (*EventProps_FieldProps_ShortText_) isEventProps_FieldProps_Properties() {}
+
+func (m *EventProps_FieldProps) GetProperties() isEventProps_FieldProps_Properties {
 	if m != nil {
 		return m.Properties
 	}
 	return nil
 }
 
-func (m *Field) GetLongText() *LongText {
-	if x, ok := m.GetProperties().(*Field_LongText); ok {
+func (m *EventProps_FieldProps) GetLongText() *EventProps_FieldProps_LongText {
+	if x, ok := m.GetProperties().(*EventProps_FieldProps_LongText_); ok {
 		return x.LongText
 	}
 	return nil
 }
 
-func (m *Field) GetShortText() *ShortText {
-	if x, ok := m.GetProperties().(*Field_ShortText); ok {
+func (m *EventProps_FieldProps) GetShortText() *EventProps_FieldProps_ShortText {
+	if x, ok := m.GetProperties().(*EventProps_FieldProps_ShortText_); ok {
 		return x.ShortText
 	}
 	return nil
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
-func (*Field) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Field_OneofMarshaler, _Field_OneofUnmarshaler, _Field_OneofSizer, []interface{}{
-		(*Field_LongText)(nil),
-		(*Field_ShortText)(nil),
+func (*EventProps_FieldProps) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _EventProps_FieldProps_OneofMarshaler, _EventProps_FieldProps_OneofUnmarshaler, _EventProps_FieldProps_OneofSizer, []interface{}{
+		(*EventProps_FieldProps_LongText_)(nil),
+		(*EventProps_FieldProps_ShortText_)(nil),
 	}
 }
 
-func _Field_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Field)
+func _EventProps_FieldProps_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*EventProps_FieldProps)
 	// properties
 	switch x := m.Properties.(type) {
-	case *Field_LongText:
-		b.EncodeVarint(3<<3 | proto.WireBytes)
+	case *EventProps_FieldProps_LongText_:
+		b.EncodeVarint(5<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.LongText); err != nil {
 			return err
 		}
-	case *Field_ShortText:
-		b.EncodeVarint(4<<3 | proto.WireBytes)
+	case *EventProps_FieldProps_ShortText_:
+		b.EncodeVarint(6<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.ShortText); err != nil {
 			return err
 		}
 	case nil:
 	default:
-		return fmt.Errorf("Field.Properties has unexpected type %T", x)
+		return fmt.Errorf("EventProps_FieldProps.Properties has unexpected type %T", x)
 	}
 	return nil
 }
 
-func _Field_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Field)
+func _EventProps_FieldProps_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*EventProps_FieldProps)
 	switch tag {
-	case 3: // properties.long_text
+	case 5: // properties.long_text
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(LongText)
+		msg := new(EventProps_FieldProps_LongText)
 		err := b.DecodeMessage(msg)
-		m.Properties = &Field_LongText{msg}
+		m.Properties = &EventProps_FieldProps_LongText_{msg}
 		return true, err
-	case 4: // properties.short_text
+	case 6: // properties.short_text
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(ShortText)
+		msg := new(EventProps_FieldProps_ShortText)
 		err := b.DecodeMessage(msg)
-		m.Properties = &Field_ShortText{msg}
+		m.Properties = &EventProps_FieldProps_ShortText_{msg}
 		return true, err
 	default:
 		return false, nil
 	}
 }
 
-func _Field_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Field)
+func _EventProps_FieldProps_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*EventProps_FieldProps)
 	// properties
 	switch x := m.Properties.(type) {
-	case *Field_LongText:
+	case *EventProps_FieldProps_LongText_:
 		s := proto.Size(x.LongText)
 		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
-	case *Field_ShortText:
+	case *EventProps_FieldProps_ShortText_:
 		s := proto.Size(x.ShortText)
 		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
@@ -485,81 +509,73 @@ func _Field_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-type LongText struct {
-	ImLong               string   `protobuf:"bytes,1,opt,name=im_long,json=imLong,proto3" json:"im_long,omitempty"`
+type EventProps_FieldProps_LongText struct {
+	MaxLen               int32    `protobuf:"varint,1,opt,name=max_len,json=maxLen,proto3" json:"max_len,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *LongText) Reset()         { *m = LongText{} }
-func (m *LongText) String() string { return proto.CompactTextString(m) }
-func (*LongText) ProtoMessage()    {}
-func (*LongText) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{6}
+func (m *EventProps_FieldProps_LongText) Reset()         { *m = EventProps_FieldProps_LongText{} }
+func (m *EventProps_FieldProps_LongText) String() string { return proto.CompactTextString(m) }
+func (*EventProps_FieldProps_LongText) ProtoMessage()    {}
+func (*EventProps_FieldProps_LongText) Descriptor() ([]byte, []int) {
+	return fileDescriptor_models_895f01a599ca3d1a, []int{4, 0, 0}
 }
-func (m *LongText) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_LongText.Unmarshal(m, b)
+func (m *EventProps_FieldProps_LongText) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventProps_FieldProps_LongText.Unmarshal(m, b)
 }
-func (m *LongText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_LongText.Marshal(b, m, deterministic)
+func (m *EventProps_FieldProps_LongText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventProps_FieldProps_LongText.Marshal(b, m, deterministic)
 }
-func (dst *LongText) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LongText.Merge(dst, src)
+func (dst *EventProps_FieldProps_LongText) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventProps_FieldProps_LongText.Merge(dst, src)
 }
-func (m *LongText) XXX_Size() int {
-	return xxx_messageInfo_LongText.Size(m)
+func (m *EventProps_FieldProps_LongText) XXX_Size() int {
+	return xxx_messageInfo_EventProps_FieldProps_LongText.Size(m)
 }
-func (m *LongText) XXX_DiscardUnknown() {
-	xxx_messageInfo_LongText.DiscardUnknown(m)
+func (m *EventProps_FieldProps_LongText) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventProps_FieldProps_LongText.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_LongText proto.InternalMessageInfo
+var xxx_messageInfo_EventProps_FieldProps_LongText proto.InternalMessageInfo
 
-func (m *LongText) GetImLong() string {
+func (m *EventProps_FieldProps_LongText) GetMaxLen() int32 {
 	if m != nil {
-		return m.ImLong
+		return m.MaxLen
 	}
-	return ""
+	return 0
 }
 
-type ShortText struct {
-	ImShort              string   `protobuf:"bytes,1,opt,name=im_short,json=imShort,proto3" json:"im_short,omitempty"`
+type EventProps_FieldProps_ShortText struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ShortText) Reset()         { *m = ShortText{} }
-func (m *ShortText) String() string { return proto.CompactTextString(m) }
-func (*ShortText) ProtoMessage()    {}
-func (*ShortText) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{7}
+func (m *EventProps_FieldProps_ShortText) Reset()         { *m = EventProps_FieldProps_ShortText{} }
+func (m *EventProps_FieldProps_ShortText) String() string { return proto.CompactTextString(m) }
+func (*EventProps_FieldProps_ShortText) ProtoMessage()    {}
+func (*EventProps_FieldProps_ShortText) Descriptor() ([]byte, []int) {
+	return fileDescriptor_models_895f01a599ca3d1a, []int{4, 0, 1}
 }
-func (m *ShortText) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ShortText.Unmarshal(m, b)
+func (m *EventProps_FieldProps_ShortText) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventProps_FieldProps_ShortText.Unmarshal(m, b)
 }
-func (m *ShortText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ShortText.Marshal(b, m, deterministic)
+func (m *EventProps_FieldProps_ShortText) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventProps_FieldProps_ShortText.Marshal(b, m, deterministic)
 }
-func (dst *ShortText) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ShortText.Merge(dst, src)
+func (dst *EventProps_FieldProps_ShortText) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventProps_FieldProps_ShortText.Merge(dst, src)
 }
-func (m *ShortText) XXX_Size() int {
-	return xxx_messageInfo_ShortText.Size(m)
+func (m *EventProps_FieldProps_ShortText) XXX_Size() int {
+	return xxx_messageInfo_EventProps_FieldProps_ShortText.Size(m)
 }
-func (m *ShortText) XXX_DiscardUnknown() {
-	xxx_messageInfo_ShortText.DiscardUnknown(m)
+func (m *EventProps_FieldProps_ShortText) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventProps_FieldProps_ShortText.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ShortText proto.InternalMessageInfo
-
-func (m *ShortText) GetImShort() string {
-	if m != nil {
-		return m.ImShort
-	}
-	return ""
-}
+var xxx_messageInfo_EventProps_FieldProps_ShortText proto.InternalMessageInfo
 
 type Applicant struct {
 	Period               string   `protobuf:"bytes,1,opt,name=period,proto3" json:"period,omitempty"`
@@ -575,7 +591,7 @@ func (m *Applicant) Reset()         { *m = Applicant{} }
 func (m *Applicant) String() string { return proto.CompactTextString(m) }
 func (*Applicant) ProtoMessage()    {}
 func (*Applicant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{8}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{5}
 }
 func (m *Applicant) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Applicant.Unmarshal(m, b)
@@ -638,7 +654,7 @@ func (m *Application) Reset()         { *m = Application{} }
 func (m *Application) String() string { return proto.CompactTextString(m) }
 func (*Application) ProtoMessage()    {}
 func (*Application) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{9}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{6}
 }
 func (m *Application) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Application.Unmarshal(m, b)
@@ -704,7 +720,7 @@ func (m *FieldEntry) Reset()         { *m = FieldEntry{} }
 func (m *FieldEntry) String() string { return proto.CompactTextString(m) }
 func (*FieldEntry) ProtoMessage()    {}
 func (*FieldEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{10}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{7}
 }
 func (m *FieldEntry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldEntry.Unmarshal(m, b)
@@ -743,7 +759,7 @@ func (m *Tag) Reset()         { *m = Tag{} }
 func (m *Tag) String() string { return proto.CompactTextString(m) }
 func (*Tag) ProtoMessage()    {}
 func (*Tag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_models_6b468dbd85b16147, []int{11}
+	return fileDescriptor_models_895f01a599ca3d1a, []int{8}
 }
 func (m *Tag) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Tag.Unmarshal(m, b)
@@ -782,10 +798,10 @@ func init() {
 	proto.RegisterType((*Club)(nil), "models.Club")
 	proto.RegisterType((*ClubUser)(nil), "models.ClubUser")
 	proto.RegisterType((*EmailVerification)(nil), "models.EmailVerification")
-	proto.RegisterType((*Event)(nil), "models.Event")
-	proto.RegisterType((*Field)(nil), "models.Field")
-	proto.RegisterType((*LongText)(nil), "models.LongText")
-	proto.RegisterType((*ShortText)(nil), "models.ShortText")
+	proto.RegisterType((*EventProps)(nil), "models.EventProps")
+	proto.RegisterType((*EventProps_FieldProps)(nil), "models.EventProps.FieldProps")
+	proto.RegisterType((*EventProps_FieldProps_LongText)(nil), "models.EventProps.FieldProps.LongText")
+	proto.RegisterType((*EventProps_FieldProps_ShortText)(nil), "models.EventProps.FieldProps.ShortText")
 	proto.RegisterType((*Applicant)(nil), "models.Applicant")
 	proto.RegisterType((*Application)(nil), "models.Application")
 	proto.RegisterMapType((map[string]*FieldEntry)(nil), "models.Application.EntriesEntry")
@@ -793,45 +809,47 @@ func init() {
 	proto.RegisterType((*Tag)(nil), "models.Tag")
 }
 
-func init() { proto.RegisterFile("models/models.proto", fileDescriptor_models_6b468dbd85b16147) }
+func init() { proto.RegisterFile("models/models.proto", fileDescriptor_models_895f01a599ca3d1a) }
 
-var fileDescriptor_models_6b468dbd85b16147 = []byte{
-	// 583 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x4f, 0x6f, 0xd3, 0x30,
-	0x14, 0x27, 0x4b, 0xda, 0x26, 0xaf, 0x43, 0xda, 0x0c, 0x1a, 0x61, 0xa7, 0xc8, 0x08, 0xd4, 0x53,
-	0x8b, 0xca, 0x01, 0xb4, 0x1b, 0x63, 0x43, 0x4c, 0x42, 0x3b, 0x84, 0x8d, 0x03, 0x97, 0xce, 0x49,
-	0xdc, 0xd4, 0x22, 0x89, 0x83, 0xe3, 0x54, 0xed, 0x17, 0xe1, 0x43, 0xf0, 0xfd, 0xb8, 0x23, 0x3b,
-	0x4e, 0x96, 0x41, 0x99, 0xb4, 0x53, 0xde, 0xef, 0xfd, 0xf9, 0xfd, 0xde, 0x7b, 0x76, 0x0c, 0x4f,
-	0x72, 0x9e, 0xd0, 0xac, 0x9a, 0x35, 0x9f, 0x69, 0x29, 0xb8, 0xe4, 0x68, 0xd8, 0x20, 0x7c, 0x03,
-	0xce, 0x75, 0x45, 0x05, 0x7a, 0x0a, 0x03, 0x9a, 0x13, 0x96, 0xf9, 0x56, 0x60, 0x4d, 0xbc, 0xb0,
-	0x01, 0x08, 0x81, 0x53, 0x90, 0x9c, 0xfa, 0x7b, 0xda, 0xa9, 0x6d, 0xe5, 0x5b, 0x91, 0x6a, 0xe5,
-	0xdb, 0x8d, 0x4f, 0xd9, 0xe8, 0x18, 0xdc, 0x35, 0x15, 0x6c, 0xc9, 0x68, 0xe2, 0x3b, 0x81, 0x35,
-	0x71, 0xc3, 0x0e, 0xe3, 0x2b, 0x70, 0x3e, 0x64, 0x75, 0x84, 0x8e, 0x60, 0x18, 0x67, 0x75, 0x74,
-	0x71, 0x66, 0x24, 0x0c, 0xda, 0xa9, 0x11, 0xc0, 0x38, 0xa1, 0x55, 0x2c, 0x58, 0x29, 0x19, 0x2f,
-	0x8c, 0x54, 0xdf, 0x85, 0x6f, 0xc0, 0x55, 0xac, 0xba, 0xf7, 0xff, 0x31, 0x77, 0x33, 0xed, 0xed,
-	0x9a, 0xc9, 0xbe, 0x3b, 0x93, 0xe0, 0x19, 0xd5, 0xbd, 0x7b, 0xa1, 0xb6, 0xf1, 0x35, 0x1c, 0x9e,
-	0xab, 0x82, 0xaf, 0x7a, 0x90, 0x98, 0x28, 0xd9, 0x6e, 0x78, 0xab, 0x37, 0xfc, 0x6e, 0x99, 0x23,
-	0x18, 0xd2, 0x4d, 0xc9, 0xc4, 0x56, 0x0b, 0xd9, 0xa1, 0x41, 0xf8, 0xa7, 0x05, 0x83, 0xf3, 0x35,
-	0x2d, 0xa4, 0xca, 0x28, 0xa9, 0x60, 0x3c, 0x69, 0xdb, 0x6e, 0x10, 0xf2, 0x61, 0x44, 0x55, 0xc2,
-	0xc5, 0x99, 0x61, 0x6c, 0xe1, 0xce, 0xd6, 0xff, 0x5a, 0x95, 0xf3, 0xcf, 0xaa, 0xd0, 0x4b, 0x18,
-	0x2e, 0x19, 0xcd, 0x92, 0xca, 0x1f, 0x04, 0xf6, 0x64, 0x3c, 0x7f, 0x3c, 0x35, 0x37, 0xe1, 0xa3,
-	0xf2, 0x86, 0x26, 0x88, 0x7f, 0x59, 0x30, 0xd0, 0x9e, 0x4e, 0xc6, 0xea, 0xc9, 0x1c, 0x83, 0x2b,
-	0xe8, 0x8f, 0x9a, 0x09, 0x9a, 0xe8, 0xae, 0xdc, 0xb0, 0xc3, 0x68, 0x06, 0x5e, 0xc6, 0x8b, 0x74,
-	0x21, 0xe9, 0x46, 0xea, 0xde, 0xc6, 0xf3, 0x83, 0x56, 0xe3, 0x33, 0x2f, 0xd2, 0x2b, 0xba, 0x91,
-	0x9f, 0x1e, 0x85, 0x6e, 0x66, 0x6c, 0x34, 0x07, 0xa8, 0x56, 0x5c, 0xc8, 0xa6, 0xc2, 0xd1, 0x15,
-	0x87, 0x6d, 0xc5, 0x17, 0x15, 0x31, 0x25, 0x5e, 0xd5, 0x82, 0xd3, 0x7d, 0x80, 0x52, 0xf0, 0x92,
-	0x0a, 0xc9, 0x68, 0x85, 0x5f, 0x80, 0xdb, 0x32, 0xa3, 0x67, 0x30, 0x62, 0xf9, 0x42, 0x91, 0xb7,
-	0x8b, 0x64, 0xb9, 0x0a, 0xe2, 0x57, 0xe0, 0x75, 0x64, 0xe8, 0x39, 0xb8, 0x2c, 0x5f, 0x68, 0x3e,
-	0x93, 0x36, 0x62, 0xb9, 0x0e, 0x63, 0x02, 0xde, 0xfb, 0xb2, 0xcc, 0x58, 0x4c, 0xee, 0x39, 0x95,
-	0x07, 0x5d, 0x26, 0x49, 0xd2, 0xca, 0x77, 0x02, 0x5b, 0xf9, 0x94, 0x8d, 0x7f, 0x5b, 0x30, 0x36,
-	0x1a, 0xfa, 0x4c, 0x1e, 0x7e, 0xf6, 0x9d, 0xbe, 0xbd, 0x4b, 0xdf, 0xe9, 0xe9, 0x9f, 0xc0, 0x88,
-	0x16, 0x52, 0x30, 0xda, 0x1e, 0x78, 0xd0, 0xae, 0xb6, 0xd7, 0xc1, 0xf4, 0xbc, 0x49, 0x51, 0x9f,
-	0x6d, 0xd8, 0x16, 0x1c, 0x5f, 0xc2, 0x7e, 0x3f, 0x80, 0x0e, 0xc0, 0xfe, 0x4e, 0xb7, 0xa6, 0x49,
-	0x65, 0xa2, 0x09, 0x0c, 0xd6, 0x24, 0xab, 0x9b, 0xff, 0x75, 0x3c, 0x47, 0x77, 0x2e, 0x53, 0xc3,
-	0xd6, 0x24, 0x9c, 0xec, 0xbd, 0xb3, 0x30, 0x06, 0xb8, 0x0d, 0xa8, 0x19, 0x9a, 0x5a, 0xc5, 0xb7,
-	0x6f, 0xf2, 0xf0, 0x5b, 0xb0, 0xaf, 0x48, 0x7a, 0xdf, 0x4a, 0x24, 0x49, 0x2f, 0x6f, 0x9f, 0x88,
-	0x16, 0x9e, 0xce, 0xbf, 0xbd, 0x4e, 0x99, 0x5c, 0xd5, 0xd1, 0x34, 0xe6, 0xf9, 0xac, 0x8e, 0xe2,
-	0x8c, 0xd4, 0x45, 0xbc, 0x2a, 0x49, 0x32, 0x2b, 0x59, 0x51, 0x72, 0x56, 0xc8, 0x99, 0x7e, 0xed,
-	0xa2, 0x7a, 0x69, 0x5e, 0xbf, 0x68, 0xa8, 0x1d, 0x6f, 0xfe, 0x04, 0x00, 0x00, 0xff, 0xff, 0xe8,
-	0x16, 0xfc, 0x5b, 0x15, 0x05, 0x00, 0x00,
+var fileDescriptor_models_895f01a599ca3d1a = []byte{
+	// 612 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xc5, 0xb1, 0xe3, 0x3a, 0x93, 0x1e, 0x60, 0xa9, 0x8a, 0x15, 0x09, 0x29, 0x32, 0x12, 0xe4,
+	0x94, 0xa0, 0x20, 0x04, 0xea, 0x8d, 0xd2, 0xa0, 0x56, 0xaa, 0x2a, 0x64, 0x5a, 0x0e, 0x5c, 0xda,
+	0xb5, 0x3d, 0x4d, 0x56, 0x6c, 0xbc, 0x66, 0xbd, 0xae, 0xd2, 0x2f, 0xe0, 0xcb, 0xf8, 0x24, 0xee,
+	0x68, 0xd7, 0x6b, 0x37, 0xb4, 0x69, 0xa5, 0x9e, 0x3c, 0x6f, 0x32, 0xfb, 0xde, 0x9b, 0xc9, 0x68,
+	0xe0, 0xf9, 0x52, 0x64, 0xc8, 0xcb, 0x49, 0xfd, 0x19, 0x17, 0x52, 0x28, 0x41, 0xfc, 0x1a, 0x45,
+	0x17, 0xe0, 0x9d, 0x95, 0x28, 0xc9, 0x0e, 0x74, 0x71, 0x49, 0x19, 0x0f, 0x9d, 0xa1, 0x33, 0xea,
+	0xc5, 0x35, 0x20, 0x04, 0xbc, 0x9c, 0x2e, 0x31, 0xec, 0x98, 0xa4, 0x89, 0x75, 0x6e, 0x41, 0xcb,
+	0x45, 0xe8, 0xd6, 0x39, 0x1d, 0x93, 0x01, 0x04, 0x57, 0x28, 0xd9, 0x25, 0xc3, 0x2c, 0xf4, 0x86,
+	0xce, 0x28, 0x88, 0x5b, 0x1c, 0x9d, 0x82, 0xf7, 0x99, 0x57, 0x09, 0xd9, 0x05, 0x3f, 0xe5, 0x55,
+	0x72, 0x74, 0x60, 0x25, 0x2c, 0xda, 0xa8, 0x31, 0x84, 0x7e, 0x86, 0x65, 0x2a, 0x59, 0xa1, 0x98,
+	0xc8, 0xad, 0xd4, 0x7a, 0x2a, 0xba, 0x80, 0x40, 0xb3, 0x1a, 0xef, 0xf7, 0x31, 0xb7, 0x3d, 0x75,
+	0x36, 0xf5, 0xe4, 0xfe, 0xdf, 0x93, 0x14, 0x1c, 0x8d, 0xf7, 0x5e, 0x6c, 0xe2, 0xe8, 0x0c, 0x9e,
+	0xcd, 0xf4, 0x83, 0xef, 0xa6, 0x91, 0x94, 0x6a, 0xd9, 0xb6, 0x79, 0x67, 0xad, 0xf9, 0xcd, 0x32,
+	0xbb, 0xe0, 0xe3, 0xaa, 0x60, 0xf2, 0xda, 0x08, 0xb9, 0xb1, 0x45, 0xd1, 0x6f, 0x0f, 0x60, 0x76,
+	0x85, 0xb9, 0xfa, 0x2a, 0x45, 0x51, 0xea, 0xb2, 0x02, 0x25, 0x13, 0x59, 0xe3, 0xbd, 0x46, 0x24,
+	0x84, 0x2d, 0xd4, 0x55, 0x47, 0x07, 0x96, 0xb6, 0x81, 0xf7, 0xf9, 0xd7, 0x3d, 0x37, 0xfe, 0x75,
+	0x7c, 0x7b, 0x86, 0xdd, 0x3b, 0x33, 0x24, 0xef, 0xc1, 0xbf, 0x64, 0xc8, 0xb3, 0x32, 0xf4, 0x87,
+	0xee, 0xa8, 0x3f, 0x7d, 0x39, 0xb6, 0x2b, 0x72, 0xe3, 0x6f, 0xfc, 0x45, 0x17, 0x98, 0x30, 0xb6,
+	0xc5, 0x83, 0x3f, 0x1d, 0x80, 0x9b, 0x74, 0xeb, 0xc7, 0x59, 0xf3, 0x33, 0x80, 0x40, 0xe2, 0xaf,
+	0x8a, 0x49, 0xcc, 0x8c, 0xfd, 0x20, 0x6e, 0xb1, 0x1e, 0x57, 0xc2, 0x2b, 0x99, 0xd8, 0x06, 0x6a,
+	0x70, 0xdb, 0xad, 0x77, 0xd7, 0xed, 0x0c, 0x7a, 0x5c, 0xe4, 0xf3, 0x73, 0x85, 0x2b, 0x65, 0xba,
+	0xe9, 0x4f, 0x5f, 0x3f, 0x68, 0x78, 0x7c, 0x2c, 0xf2, 0xf9, 0x29, 0xae, 0xd4, 0xe1, 0x93, 0x38,
+	0xe0, 0x36, 0x26, 0x87, 0x00, 0xe5, 0x42, 0x48, 0x55, 0xf3, 0xf8, 0x86, 0xe7, 0xcd, 0xc3, 0x3c,
+	0xdf, 0x74, 0xbd, 0x25, 0xea, 0x95, 0x0d, 0x18, 0xbc, 0x82, 0xa0, 0x51, 0x20, 0x2f, 0x60, 0x6b,
+	0x49, 0x57, 0xe7, 0x1c, 0x73, 0x33, 0x87, 0x6e, 0xec, 0x2f, 0xe9, 0xea, 0x18, 0xf3, 0x41, 0x1f,
+	0x7a, 0xed, 0xf3, 0xfd, 0x6d, 0x80, 0x42, 0x8a, 0x02, 0xa5, 0x62, 0x58, 0x46, 0x14, 0x7a, 0x9f,
+	0x8a, 0x82, 0xb3, 0x94, 0xe6, 0xea, 0xde, 0x3d, 0x78, 0xd4, 0x0e, 0x2b, 0x3a, 0x2f, 0x43, 0x6f,
+	0xe8, 0xea, 0x9c, 0x8e, 0xa3, 0xbf, 0x0e, 0xf4, 0xad, 0x86, 0x99, 0xe1, 0xe3, 0xb7, 0xad, 0xd5,
+	0x77, 0x37, 0xe9, 0x7b, 0x6b, 0xfa, 0x7b, 0xb0, 0x85, 0xb9, 0x92, 0x0c, 0xcb, 0xb0, 0x6b, 0xd6,
+	0x69, 0xd8, 0x4c, 0x75, 0xcd, 0xc1, 0x78, 0x56, 0x97, 0xe8, 0xcf, 0x75, 0xdc, 0x3c, 0x18, 0x9c,
+	0xc0, 0xf6, 0xfa, 0x0f, 0xe4, 0x29, 0xb8, 0x3f, 0xf1, 0xda, 0x9a, 0xd4, 0x21, 0x19, 0x41, 0xf7,
+	0x8a, 0xf2, 0xaa, 0x3e, 0x13, 0xfd, 0x29, 0x69, 0xb8, 0xcd, 0xdf, 0x54, 0xb3, 0xd5, 0x05, 0x7b,
+	0x9d, 0x8f, 0x4e, 0x14, 0xd9, 0x0d, 0xad, 0xd9, 0x76, 0x9a, 0xb7, 0x9a, 0x6f, 0xdb, 0xd6, 0x45,
+	0x1f, 0xc0, 0x3d, 0xa5, 0xf3, 0x87, 0x46, 0xa2, 0xe8, 0xfc, 0xe4, 0xe6, 0x32, 0x35, 0x70, 0x7f,
+	0xfa, 0xe3, 0xed, 0x9c, 0xa9, 0x45, 0x95, 0x8c, 0x53, 0xb1, 0x9c, 0x54, 0x49, 0xca, 0x69, 0x95,
+	0xa7, 0x8b, 0x82, 0x66, 0x93, 0x82, 0xe5, 0x85, 0x60, 0xb9, 0x9a, 0x98, 0x23, 0x9b, 0x54, 0x97,
+	0xf6, 0xe8, 0x26, 0xbe, 0x49, 0xbc, 0xfb, 0x17, 0x00, 0x00, 0xff, 0xff, 0xec, 0x21, 0x29, 0x45,
+	0x8c, 0x05, 0x00, 0x00,
 }

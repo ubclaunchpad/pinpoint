@@ -9,6 +9,11 @@ import "response/response.proto";
 service Core {
   rpc GetStatus(request.Status) returns (response.Status) {}
   rpc Handshake(request.Empty) returns (response.Empty) {}
+
+  // clubs
+  rpc CreateEvent(request.CreateEvent) returns (response.Message) {}
+
+  // users
   rpc CreateAccount(request.CreateAccount) returns (response.Message) {}
   rpc Verify(request.Verify) returns (response.Message) {}
   rpc Login(request.Login) returns (response.Message) {}
