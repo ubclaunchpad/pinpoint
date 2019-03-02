@@ -132,6 +132,40 @@ describe('login', () => {
   });
 });
 
+describe('verify', () => {
+  test('ok', (done) => {
+    moxios.stubRequest('/user/verify', {
+      status: 200,
+      response: true,
+    });
+
+    a.verify({
+      hash: '1337h4x0r',
+    }).then(onFulfilled);
+    moxios.wait(() => {
+      const response = onFulfilled.getCall(0).args[0];
+      expect(response).toEqual(true);
+      done();
+    });
+  });
+
+  test('fail', (done) => {
+    moxios.stubRequest('/user/verify', {
+      status: 500,
+      response: false,
+    });
+
+    expect.assertions(1);
+    a.verify({
+      hash: 'invalid',
+    }).then(onFulfilled)
+      .catch(err => {
+        expect(err).toEqual(Error('error 500'));
+        done();
+      });
+  });
+});
+
 describe('createClub', () => {
   test('ok', (done) => {
     moxios.stubRequest('/club/create', {

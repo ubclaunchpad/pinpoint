@@ -39,21 +39,10 @@ class API {
     }
   }
 
-  async verify({ email, hash }) {
+  async verify({ hash }) {
     try {
-      const response = await this.req.post('/user/verify', { email, hash });
-      return response.data.token;
-    } catch (error) {
-      switch (error.response.status) {
-        default: throw new Error(`error ${error.response.status}`);
-      }
-    }
-  }
-
-  async verify({ email, hash }) {
-    try {
-      const response = await this.req.post('/user/verify', { email, hash });
-      return response.data.token;
+      await this.req.post('/user/verify', { hash });
+      return true;
     } catch (error) {
       switch (error.response.status) {
         default: throw new Error(`error ${error.response.status}`);
