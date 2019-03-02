@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -147,12 +148,16 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	email := fmt.Sprintf("%v", claims["email"])
-	hash := r.FormValue("hash")
-	if hash == "" {
+	b, err := ioutil.ReadAll(r.Body)
+	var body = &struct {
+		Hash string `json:"hash"`
+	}{}
+	json.Unmarshal(b, body)
+	if body.Hash == "" {
 		render.Render(w, r, res.ErrBadRequest("hash is required"))
 		return
 	}
-	resp, err := u.c.Verify(r.Context(), &request.Verify{Email: email, Hash: hash})
+	resp, err := u.c.Verify(r.Context(), &request.Verify{Email: email, Hash: body.Hash})
 	if err != nil {
 		render.Render(w, r, res.ErrNotFound(err.Error()))
 		return
