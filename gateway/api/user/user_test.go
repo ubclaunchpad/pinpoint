@@ -147,7 +147,7 @@ func TestUserRouter_verify(t *testing.T) {
 			}
 
 			// create request
-			req, err := http.NewRequest("GET", "/verify?hash="+tt.args.hash, nil)
+			req, err := http.NewRequest("POST", "/verify?hash="+tt.args.hash, nil)
 			if err != nil {
 				t.Error(err)
 				return

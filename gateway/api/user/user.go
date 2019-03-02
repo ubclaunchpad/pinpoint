@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -49,7 +50,7 @@ func NewUserRouter(l *zap.SugaredLogger, core pinpoint.CoreClient) *Router {
 		r.Use(jwtauth.Verifier(jwtauth.New("HS256", key, nil)))
 		// Handle valid/invalid tokens
 		r.Use(jwtauth.Authenticator)
-		r.Get("/verify", u.verify)
+		r.Post("/verify", u.verify)
 	})
 
 	return u
@@ -144,20 +145,19 @@ func (u *Router) login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
-	// Use claims to grab email; claims["email"]. Related to #85, #128
-	// _, claims, _ := jwtauth.FromContext(r.Context())
-	// log.Print("email: ", claims["email"])
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	email := fmt.Sprintf("%v", claims["email"])
 	hash := r.FormValue("hash")
 	if hash == "" {
 		render.Render(w, r, res.ErrBadRequest("hash is required"))
 		return
 	}
-
-	resp, err := u.c.Verify(r.Context(), &request.Verify{Hash: hash})
+	resp, err := u.c.Verify(r.Context(), &request.Verify{Email: email, Hash: hash})
 	if err != nil {
 		render.Render(w, r, res.ErrNotFound(err.Error()))
 		return
 	}
 
-	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusAccepted))
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusAccepted,
+		"verified", true))
 }
