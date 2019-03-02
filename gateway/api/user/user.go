@@ -158,6 +158,5 @@ func (u *Router) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusAccepted,
-		"verified", true))
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusAccepted))
 }
