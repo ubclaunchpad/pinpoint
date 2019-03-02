@@ -125,6 +125,22 @@ func (db *Database) GetEmailVerification(email string, hash string) (*models.Ema
 		return nil, fmt.Errorf("verification expired on %v", item.Expiry)
 	}
 
+	u, err := db.GetUser(email)
+	if err != nil {
+		return nil, fmt.Errorf("user not found in db: %s", err.Error())
+	}
+	u.Verified = true
+	uItem, err := dynamodbattribute.MarshalMap(newDBUser(u))
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal user: %s", err.Error())
+	}
+	if _, err := db.c.PutItem(&dynamodb.PutItemInput{
+		Item:      uItem,
+		TableName: getClubsAndUsersTable(),
+	}); err != nil {
+		return nil, fmt.Errorf("failed to update user: %s", err.Error())
+	}
+
 	return ev, nil
 }
 
