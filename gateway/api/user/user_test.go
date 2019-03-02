@@ -146,12 +146,18 @@ func TestUserRouter_verify(t *testing.T) {
 				return nil, errors.New("unknown hash")
 			}
 
+			b, _ := json.Marshal(map[string]string{
+				"hash": tt.args.hash,
+			})
+			r := bytes.NewReader(b)
+
 			// create request
-			req, err := http.NewRequest("GET", "/verify?hash="+tt.args.hash, nil)
+			req, err := http.NewRequest("POST", "/verify", r)
 			if err != nil {
 				t.Error(err)
 				return
 			}
+
 			req.Header.Set("Authorization", "BEARER "+tt.args.jwt)
 			// Record responses
 			recorder := httptest.NewRecorder()
