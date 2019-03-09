@@ -27,12 +27,13 @@ func (db *Database) AddNewEvent(clubID string, event *models.EventProps) error {
 
 // GetEvent returns an event from the database
 func (db *Database) GetEvent(clubID string, period string, eventID string) (*models.EventProps, error) {
-	var peid = aws.String(prefixPeriodEventID(period, eventID))
+	var p = aws.String(prefixPeriodID(period))
+	var e = aws.String(prefixEventID(eventID))
 	var result, err = db.c.GetItem(&dynamodb.GetItemInput{
 		TableName: getClubTable(clubID),
 		Key: map[string]*dynamodb.AttributeValue{
-			"pk": {S: peid},
-			"sk": {S: peid},
+			"pk": {S: p},
+			"sk": {S: e},
 		},
 	})
 	if err != nil {
@@ -50,11 +51,14 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.EventProp
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":id": {
-				S: aws.String(peidPrefix + period + "-"),
+			":p": {
+				S: aws.String(prefixPeriodID(period)),
+			},
+			":e": {
+				S: aws.String(eventPrefix + "-"),
 			},
 		},
-		KeyConditionExpression: aws.String("begins_with(pk, :id) AND begins_with(sk, :id)"),
+		KeyConditionExpression: aws.String("pk = :p AND begins_with(sk, :e)"),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Failed query for all events: %s", err.Error())
@@ -74,11 +78,14 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.EventProp
 func (db *Database) DeleteEvent(clubID string, period string, eventID string) error {
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":id": {
-				S: aws.String(prefixPeriodEventID(period, eventID)),
+			":p": {
+				S: aws.String(prefixPeriodID(period)),
+			},
+			":e": {
+				S: aws.String(prefixEventID(eventID)),
 			},
 		},
-		KeyConditionExpression: aws.String("pk = :id"),
+		KeyConditionExpression: aws.String("pk = :p AND sk = :e"),
 		ProjectionExpression:   aws.String("pk, sk"),
 		TableName:              getClubTable(clubID),
 	})
