@@ -14,6 +14,7 @@ const (
 	verificationPrefix = "Verification-"
 	peidPrefix         = "PEID-"
 	periodPrefix       = "Period-"
+	eventPrefix        = "Event-"
 	applicantPrefix    = "Applicant-"
 	tagPrefix          = "Tag-"
 )
@@ -51,6 +52,10 @@ func prefixPeriodEventID(period string, eventID string) string {
 // prefixes the period for the club's table
 func prefixPeriodID(period string) string {
 	return periodPrefix + period
+}
+
+func prefixEventID(event string) string {
+	return eventPrefix + event
 }
 
 // prefixes the applicant's email for the club's table

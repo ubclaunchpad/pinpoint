@@ -33,8 +33,8 @@ type emailVerificationItem struct {
 }
 
 type eventItem struct {
-	PeidPK      string                          `json:"pk"`
-	PeidSK      string                          `json:"sk"`
+	Period      string                          `json:"pk"`
+	EventID     string                          `json:"sk"`
 	Name        string                          `json:"name"`
 	Description string                          `json:"description"`
 	Fields      []*models.EventProps_FieldProps `json:"fields"`
@@ -142,10 +142,11 @@ func newEmailVerification(i *emailVerificationItem) *models.EmailVerification {
 }
 
 func newDBEvent(event *models.EventProps) *eventItem {
-	peid := prefixPeriodEventID(event.Period, event.EventID)
+	p := prefixPeriodID(event.Period)
+	e := prefixEventID(event.EventID)
 	return &eventItem{
-		PeidPK:      peid,
-		PeidSK:      peid,
+		Period:      p,
+		EventID:     e,
 		Name:        event.Name,
 		Description: event.Description,
 		Fields:      event.Fields,
@@ -153,7 +154,8 @@ func newDBEvent(event *models.EventProps) *eventItem {
 }
 
 func newEvent(item *eventItem) *models.EventProps {
-	p, e := getPeriodAndEventID(item.PeidPK)
+	p := removePrefix(item.Period)
+	e := removePrefix(item.EventID)
 	return &models.EventProps{
 		Period:      p,
 		EventID:     e,
