@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,6 +12,9 @@ import (
 
 // AddNewEvent creates a new event in the club table
 func (db *Database) AddNewEvent(clubID string, event *models.EventProps) error {
+	if clubID == "" || event.Period == "" || event.Name == "" || event.EventID == "" {
+		return errors.New("invalid event fields")
+	}
 	var e = newDBEvent(event)
 	item, err := dynamodbattribute.MarshalMap(e)
 	if err != nil {
@@ -27,6 +31,9 @@ func (db *Database) AddNewEvent(clubID string, event *models.EventProps) error {
 
 // GetEvent returns an event from the database
 func (db *Database) GetEvent(clubID string, period string, eventID string) (*models.EventProps, error) {
+	if clubID == "" || period == "" || eventID == "" {
+		return nil, errors.New("invalid query")
+	}
 	var p = aws.String(prefixPeriodID(period))
 	var e = aws.String(prefixEventID(eventID))
 	var result, err = db.c.GetItem(&dynamodb.GetItemInput{
@@ -48,6 +55,9 @@ func (db *Database) GetEvent(clubID string, period string, eventID string) (*mod
 
 // GetEvents returns all the events of an application period
 func (db *Database) GetEvents(clubID string, period string) ([]*models.EventProps, error) {
+	if clubID == "" || period == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -68,14 +78,17 @@ func (db *Database) GetEvents(clubID string, period string) ([]*models.EventProp
 		return nil, fmt.Errorf("Failed to unmarshal events: %s", err.Error())
 	}
 	var events = make([]*models.EventProps, *result.Count)
-	for _, item := range items {
-		events = append(events, newEvent(item))
+	for i, item := range items {
+		events[i] = newEvent(item)
 	}
 	return events, nil
 }
 
 // DeleteEvent deletes an event and all of its applications
 func (db *Database) DeleteEvent(clubID string, period string, eventID string) error {
+	if clubID == "" || period == "" || eventID == "" {
+		return errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":p": {
@@ -112,6 +125,9 @@ func (db *Database) DeleteEvent(clubID string, period string, eventID string) er
 
 // AddNewApplicant creates a new applicant in the club table for an application period
 func (db *Database) AddNewApplicant(clubID string, applicant *models.Applicant) error {
+	if clubID == "" || applicant.Period == "" || applicant.Email == "" || applicant.Name == "" {
+		return errors.New("invalid tag fields")
+	}
 	var item, err = dynamodbattribute.MarshalMap(newDBApplicant(applicant))
 	if err != nil {
 		return fmt.Errorf("Failed to marshal applicant: %s", err.Error())
@@ -128,6 +144,9 @@ func (db *Database) AddNewApplicant(clubID string, applicant *models.Applicant) 
 
 // GetApplicant returns an applicant for a application period
 func (db *Database) GetApplicant(clubID string, period string, email string) (*models.Applicant, error) {
+	if clubID == "" || period == "" || email == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.GetItem(&dynamodb.GetItemInput{
 		TableName: getClubTable(clubID),
 		Key: map[string]*dynamodb.AttributeValue{
@@ -147,6 +166,9 @@ func (db *Database) GetApplicant(clubID string, period string, email string) (*m
 
 // GetApplicants returns all the applicants for an application period
 func (db *Database) GetApplicants(clubID string, period string) ([]*models.Applicant, error) {
+	if clubID == "" || period == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -167,14 +189,17 @@ func (db *Database) GetApplicants(clubID string, period string) ([]*models.Appli
 		return nil, fmt.Errorf("Failed to unmarshal all applicants: %s", err.Error())
 	}
 	var applicants = make([]*models.Applicant, *result.Count)
-	for _, item := range items {
-		applicants = append(applicants, newApplicant(item))
+	for i, item := range items {
+		applicants[i] = newApplicant(item)
 	}
 	return applicants, nil
 }
 
 // DeleteApplicant deletes an applicant from a application period and their event applications
 func (db *Database) DeleteApplicant(clubID string, period string, email string) error {
+	if clubID == "" || period == "" || email == "" {
+		return errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":id": {
@@ -215,8 +240,10 @@ func (db *Database) DeleteApplicant(clubID string, period string, email string) 
 
 // AddNewApplication adds an application to the database
 func (db *Database) AddNewApplication(clubID string, application *models.Application) error {
-	var a = newDBApplication(application)
-	var item, err = dynamodbattribute.MarshalMap(a)
+	if application.Period == "" || application.EventID == "" || application.Email == "" || application.Name == "" {
+		return errors.New("invalid application fields")
+	}
+	var item, err = dynamodbattribute.MarshalMap(newDBApplication(application))
 	if err != nil {
 		return fmt.Errorf("Failed to marshal application: %s", err.Error())
 	}
@@ -231,6 +258,9 @@ func (db *Database) AddNewApplication(clubID string, application *models.Applica
 
 // GetApplication returns the application for an event by applicant email
 func (db *Database) GetApplication(clubID string, period string, eventID string, email string) (*models.Application, error) {
+	if clubID == "" || period == "" || eventID == "" || email == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.GetItem(&dynamodb.GetItemInput{
 		TableName: getClubTable(clubID),
 		Key: map[string]*dynamodb.AttributeValue{
@@ -250,6 +280,9 @@ func (db *Database) GetApplication(clubID string, period string, eventID string,
 
 // GetApplications returns all the applications for an event
 func (db *Database) GetApplications(clubID string, period string, eventID string) ([]*models.Application, error) {
+	if clubID == "" || period == "" || eventID == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -270,14 +303,17 @@ func (db *Database) GetApplications(clubID string, period string, eventID string
 		return nil, fmt.Errorf("Failed to unmarshal applications: %s", err.Error())
 	}
 	var applications = make([]*models.Application, *result.Count)
-	for _, item := range items {
-		applications = append(applications, newApplication(item))
+	for i, item := range items {
+		applications[i] = newApplication(item)
 	}
 	return applications, nil
 }
 
 // DeleteApplication deletes the application for an event by applicant email
 func (db *Database) DeleteApplication(clubID string, period string, eventID string, email string) error {
+	if clubID == "" || period == "" || eventID == "" || email == "" {
+		return errors.New("invalid query")
+	}
 	if _, err := db.c.DeleteItem(&dynamodb.DeleteItemInput{
 		TableName: getClubTable(clubID),
 		Key: map[string]*dynamodb.AttributeValue{
@@ -292,6 +328,9 @@ func (db *Database) DeleteApplication(clubID string, period string, eventID stri
 
 // AddTag adds a new Tag for that application period
 func (db *Database) AddTag(clubID string, tag *models.Tag) error {
+	if tag.Period == "" || tag.TagName == "" {
+		return errors.New("invalid tag fields")
+	}
 	var t = newDBTag(tag)
 	item, err := dynamodbattribute.MarshalMap(t)
 	if err != nil {
@@ -308,6 +347,9 @@ func (db *Database) AddTag(clubID string, tag *models.Tag) error {
 
 // GetTags returns all the tags for an application period
 func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error) {
+	if clubID == "" || period == "" {
+		return nil, errors.New("invalid query")
+	}
 	var result, err = db.c.Query(&dynamodb.QueryInput{
 		TableName: getClubTable(clubID),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
@@ -328,14 +370,17 @@ func (db *Database) GetTags(clubID string, period string) ([]*models.Tag, error)
 		return nil, fmt.Errorf("Failed to unmarshal tags: %s", err.Error())
 	}
 	var tags = make([]*models.Tag, *result.Count)
-	for _, item := range items {
-		tags = append(tags, newTag(item))
+	for i, item := range items {
+		tags[i] = newTag(item)
 	}
 	return tags, nil
 }
 
 // DeleteTag deletes a tag for the application period
 func (db *Database) DeleteTag(clubID string, period string, tag string) error {
+	if clubID == "" || period == "" || tag == "" {
+		return errors.New("invalid query")
+	}
 	if _, err := db.c.DeleteItem(&dynamodb.DeleteItemInput{
 		TableName: getClubTable(clubID),
 		Key: map[string]*dynamodb.AttributeValue{

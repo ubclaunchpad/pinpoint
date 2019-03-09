@@ -21,67 +21,91 @@ var user = &models.ClubUser{
 
 func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
 	db, _ := NewTestDB()
+	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
+
 	type args struct {
 		clubID string
-		period string
 		event  *models.EventProps
 	}
 	type errs struct {
-		addEvent bool
-		getEvent bool
-		// getEvents bool
+		addEvent  bool
+		getEvent  bool
+		getEvents bool
 	}
 	tests := []struct {
-		name string
-		args args
-		err  errs
+		name      string
+		args      args
+		err       errs
+		wantEvent bool
 	}{
-		{"invalid", args{
-			"",
-			"",
-			&models.EventProps{},
-		}, errs{true, true}},
-		{"valid", args{
+		{"invalid event", args{
 			"1234",
-			"Winter 2019",
+			&models.EventProps{},
+		}, errs{true, true, true}, false},
+		{"invalid club id", args{
+			"",
 			&models.EventProps{
 				Period:  "Winter 2019",
 				EventID: "001",
 				Name:    "Recruiting",
 			},
-		}, errs{false, false}},
+		}, errs{true, true, true}, false},
+		{"valid", args{
+			"1234",
+			&models.EventProps{
+				Period:  "Winter 2019",
+				EventID: "001",
+				Name:    "Recruiting",
+			},
+		}, errs{false, false, false}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer db.DeleteEvent(tt.args.clubID, tt.args.period, tt.args.event.EventID)
-
+			defer db.DeleteEvent(tt.args.clubID, tt.args.event.Period, tt.args.event.EventID)
 			if err := db.AddNewEvent(tt.args.clubID, tt.args.event); (err != nil) != tt.err.addEvent {
 				t.Errorf("Database.AddNewEvent() error = %v, wantErr %v", err, tt.err.addEvent)
 			}
 
-			event, err := db.GetEvent(tt.args.clubID, tt.args.period, tt.args.event.EventID)
+			event, err := db.GetEvent(tt.args.clubID, tt.args.event.Period, tt.args.event.EventID)
 			if (err != nil) != tt.err.getEvent {
 				t.Errorf("Database.GetEvent() error = %v, wantErr %v", err, tt.err.getEvent)
 				return
 			}
-			if !tt.err.getEvent && !reflect.DeepEqual(tt.args.event, event) {
-				t.Errorf("expected: %+v, actual %+v", tt.args.event, event)
-				return
+			if tt.wantEvent {
+				if !tt.err.getEvent && !reflect.DeepEqual(tt.args.event, event) {
+					t.Errorf("expected: %+v, actual: %+v", tt.args.event, event)
+					return
+				}
+			} else {
+				if event != nil {
+					t.Errorf("Didn't expect event, got: %+v", event)
+				}
 			}
 
-			//// Not sure how to get events. How to relate a club to a period?
-			// _, err = db.GetEvents(tt.args.clubID, tt.args.period)
-			// if (err != nil) != tt.err.getEvents {
-			// 	t.Errorf("Database.GetEvents() error = %v, wantErr %v", err, tt.err.getEvents)
-			// 	return
-			// }
+			events, err := db.GetEvents(tt.args.clubID, tt.args.event.Period)
+			if (err != nil) != tt.err.getEvents {
+				t.Errorf("Database.GetEvents() error = %v, wantErr %v", err, tt.err.getEvents)
+				return
+			}
+			if tt.wantEvent {
+				expected := []*models.EventProps{tt.args.event}
+				if !tt.err.getEvent && !reflect.DeepEqual(expected, events) {
+					t.Errorf("expected: %+v, actual: %+v", expected, events)
+					return
+				}
+			} else {
+				if len(events) > 0 {
+					t.Errorf("Didn't expect events, got: %+v", events)
+				}
+			}
 		})
 	}
 }
 
 func TestDatabase_Applicant(t *testing.T) {
 	db, _ := NewTestDB()
+	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
 	type args struct {
 		clubID    string
@@ -93,14 +117,23 @@ func TestDatabase_Applicant(t *testing.T) {
 		getApplicants bool
 	}
 	tests := []struct {
-		name string
-		args args
-		err  errs
+		name          string
+		args          args
+		err           errs
+		wantApplicant bool
 	}{
-		{"invalid", args{
+		{"invalid applicant", args{
 			"",
 			&models.Applicant{},
-		}, errs{true, true, true}},
+		}, errs{true, true, true}, false},
+		{"invalid club id", args{
+			"",
+			&models.Applicant{
+				Period: "Winter Semester",
+				Email:  user.Email,
+				Name:   user.Name,
+			},
+		}, errs{true, true, true}, false},
 		{"valid", args{
 			"1234",
 			&models.Applicant{
@@ -108,7 +141,7 @@ func TestDatabase_Applicant(t *testing.T) {
 				Email:  user.Email,
 				Name:   user.Name,
 			},
-		}, errs{false, false, false}},
+		}, errs{false, false, false}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -117,22 +150,41 @@ func TestDatabase_Applicant(t *testing.T) {
 				t.Errorf("Database.AddNewClub() error = %v, wantErr %v", err, tt.err.addApplicant)
 			}
 
-			_, err := db.GetApplicant(tt.args.clubID, tt.args.applicant.Period, tt.args.applicant.Email)
+			app, err := db.GetApplicant(tt.args.clubID, tt.args.applicant.Period, tt.args.applicant.Email)
 			if (err != nil) != tt.err.getApplicant {
 				t.Errorf("Database.GetClub() error = %v, wantErr %v", err, tt.err.getApplicant)
 			}
+			if tt.wantApplicant {
+				if !reflect.DeepEqual(tt.args.applicant, app) {
+					t.Errorf("Failed to get expect applicant, expected: %+v, actual: %+v", tt.args.applicant, app)
+					return
+				}
+			}
 
-			_, err = db.GetApplicants(tt.args.clubID, tt.args.applicant.Period)
+			apps, err := db.GetApplicants(tt.args.clubID, tt.args.applicant.Period)
 			if (err != nil) != tt.err.getApplicants {
 				t.Errorf("Database.GetApplicants() error = %v, wantErr %v", err, tt.err.getApplicants)
 			}
+			if tt.wantApplicant {
+				if !reflect.DeepEqual([]*models.Applicant{tt.args.applicant}, apps) {
+					t.Errorf("Failed to get expect applicants, expected: %+v, actual: %+v", []*models.Applicant{tt.args.applicant}, apps)
+					return
+				}
+			} else {
+				if len(apps) > 0 {
+					t.Errorf("Didn't expect tags, got: %+v", apps)
+				}
+			}
+
 		})
 	}
 }
 
 func TestDatabase_Application(t *testing.T) {
 	db, _ := NewTestDB()
+	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
+
 	type args struct {
 		clubID      string
 		application *models.Application
@@ -143,14 +195,25 @@ func TestDatabase_Application(t *testing.T) {
 		getApplications bool
 	}
 	tests := []struct {
-		name string
-		args args
-		err  errs
+		name            string
+		args            args
+		err             errs
+		wantApplication bool
 	}{
-		{"invalid", args{
-			"",
+		{"invalid applicant", args{
+			"1234",
 			&models.Application{},
-		}, errs{true, true, true}},
+		}, errs{true, true, true}, false},
+		{"invalid club id", args{
+			"",
+			&models.Application{
+				Period:  "Winter 2019",
+				EventID: "001",
+				Email:   "abc@def.com",
+				Name:    "Recruiting",
+				Entries: map[string]*models.FieldEntry{},
+			},
+		}, errs{true, true, true}, false},
 		{"valid", args{
 			"1234",
 			&models.Application{
@@ -160,23 +223,40 @@ func TestDatabase_Application(t *testing.T) {
 				Name:    "Recruiting",
 				Entries: map[string]*models.FieldEntry{},
 			},
-		}, errs{false, false, false}},
+		}, errs{false, false, false}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			defer db.DeleteApplication(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID, tt.args.application.Email)
 			if err := db.AddNewApplication(tt.args.clubID, tt.args.application); (err != nil) != tt.err.addApplication {
-				t.Errorf("Database.AddNewClub() error = %v, wantErr %v", err, tt.err.addApplication)
+				t.Errorf("Database.AddNewApplication() error = %v, wantErr %v", err, tt.err.addApplication)
 			}
 
-			_, err := db.GetApplication(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID, tt.args.application.Email)
+			app, err := db.GetApplication(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID, tt.args.application.Email)
 			if (err != nil) != tt.err.getApplication {
-				t.Errorf("Database.GetClub() error = %v, wantErr %v", err, tt.err.getApplication)
+				t.Errorf("Database.GetApplication() error = %v, wantErr %v", err, tt.err.getApplication)
+			}
+			if tt.wantApplication {
+				if !reflect.DeepEqual(tt.args.application, app) {
+					t.Errorf("Failed to get expected application, expected: %+v, actual: %+v", *tt.args.application, *app)
+					return
+				}
 			}
 
-			_, err = db.GetApplications(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID)
+			apps, err := db.GetApplications(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID)
 			if (err != nil) != tt.err.getApplications {
 				t.Errorf("Database.GetApplications() error = %v, wantErr %v", err, tt.err.getApplications)
+			}
+			if tt.wantApplication {
+				expected := []*models.Application{tt.args.application}
+				if !reflect.DeepEqual(expected, apps) {
+					t.Errorf("Failed to get expected applications, expected: %+v, actual: %+v", expected, apps)
+					return
+				}
+			} else {
+				if len(apps) > 0 {
+					t.Errorf("Didn't expect applications, got: %+v", apps)
+				}
 			}
 		})
 	}
@@ -184,8 +264,8 @@ func TestDatabase_Application(t *testing.T) {
 
 func TestDatabase_AddTag(t *testing.T) {
 	db, _ := NewTestDB()
+	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
-
 	type args struct {
 		clubID string
 		tag    *models.Tag
@@ -195,29 +275,54 @@ func TestDatabase_AddTag(t *testing.T) {
 		getTags bool
 	}
 	tests := []struct {
-		name string
-		args args
-		err  errs
+		name    string
+		args    args
+		err     errs
+		wantTag bool
 	}{
-		{"invalid", args{
-			"",
-			&models.Tag{},
-		}, errs{true, true}},
-		{"valid", args{
+		{"invalid tag", args{
 			"1234",
-			&models.Tag{Period: "Winter 2019", TagName: "Designer"},
-		}, errs{false, false}},
+			&models.Tag{},
+		}, errs{true, true}, false},
+		{"invalid club id", args{
+			"",
+			&models.Tag{
+				Period:  "Winter 2019",
+				TagName: "Designer",
+			},
+		}, errs{true, true}, false},
+		{"valid everything", args{
+			"1234",
+			&models.Tag{
+				Period:  "Winter 2019",
+				TagName: "Designer",
+			},
+		}, errs{false, false}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+
 			defer db.DeleteTag(tt.args.clubID, tt.args.tag.Period, tt.args.tag.TagName)
 			if err := db.AddTag(tt.args.clubID, tt.args.tag); (err != nil) != tt.err.addTag {
 				t.Errorf("Database.AddTag() error = %v, wantErr %v", err, tt.err.addTag)
 			}
 
-			_, err := db.GetTags(tt.args.clubID, tt.args.tag.Period)
+			tags, err := db.GetTags(tt.args.clubID, tt.args.tag.Period)
 			if (err != nil) != tt.err.getTags {
 				t.Errorf("Database.GetTags() error = %v, wantErr %v", err, tt.err.getTags)
+				return
+			}
+
+			if tt.wantTag {
+				expected := []*models.Tag{tt.args.tag}
+				if !reflect.DeepEqual(expected, tags) {
+					t.Errorf("Failed to get expect tags, expected: %+v, actual: %+v", expected, tags)
+					return
+				}
+			} else {
+				if len(tags) > 0 {
+					t.Errorf("Didn't expect tags, got: %+v", tags)
+				}
 			}
 		})
 	}
