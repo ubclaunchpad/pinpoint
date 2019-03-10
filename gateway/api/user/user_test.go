@@ -17,27 +17,19 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"github.com/ubclaunchpad/pinpoint/protobuf/response"
-	"github.com/ubclaunchpad/pinpoint/utils"
+	"go.uber.org/zap/zaptest"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func TestUserRouter_createUser(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
 	type args struct {
 		u *request.CreateAccount
 	}
-
 	type errs struct {
 		createUserFail error
 	}
-
 	tests := []struct {
 		name     string
 		args     args
@@ -77,7 +69,7 @@ func TestUserRouter_createUser(t *testing.T) {
 			}
 
 			// create user router
-			u := NewUserRouter(l, fake)
+			u := NewUserRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			// create request
 			var b []byte
@@ -112,12 +104,6 @@ func TestUserRouter_createUser(t *testing.T) {
 }
 
 func TestUserRouter_verify(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
 	type args struct {
 		email string
 		hash  string
@@ -136,7 +122,7 @@ func TestUserRouter_verify(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// create user router
 			fake := &fakes.FakeCoreClient{}
-			u := NewUserRouter(l, fake)
+			u := NewUserRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			// set stub behaviour
 			fake.VerifyStub = func(c context.Context, r *request.Verify, opts ...grpc.CallOption) (*response.Message, error) {
@@ -174,12 +160,6 @@ func TestUserRouter_verify(t *testing.T) {
 }
 
 func TestUserRouter_login(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
 	type args struct {
 		body            bool
 		email, password string
@@ -197,7 +177,7 @@ func TestUserRouter_login(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Create user router
 			fake := &fakes.FakeCoreClient{}
-			u := NewUserRouter(l, fake)
+			u := NewUserRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			fake.LoginStub = func(c context.Context, r *request.Login, opts ...grpc.CallOption) (*response.Message, error) {
 				if r.GetEmail() == "demo" && r.GetPassword() == "demopassword" {
