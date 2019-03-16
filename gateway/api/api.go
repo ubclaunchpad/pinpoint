@@ -198,4 +198,7 @@ func (a *API) Stop() {
 	if a.grpc != nil {
 		a.grpc.Close()
 	}
+
+	// hack to make sure everything stops properly, notably API::Run()
+	time.Sleep(time.Second)
 }

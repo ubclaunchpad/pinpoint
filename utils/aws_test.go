@@ -3,10 +3,12 @@ package utils
 import (
 	"os"
 	"testing"
+
+	"go.uber.org/zap/zaptest"
 )
 
 func TestAWSConfig(t *testing.T) {
-	l, _ := NewLogger(true, "")
+	var l = zaptest.NewLogger(t).Sugar()
 	type args struct {
 		dev    bool
 		logger Logger

@@ -6,14 +6,13 @@ import (
 	"time"
 
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
-	"github.com/ubclaunchpad/pinpoint/utils"
-	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 )
 
-// NewMockAPI is used to create an API with a mocked client for use in tests
-func NewMockAPI(l *zap.SugaredLogger, t *testing.T) (*API, *fakes.FakeCoreClient) {
+// newMockAPI is used to create an API with a mocked client for use in tests
+func newMockAPI(t *testing.T) (*API, *fakes.FakeCoreClient) {
 	fake := &fakes.FakeCoreClient{}
-	a, err := New(l, CoreOpts{})
+	a, err := New(zaptest.NewLogger(t).Sugar(), CoreOpts{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,10 +21,6 @@ func NewMockAPI(l *zap.SugaredLogger, t *testing.T) (*API, *fakes.FakeCoreClient
 }
 
 func TestNew(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-	}
 	type args struct {
 		opts CoreOpts
 	}
@@ -48,6 +43,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var l = zaptest.NewLogger(t).Sugar()
 			if _, err := New(l, tt.args.opts); (err != nil) != tt.wantErr {
 				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -57,11 +53,6 @@ func TestNew(t *testing.T) {
 }
 
 func TestAPI_Run(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
 	type args struct {
 		host string
 		opts RunOpts
@@ -83,7 +74,7 @@ func TestAPI_Run(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// set up mock controller
-			api, fake := NewMockAPI(l, t)
+			api, fake := newMockAPI(t)
 
 			if tt.clientFail {
 				// set client to fail

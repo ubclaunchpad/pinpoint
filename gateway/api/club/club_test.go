@@ -9,16 +9,10 @@ import (
 
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
-	"github.com/ubclaunchpad/pinpoint/utils"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestClubRouter_createClub(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
 	type args struct {
 		club *schema.CreateClub
 	}
@@ -38,7 +32,7 @@ func TestClubRouter_createClub(t *testing.T) {
 			fake := &fakes.FakeCoreClient{}
 
 			// create club router
-			u := NewClubRouter(l, fake)
+			u := NewClubRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			// create request
 			var b []byte
@@ -70,11 +64,6 @@ func TestClubRouter_createClub(t *testing.T) {
 
 func TestClubRouter_createEvent(t *testing.T) {
 	// TODO once event stuff is more finalized
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
 
 	type args struct {
 		path   string
@@ -107,10 +96,11 @@ func TestClubRouter_createEvent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// create club router
 			fake := &fakes.FakeCoreClient{}
-			u := NewClubRouter(l, fake)
+			u := NewClubRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			// create request
 			var b []byte
+			var err error
 			if tt.args.period != nil {
 				if b, err = json.Marshal(tt.args.period); err != nil {
 					t.Error(err)
@@ -137,12 +127,6 @@ func TestClubRouter_createEvent(t *testing.T) {
 }
 
 func TestClubRouter_createPeriod(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
 	type args struct {
 		path   string
 		period *schema.CreatePeriod
@@ -186,10 +170,11 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// create club router
 			fake := &fakes.FakeCoreClient{}
-			u := NewClubRouter(l, fake)
+			u := NewClubRouter(zaptest.NewLogger(t).Sugar(), fake)
 
 			// create request
 			var b []byte
+			var err error
 			if tt.args.period != nil {
 				if b, err = json.Marshal(tt.args.period); err != nil {
 					t.Error(err)
