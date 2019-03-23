@@ -20,7 +20,7 @@ var user = &models.ClubUser{
 }
 
 func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
-	db, _ := NewTestDB()
+	db, _ := newTestDB(t)
 	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
 
@@ -104,7 +104,7 @@ func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
 }
 
 func TestDatabase_Applicant(t *testing.T) {
-	db, _ := NewTestDB()
+	db, _ := newTestDB(t)
 	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
 	type args struct {
@@ -181,7 +181,7 @@ func TestDatabase_Applicant(t *testing.T) {
 }
 
 func TestDatabase_Application(t *testing.T) {
-	db, _ := NewTestDB()
+	db, _ := newTestDB(t)
 	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
 
@@ -263,7 +263,7 @@ func TestDatabase_Application(t *testing.T) {
 }
 
 func TestDatabase_AddTag(t *testing.T) {
-	db, _ := NewTestDB()
+	db, _ := newTestDB(t)
 	defer db.DeleteClub(club.ClubID)
 	db.AddNewClub(club, user)
 	type args struct {
