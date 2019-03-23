@@ -20,10 +20,6 @@ var user = &models.ClubUser{
 }
 
 func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
-	db, _ := newTestDB(t)
-	defer db.DeleteClub(club.ClubID)
-	db.AddNewClub(club, user)
-
 	type args struct {
 		clubID string
 		event  *models.EventProps
@@ -62,6 +58,9 @@ func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			db, _ := newTestDB(t)
+			defer db.DeleteClub(club.ClubID)
+			db.AddNewClub(club, user)
 			defer db.DeleteEvent(tt.args.clubID, tt.args.event.Period, tt.args.event.EventID)
 			if err := db.AddNewEvent(tt.args.clubID, tt.args.event); (err != nil) != tt.err.addEvent {
 				t.Errorf("Database.AddNewEvent() error = %v, wantErr %v", err, tt.err.addEvent)
@@ -104,9 +103,6 @@ func TestDatabase_AddNewEvent_GetEvent(t *testing.T) {
 }
 
 func TestDatabase_Applicant(t *testing.T) {
-	db, _ := newTestDB(t)
-	defer db.DeleteClub(club.ClubID)
-	db.AddNewClub(club, user)
 	type args struct {
 		clubID    string
 		applicant *models.Applicant
@@ -145,6 +141,9 @@ func TestDatabase_Applicant(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			db, _ := newTestDB(t)
+			defer db.DeleteClub(club.ClubID)
+			db.AddNewClub(club, user)
 			defer db.DeleteApplicant(tt.args.clubID, tt.args.applicant.Period, tt.args.applicant.Email)
 			if err := db.AddNewApplicant(tt.args.clubID, tt.args.applicant); (err != nil) != tt.err.addApplicant {
 				t.Errorf("Database.AddNewClub() error = %v, wantErr %v", err, tt.err.addApplicant)
@@ -181,10 +180,6 @@ func TestDatabase_Applicant(t *testing.T) {
 }
 
 func TestDatabase_Application(t *testing.T) {
-	db, _ := newTestDB(t)
-	defer db.DeleteClub(club.ClubID)
-	db.AddNewClub(club, user)
-
 	type args struct {
 		clubID      string
 		application *models.Application
@@ -227,6 +222,9 @@ func TestDatabase_Application(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			db, _ := newTestDB(t)
+			defer db.DeleteClub(club.ClubID)
+			db.AddNewClub(club, user)
 			defer db.DeleteApplication(tt.args.clubID, tt.args.application.Period, tt.args.application.EventID, tt.args.application.Email)
 			if err := db.AddNewApplication(tt.args.clubID, tt.args.application); (err != nil) != tt.err.addApplication {
 				t.Errorf("Database.AddNewApplication() error = %v, wantErr %v", err, tt.err.addApplication)
@@ -236,8 +234,15 @@ func TestDatabase_Application(t *testing.T) {
 			if (err != nil) != tt.err.getApplication {
 				t.Errorf("Database.GetApplication() error = %v, wantErr %v", err, tt.err.getApplication)
 			}
+			var checkApp func(*models.Application, *models.Application) bool
+			checkApp = func(actual *models.Application, expected *models.Application) bool {
+				if actual.Period != app.Period || actual.EventID != app.EventID || actual.Email != app.Email {
+					return false
+				}
+				return true
+			}
 			if tt.wantApplication {
-				if !reflect.DeepEqual(tt.args.application, app) {
+				if !checkApp(tt.args.application, app) {
 					t.Errorf("Failed to get expected application, expected: %+v, actual: %+v", *tt.args.application, *app)
 					return
 				}
@@ -249,9 +254,11 @@ func TestDatabase_Application(t *testing.T) {
 			}
 			if tt.wantApplication {
 				expected := []*models.Application{tt.args.application}
-				if !reflect.DeepEqual(expected, apps) {
-					t.Errorf("Failed to get expected applications, expected: %+v, actual: %+v", expected, apps)
-					return
+				for i := 0; i < len(apps); i++ {
+					if !checkApp(expected[i], apps[i]) {
+						t.Errorf("Failed to get expected applications, expected: %+v, actual: %+v", expected, apps)
+						return
+					}
 				}
 			} else {
 				if len(apps) > 0 {
@@ -263,9 +270,6 @@ func TestDatabase_Application(t *testing.T) {
 }
 
 func TestDatabase_AddTag(t *testing.T) {
-	db, _ := newTestDB(t)
-	defer db.DeleteClub(club.ClubID)
-	db.AddNewClub(club, user)
 	type args struct {
 		clubID string
 		tag    *models.Tag
@@ -301,7 +305,9 @@ func TestDatabase_AddTag(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
+			db, _ := newTestDB(t)
+			defer db.DeleteClub(club.ClubID)
+			db.AddNewClub(club, user)
 			defer db.DeleteTag(tt.args.clubID, tt.args.tag.Period, tt.args.tag.TagName)
 			if err := db.AddTag(tt.args.clubID, tt.args.tag); (err != nil) != tt.err.addTag {
 				t.Errorf("Database.AddTag() error = %v, wantErr %v", err, tt.err.addTag)
