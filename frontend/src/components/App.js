@@ -54,16 +54,11 @@ class App extends Component {
           <Navbar loggedIn={loggedIn} attemptLogOut={this.attemptLogOut} />
           <Switch>
             <Route exact path="/">
-              <div className="app">
-                <header className="app-header">
-                  <img src={logo} className="app-logo" alt="logo" />
-                  <h1 className="app-title">Welcome to React</h1>
-                </header>
-                <p className="app-intro">
-                  To get started, edit
-                  <code>src/App.js</code>
-                  and save to reload.
-                </p>
+              <div className="app flex dir-col jc-between">
+                <h1>Find the best candidates.</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquam.</p>
+                <br/>
+                {/* TODO: Add Signup button */}
               </div>
             </Route>
             <Route exact path="/about">
