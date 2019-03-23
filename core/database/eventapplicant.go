@@ -43,6 +43,11 @@ func (db *Database) GetEvent(clubID string, period string, eventID string) (*mod
 			"sk": {S: e},
 		},
 	})
+
+	fmt.Printf("This is the db request: %#v", map[string]*dynamodb.AttributeValue{
+		"pk": {S: p},
+		"sk": {S: e},
+	})
 	if err != nil {
 		return nil, fmt.Errorf("Failed to get event: %s", err.Error())
 	}
