@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Pinpoint from 'pinpoint-client';
 import Notification from '../../components/Notification';
+import './create.css';
 
 class CreateEvent extends Component {
   static contextTypes = {
@@ -58,17 +59,14 @@ class CreateEvent extends Component {
     const { notification } = this.state;
     return (
       <div className="flex-al-center">
-        <div className="title margin-title">Sign In</div>
+        <div className="title margin-title">Create an Event</div>
+        <p>Add a point of data entry to your application period.</p>
         <Notification {...notification} />
         <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
           <input className="input-box input-small" type="password" name="password" placeholder="Password" onChange={this.updateTextField} />
         </div>
 
-        <div>
-          <input type="checkbox" />
-          <span>Remember me</span>
-        </div>
         <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/reset">Forgot Password?</a>
