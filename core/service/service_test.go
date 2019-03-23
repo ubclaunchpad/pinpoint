@@ -10,6 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"go.uber.org/zap/zaptest"
+
 	"github.com/ubclaunchpad/pinpoint/core/database/mocks"
 	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 	"github.com/ubclaunchpad/pinpoint/protobuf/request"
@@ -18,11 +20,6 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
 	acfg, _ := utils.AWSSession(utils.AWSConfig(true))
 	badcfg, _ := session.NewSession(aws.NewConfig())
 	type args struct {
@@ -50,6 +47,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			var l = zaptest.NewLogger(t).Sugar()
 			_, err := New(tt.args.awsConfig, l, tt.args.opts)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
@@ -60,11 +58,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestService_Run(t *testing.T) {
-	l, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	var l = zaptest.NewLogger(t).Sugar()
 	aws, _ := utils.AWSSession(utils.AWSConfig(true))
 	s, err := New(aws, l, Opts{})
 	if err != nil {
@@ -124,16 +118,11 @@ func TestService_Handshake(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l, err := utils.NewLogger(true, "")
-			if err != nil {
-				t.Error(err)
-				return
-			}
-			s := &Service{l: l}
+			s := &Service{l: zaptest.NewLogger(t).Sugar()}
 			if tt.args.ctx == nil {
 				tt.args.ctx = context.Background()
 			}
-			_, err = s.Handshake(tt.args.ctx, &request.Empty{})
+			_, err := s.Handshake(tt.args.ctx, &request.Empty{})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.Handshake() error = %v, wantErr %v", err, tt.wantErr)
 				return

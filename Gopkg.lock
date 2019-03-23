@@ -174,7 +174,11 @@
   version = "v1.1.0"
 
 [[projects]]
+<<<<<<< HEAD
   digest = "1:adccce69c151272d5053505aee552c6a1ac4e7bf6d18f0206ed7453187f6284d"
+=======
+  digest = "1:29f5757129c68d0f5c3ee78bf7ff2967259c52798a494fea010b1bfa83324f92"
+>>>>>>> 1956f63f76ec6062d445cafa028891c24a7adeba
   name = "go.uber.org/zap"
   packages = [
     ".",
@@ -182,7 +186,12 @@
     "internal/bufferpool",
     "internal/color",
     "internal/exit",
+    "internal/ztest",
     "zapcore",
+<<<<<<< HEAD
+=======
+    "zaptest",
+>>>>>>> 1956f63f76ec6062d445cafa028891c24a7adeba
     "zaptest/observer",
   ]
   pruneopts = "UT"
@@ -319,6 +328,10 @@
     "github.com/spf13/cobra",
     "go.uber.org/zap",
     "go.uber.org/zap/zapcore",
+<<<<<<< HEAD
+=======
+    "go.uber.org/zap/zaptest",
+>>>>>>> 1956f63f76ec6062d445cafa028891c24a7adeba
     "go.uber.org/zap/zaptest/observer",
     "golang.org/x/crypto/bcrypt",
     "golang.org/x/net/context",

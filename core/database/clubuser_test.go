@@ -58,7 +58,7 @@ func TestDatabase_AddNewUser_GetUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			db, _ := NewTestDB()
+			db, _ := newTestDB(t)
 			defer db.DeleteUser(tt.args.u.Email)
 			if err := db.AddNewUser(tt.args.u, tt.args.e); (err != nil) != tt.err.addUser {
 				t.Errorf("Database.AddNewUser() error = %v, wantErr %v", err, tt.err.addUser)
@@ -120,7 +120,7 @@ func TestDatabase_AddNewClub_GetClub(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			db, _ := NewTestDB()
+			db, _ := newTestDB(t)
 			defer db.DeleteClub(tt.args.c.ClubID)
 			if err := db.AddNewClub(tt.args.c, tt.args.cu); (err != nil) != tt.err.addClub {
 				t.Errorf("Database.AddNewClub() error = %v, wantErr %v", err, tt.err.addClub)

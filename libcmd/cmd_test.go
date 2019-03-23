@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/ubclaunchpad/pinpoint/utils"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 )
 
 func TestNew(t *testing.T) {
@@ -66,11 +66,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestCommand_Sync(t *testing.T) {
-	log, err := utils.NewLogger(true, "")
-	if err != nil {
-		t.Errorf("unexpected error: %s", err.Error())
-		return
-	}
+	var log = zaptest.NewLogger(t).Sugar()
 	type fields struct {
 		SugaredLogger *zap.SugaredLogger
 	}
