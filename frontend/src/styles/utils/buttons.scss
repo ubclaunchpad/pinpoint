@@ -23,6 +23,22 @@
   width: 150px;
 }
 
+.button-signup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #EA0808;
+  border: #EA0808;
+  border-radius: 20px;
+  color: white;
+  width: 300px;
+  height: 60px;
+  font-size: 24px;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 // Input textbox, apply to any <input> to apply pinpoint theme
 .input-box {
   border-radius: 5px;
