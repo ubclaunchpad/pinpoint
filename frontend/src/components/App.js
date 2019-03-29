@@ -54,11 +54,11 @@ class App extends Component {
           <Navbar loggedIn={loggedIn} attemptLogOut={this.attemptLogOut} />
           <Switch>
             <Route exact path="/">
-              <div className="app flex-al-center dir-col jc-between">
+              <div className="app flex-al-center dir-col jc-between margin-top-200">
                 <h1>Find the best candidates.</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquam.</p>
                 <br/>
-                <a className="button-signup" href="/signup">Sign Up for Free</a>
+                <a className="button-signup margin-top-100" href="/signup">Sign Up for Free</a>
               </div>
             </Route>
             <Route exact path="/about">

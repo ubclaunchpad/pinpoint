@@ -10,21 +10,23 @@ $spacing-l:   32px;
 $spacing-xl:  40px;
 $spacing-xxl: 48px;
 $spacing-nav: 60px;
-$spacing-xxxl: 300px;
+$spacing-100: 100px;
+$spacing-200: 200px;
+$spacing-300: 300px;
 
 
 // todo - more classes, replace 1 with variables
 
 .pad {
   // navbar
-  &-nav { 
+  &-nav {
     padding-bottom: $spacing-nav;
   }
 
   // left padding
   &-left, &-sides {
     &-m { padding-left: $spacing-m; }
-    &-xxxl { padding-left: $spacing-xxxl; }
+    &-300 { padding-left: $spacing-300; }
   }
 
   // right padding
@@ -50,7 +52,7 @@ $spacing-xxxl: 300px;
 
 .margin {
   // navbar
-  &-nav { 
+  &-nav {
     margin: 0;
   }
 
@@ -81,6 +83,8 @@ $spacing-xxxl: 300px;
     &-s { margin-top: $spacing-s; }
     &-m { margin-top: $spacing-m; }
     &-l { margin-top: $spacing-l; }
+    &-100 { margin-top: $spacing-100; }
+    &-200 { margin-top: $spacing-200; }
   }
 
   // bottom margin
