@@ -142,12 +142,12 @@ func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 
 func (c *Router) createPeriod(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
-	var data models.Period
+	var data request.CreatePeriod
 	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
-
+	data.ClubID = chi.URLParam(r, string(keyClub))
 	resp, err := c.c.CreatePeriod(r.Context(), &data)
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(err.Error(), err))

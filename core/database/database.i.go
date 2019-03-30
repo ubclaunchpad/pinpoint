@@ -25,4 +25,36 @@ type DBClient interface {
 	GetAllClubUsers(id string) ([]*models.ClubUser, error)
 	// DeleteClub deletes a club from the database with the given id
 	DeleteClub(id string) error
+	// AddNewPeriod creates a new period item in the club table
+	AddNewPeriod(clubID string, period *models.Period) error
+	// AddNewEvent creates a new event in the club table
+	AddNewEvent(clubID string, event *models.EventProps) error
+	// GetEvent returns an event from the database
+	GetEvent(clubID string, period string, eventID string) (*models.EventProps, error)
+	// GetEvents returns all the events of an application period
+	GetEvents(clubID string, period string) ([]*models.EventProps, error)
+	// DeleteEvent deletes an event and all of its applications
+	DeleteEvent(clubID string, period string, eventID string) error
+	// AddNewApplicant creates a new applicant in the club table for an application period
+	AddNewApplicant(clubID string, applicant *models.Applicant) error
+	// GetApplicant returns an applicant for a application period
+	GetApplicant(clubID string, period string, email string) (*models.Applicant, error)
+	// GetApplicants returns all the applicants for an application period
+	GetApplicants(clubID string, period string) ([]*models.Applicant, error)
+	// DeleteApplicant deletes an applicant from a application period and their event applications
+	DeleteApplicant(clubID string, period string, email string) error
+	// AddNewApplication adds an application to the database
+	AddNewApplication(clubID string, application *models.Application) error
+	// GetApplication returns the application for an event by applicant email
+	GetApplication(clubID string, period string, eventID string, email string) (*models.Application, error)
+	// GetApplications returns all the applications for an event
+	GetApplications(clubID string, period string, eventID string) ([]*models.Application, error)
+	// DeleteApplication deletes the application for an event by applicant email
+	DeleteApplication(clubID string, period string, eventID string, email string) error
+	// AddTag adds a new Tag for that application period
+	AddTag(clubID string, tag *models.Tag) error
+	// GetTags returns all the tags for an application period
+	GetTags(clubID string, period string) ([]*models.Tag, error)
+	// DeleteTag deletes a tag for the application period
+	DeleteTag(clubID string, period string, tag string) error
 }

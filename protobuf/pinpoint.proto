@@ -13,7 +13,7 @@ service Core {
 
   // clubs
   rpc CreateClub(request.CreateClub) returns (response.Message) {}
-  rpc CreatePeriod(models.Period) returns (response.Message) {}
+  rpc CreatePeriod(request.CreatePeriod) returns (response.Message) {}
   rpc CreateEvent(request.CreateEvent) returns (response.Message) {}
 
   // users

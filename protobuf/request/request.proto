@@ -33,6 +33,11 @@ message CreateClub {
 
 }
 
+message CreatePeriod {
+  string period = 1;
+  string clubID = 2;
+}
+
 message CreateEvent {
   models.EventProps event = 1;
 }
