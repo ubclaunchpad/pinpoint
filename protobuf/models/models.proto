@@ -13,15 +13,13 @@ message User {
 
 message Club {
   string clubID = 1;
-  string name = 2;
-  string description = 3;
+  string description = 2;
 }
 
 message ClubUser {
   string clubID = 1;
   string email = 2;
-  string name = 3;
-  string role = 4;
+  string role = 3;
 }
 
 message EmailVerification {
