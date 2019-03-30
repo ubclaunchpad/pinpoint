@@ -67,6 +67,7 @@ $spacing-300: 300px;
     &-s { margin-left: $spacing-s; }
     &-m { margin-left: $spacing-m; }
     &-l { margin-left: $spacing-l; }
+    &-auto { margin-left: auto; }
   }
 
   // right margin
@@ -75,6 +76,7 @@ $spacing-300: 300px;
     &-s { margin-right: $spacing-s; }
     &-m { margin-right: $spacing-m; }
     &-l { margin-right: $spacing-l; }
+    &-auto { margin-right: auto; }
   }
 
   // top margin
