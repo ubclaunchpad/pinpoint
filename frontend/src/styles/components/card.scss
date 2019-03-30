@@ -1,0 +1,12 @@
+// Default Card (without fixed weight and height)
+.card {
+  background: white;
+  border-radius: 50px;
+  padding: 25px 50px;
+  .card-title {
+    color: $gray-2;
+  }
+  .card-text {
+    color: $gray-3;
+  }
+}

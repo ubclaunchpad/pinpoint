@@ -65,8 +65,8 @@ class Signup extends Component {
   render() {
     const { notification } = this.state;
     return (
-      <div className="flex-al-center">
-        <div className="title margin-title">Sign-up</div>
+      <div className="flex-al-center card">
+        <div className="title card-title">Sign-up</div>
         <Notification {...notification} />
         <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="name" name="name" placeholder="Name" onChange={this.updateTextField} />
@@ -76,11 +76,11 @@ class Signup extends Component {
         </div>
         <div className="margin-top-xs">
           <input type="checkbox" />
-          <span>Send me e-mail updates</span>
+          <span className="card-text">Send me e-mail updates</span>
         </div>
         <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptSignup}><a href="/login">Sign up</a></button>
         <div className="margin-top-xs">
-          <span>Already have a pinpoint account? &nbsp;</span>
+          <span className="card-text">Already have a pinpoint account? &nbsp;</span>
           <a href="/login">Sign In</a>
         </div>
       </div>
