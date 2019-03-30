@@ -60,7 +60,6 @@ class Navbar extends Component {
             </a>
           </div>
           <ul className="margin-right-s">
-            <li><a href="/">Home</a></li>
             {this.loginStateDiv()}
           </ul>
         </nav>

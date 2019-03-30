@@ -4,23 +4,23 @@
     float: left;
     height: 60px;
   }
-  
+
 .navbar {
     box-sizing: border-box;
     position: fixed;
     line-height: 60px;
     width: 100%;
-    outline: 1px solid black;
-  
+
     ul {
       float: right;
       list-style: none;
-    } 
-  
+    }
+
     li {
       display: inline-block;
+      padding: 15px;
       a {
-        color: black;
+        color: white;
         position: relative;
       }
     }

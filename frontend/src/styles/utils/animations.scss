@@ -22,17 +22,17 @@ $button-hover-textcolor: #ffffff;
       height: 1px;
       bottom: -1px;
     }
-    
+
     li a:before {
       left: 0;
       transition: $transition-time;
     }
-    
+
     li a:hover:before {
-      background: rgb(13, 26, 38);
+      background: white;
       width: 100%;
       transition: width $transition-time cubic-bezier((0.22, 0.61, 0.36, 1));
-    } 
+    }
   }
 }
 
