@@ -53,7 +53,7 @@ class API {
   async createClub({ clubID, description }) {
     try {
       const response = await this.req.post('/club/create', { clubID, description });
-      return response.data.ClubID;
+      return response.data.clubID;
     } catch (error) {
       switch (error.response.status) {
         default: throw new Error(`error ${error.response.status}`);
@@ -61,10 +61,10 @@ class API {
     }
   }
 
-  async createPeriod({ name, start, end }) {
+  async createPeriod({ period }) {
     try {
-      const response = await this.req.post('/club/period/create', { name, start, end });
-      return response.data.PeriodID;
+      const response = await this.req.post('/club/period/create', { period });
+      return response.data.period;
     } catch (error) {
       switch (error.response.status) {
         default: throw new Error(`error ${error.response.status}`);

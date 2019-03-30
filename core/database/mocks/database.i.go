@@ -9,6 +9,30 @@ import (
 )
 
 type FakeDBClient struct {
+	AddNewApplicantStub        func(string, *models.Applicant) error
+	addNewApplicantMutex       sync.RWMutex
+	addNewApplicantArgsForCall []struct {
+		arg1 string
+		arg2 *models.Applicant
+	}
+	addNewApplicantReturns struct {
+		result1 error
+	}
+	addNewApplicantReturnsOnCall map[int]struct {
+		result1 error
+	}
+	AddNewApplicationStub        func(string, *models.Application) error
+	addNewApplicationMutex       sync.RWMutex
+	addNewApplicationArgsForCall []struct {
+		arg1 string
+		arg2 *models.Application
+	}
+	addNewApplicationReturns struct {
+		result1 error
+	}
+	addNewApplicationReturnsOnCall map[int]struct {
+		result1 error
+	}
 	AddNewClubStub        func(*models.Club, *models.ClubUser) error
 	addNewClubMutex       sync.RWMutex
 	addNewClubArgsForCall []struct {
@@ -19,6 +43,30 @@ type FakeDBClient struct {
 		result1 error
 	}
 	addNewClubReturnsOnCall map[int]struct {
+		result1 error
+	}
+	AddNewEventStub        func(string, *models.EventProps) error
+	addNewEventMutex       sync.RWMutex
+	addNewEventArgsForCall []struct {
+		arg1 string
+		arg2 *models.EventProps
+	}
+	addNewEventReturns struct {
+		result1 error
+	}
+	addNewEventReturnsOnCall map[int]struct {
+		result1 error
+	}
+	AddNewPeriodStub        func(string, *models.Period) error
+	addNewPeriodMutex       sync.RWMutex
+	addNewPeriodArgsForCall []struct {
+		arg1 string
+		arg2 *models.Period
+	}
+	addNewPeriodReturns struct {
+		result1 error
+	}
+	addNewPeriodReturnsOnCall map[int]struct {
 		result1 error
 	}
 	AddNewUserStub        func(*models.User, *models.EmailVerification) error
@@ -33,6 +81,45 @@ type FakeDBClient struct {
 	addNewUserReturnsOnCall map[int]struct {
 		result1 error
 	}
+	AddTagStub        func(string, *models.Tag) error
+	addTagMutex       sync.RWMutex
+	addTagArgsForCall []struct {
+		arg1 string
+		arg2 *models.Tag
+	}
+	addTagReturns struct {
+		result1 error
+	}
+	addTagReturnsOnCall map[int]struct {
+		result1 error
+	}
+	DeleteApplicantStub        func(string, string, string) error
+	deleteApplicantMutex       sync.RWMutex
+	deleteApplicantArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	deleteApplicantReturns struct {
+		result1 error
+	}
+	deleteApplicantReturnsOnCall map[int]struct {
+		result1 error
+	}
+	DeleteApplicationStub        func(string, string, string, string) error
+	deleteApplicationMutex       sync.RWMutex
+	deleteApplicationArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		arg4 string
+	}
+	deleteApplicationReturns struct {
+		result1 error
+	}
+	deleteApplicationReturnsOnCall map[int]struct {
+		result1 error
+	}
 	DeleteClubStub        func(string) error
 	deleteClubMutex       sync.RWMutex
 	deleteClubArgsForCall []struct {
@@ -42,6 +129,32 @@ type FakeDBClient struct {
 		result1 error
 	}
 	deleteClubReturnsOnCall map[int]struct {
+		result1 error
+	}
+	DeleteEventStub        func(string, string, string) error
+	deleteEventMutex       sync.RWMutex
+	deleteEventArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	deleteEventReturns struct {
+		result1 error
+	}
+	deleteEventReturnsOnCall map[int]struct {
+		result1 error
+	}
+	DeleteTagStub        func(string, string, string) error
+	deleteTagMutex       sync.RWMutex
+	deleteTagArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	deleteTagReturns struct {
+		result1 error
+	}
+	deleteTagReturnsOnCall map[int]struct {
 		result1 error
 	}
 	DeleteUserStub        func(string) error
@@ -66,6 +179,66 @@ type FakeDBClient struct {
 	}
 	getAllClubUsersReturnsOnCall map[int]struct {
 		result1 []*models.ClubUser
+		result2 error
+	}
+	GetApplicantStub        func(string, string, string) (*models.Applicant, error)
+	getApplicantMutex       sync.RWMutex
+	getApplicantArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	getApplicantReturns struct {
+		result1 *models.Applicant
+		result2 error
+	}
+	getApplicantReturnsOnCall map[int]struct {
+		result1 *models.Applicant
+		result2 error
+	}
+	GetApplicantsStub        func(string, string) ([]*models.Applicant, error)
+	getApplicantsMutex       sync.RWMutex
+	getApplicantsArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	getApplicantsReturns struct {
+		result1 []*models.Applicant
+		result2 error
+	}
+	getApplicantsReturnsOnCall map[int]struct {
+		result1 []*models.Applicant
+		result2 error
+	}
+	GetApplicationStub        func(string, string, string, string) (*models.Application, error)
+	getApplicationMutex       sync.RWMutex
+	getApplicationArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		arg4 string
+	}
+	getApplicationReturns struct {
+		result1 *models.Application
+		result2 error
+	}
+	getApplicationReturnsOnCall map[int]struct {
+		result1 *models.Application
+		result2 error
+	}
+	GetApplicationsStub        func(string, string, string) ([]*models.Application, error)
+	getApplicationsMutex       sync.RWMutex
+	getApplicationsArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	getApplicationsReturns struct {
+		result1 []*models.Application
+		result2 error
+	}
+	getApplicationsReturnsOnCall map[int]struct {
+		result1 []*models.Application
 		result2 error
 	}
 	GetClubStub        func(string) (*models.Club, error)
@@ -95,6 +268,49 @@ type FakeDBClient struct {
 		result1 *models.EmailVerification
 		result2 error
 	}
+	GetEventStub        func(string, string, string) (*models.EventProps, error)
+	getEventMutex       sync.RWMutex
+	getEventArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	getEventReturns struct {
+		result1 *models.EventProps
+		result2 error
+	}
+	getEventReturnsOnCall map[int]struct {
+		result1 *models.EventProps
+		result2 error
+	}
+	GetEventsStub        func(string, string) ([]*models.EventProps, error)
+	getEventsMutex       sync.RWMutex
+	getEventsArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	getEventsReturns struct {
+		result1 []*models.EventProps
+		result2 error
+	}
+	getEventsReturnsOnCall map[int]struct {
+		result1 []*models.EventProps
+		result2 error
+	}
+	GetTagsStub        func(string, string) ([]*models.Tag, error)
+	getTagsMutex       sync.RWMutex
+	getTagsArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	getTagsReturns struct {
+		result1 []*models.Tag
+		result2 error
+	}
+	getTagsReturnsOnCall map[int]struct {
+		result1 []*models.Tag
+		result2 error
+	}
 	GetUserStub        func(string) (*models.User, error)
 	getUserMutex       sync.RWMutex
 	getUserArgsForCall []struct {
@@ -110,6 +326,128 @@ type FakeDBClient struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeDBClient) AddNewApplicant(arg1 string, arg2 *models.Applicant) error {
+	fake.addNewApplicantMutex.Lock()
+	ret, specificReturn := fake.addNewApplicantReturnsOnCall[len(fake.addNewApplicantArgsForCall)]
+	fake.addNewApplicantArgsForCall = append(fake.addNewApplicantArgsForCall, struct {
+		arg1 string
+		arg2 *models.Applicant
+	}{arg1, arg2})
+	fake.recordInvocation("AddNewApplicant", []interface{}{arg1, arg2})
+	fake.addNewApplicantMutex.Unlock()
+	if fake.AddNewApplicantStub != nil {
+		return fake.AddNewApplicantStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addNewApplicantReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) AddNewApplicantCallCount() int {
+	fake.addNewApplicantMutex.RLock()
+	defer fake.addNewApplicantMutex.RUnlock()
+	return len(fake.addNewApplicantArgsForCall)
+}
+
+func (fake *FakeDBClient) AddNewApplicantCalls(stub func(string, *models.Applicant) error) {
+	fake.addNewApplicantMutex.Lock()
+	defer fake.addNewApplicantMutex.Unlock()
+	fake.AddNewApplicantStub = stub
+}
+
+func (fake *FakeDBClient) AddNewApplicantArgsForCall(i int) (string, *models.Applicant) {
+	fake.addNewApplicantMutex.RLock()
+	defer fake.addNewApplicantMutex.RUnlock()
+	argsForCall := fake.addNewApplicantArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) AddNewApplicantReturns(result1 error) {
+	fake.addNewApplicantMutex.Lock()
+	defer fake.addNewApplicantMutex.Unlock()
+	fake.AddNewApplicantStub = nil
+	fake.addNewApplicantReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewApplicantReturnsOnCall(i int, result1 error) {
+	fake.addNewApplicantMutex.Lock()
+	defer fake.addNewApplicantMutex.Unlock()
+	fake.AddNewApplicantStub = nil
+	if fake.addNewApplicantReturnsOnCall == nil {
+		fake.addNewApplicantReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addNewApplicantReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewApplication(arg1 string, arg2 *models.Application) error {
+	fake.addNewApplicationMutex.Lock()
+	ret, specificReturn := fake.addNewApplicationReturnsOnCall[len(fake.addNewApplicationArgsForCall)]
+	fake.addNewApplicationArgsForCall = append(fake.addNewApplicationArgsForCall, struct {
+		arg1 string
+		arg2 *models.Application
+	}{arg1, arg2})
+	fake.recordInvocation("AddNewApplication", []interface{}{arg1, arg2})
+	fake.addNewApplicationMutex.Unlock()
+	if fake.AddNewApplicationStub != nil {
+		return fake.AddNewApplicationStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addNewApplicationReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) AddNewApplicationCallCount() int {
+	fake.addNewApplicationMutex.RLock()
+	defer fake.addNewApplicationMutex.RUnlock()
+	return len(fake.addNewApplicationArgsForCall)
+}
+
+func (fake *FakeDBClient) AddNewApplicationCalls(stub func(string, *models.Application) error) {
+	fake.addNewApplicationMutex.Lock()
+	defer fake.addNewApplicationMutex.Unlock()
+	fake.AddNewApplicationStub = stub
+}
+
+func (fake *FakeDBClient) AddNewApplicationArgsForCall(i int) (string, *models.Application) {
+	fake.addNewApplicationMutex.RLock()
+	defer fake.addNewApplicationMutex.RUnlock()
+	argsForCall := fake.addNewApplicationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) AddNewApplicationReturns(result1 error) {
+	fake.addNewApplicationMutex.Lock()
+	defer fake.addNewApplicationMutex.Unlock()
+	fake.AddNewApplicationStub = nil
+	fake.addNewApplicationReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewApplicationReturnsOnCall(i int, result1 error) {
+	fake.addNewApplicationMutex.Lock()
+	defer fake.addNewApplicationMutex.Unlock()
+	fake.AddNewApplicationStub = nil
+	if fake.addNewApplicationReturnsOnCall == nil {
+		fake.addNewApplicationReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addNewApplicationReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeDBClient) AddNewClub(arg1 *models.Club, arg2 *models.ClubUser) error {
@@ -169,6 +507,128 @@ func (fake *FakeDBClient) AddNewClubReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.addNewClubReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewEvent(arg1 string, arg2 *models.EventProps) error {
+	fake.addNewEventMutex.Lock()
+	ret, specificReturn := fake.addNewEventReturnsOnCall[len(fake.addNewEventArgsForCall)]
+	fake.addNewEventArgsForCall = append(fake.addNewEventArgsForCall, struct {
+		arg1 string
+		arg2 *models.EventProps
+	}{arg1, arg2})
+	fake.recordInvocation("AddNewEvent", []interface{}{arg1, arg2})
+	fake.addNewEventMutex.Unlock()
+	if fake.AddNewEventStub != nil {
+		return fake.AddNewEventStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addNewEventReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) AddNewEventCallCount() int {
+	fake.addNewEventMutex.RLock()
+	defer fake.addNewEventMutex.RUnlock()
+	return len(fake.addNewEventArgsForCall)
+}
+
+func (fake *FakeDBClient) AddNewEventCalls(stub func(string, *models.EventProps) error) {
+	fake.addNewEventMutex.Lock()
+	defer fake.addNewEventMutex.Unlock()
+	fake.AddNewEventStub = stub
+}
+
+func (fake *FakeDBClient) AddNewEventArgsForCall(i int) (string, *models.EventProps) {
+	fake.addNewEventMutex.RLock()
+	defer fake.addNewEventMutex.RUnlock()
+	argsForCall := fake.addNewEventArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) AddNewEventReturns(result1 error) {
+	fake.addNewEventMutex.Lock()
+	defer fake.addNewEventMutex.Unlock()
+	fake.AddNewEventStub = nil
+	fake.addNewEventReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewEventReturnsOnCall(i int, result1 error) {
+	fake.addNewEventMutex.Lock()
+	defer fake.addNewEventMutex.Unlock()
+	fake.AddNewEventStub = nil
+	if fake.addNewEventReturnsOnCall == nil {
+		fake.addNewEventReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addNewEventReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewPeriod(arg1 string, arg2 *models.Period) error {
+	fake.addNewPeriodMutex.Lock()
+	ret, specificReturn := fake.addNewPeriodReturnsOnCall[len(fake.addNewPeriodArgsForCall)]
+	fake.addNewPeriodArgsForCall = append(fake.addNewPeriodArgsForCall, struct {
+		arg1 string
+		arg2 *models.Period
+	}{arg1, arg2})
+	fake.recordInvocation("AddNewPeriod", []interface{}{arg1, arg2})
+	fake.addNewPeriodMutex.Unlock()
+	if fake.AddNewPeriodStub != nil {
+		return fake.AddNewPeriodStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addNewPeriodReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) AddNewPeriodCallCount() int {
+	fake.addNewPeriodMutex.RLock()
+	defer fake.addNewPeriodMutex.RUnlock()
+	return len(fake.addNewPeriodArgsForCall)
+}
+
+func (fake *FakeDBClient) AddNewPeriodCalls(stub func(string, *models.Period) error) {
+	fake.addNewPeriodMutex.Lock()
+	defer fake.addNewPeriodMutex.Unlock()
+	fake.AddNewPeriodStub = stub
+}
+
+func (fake *FakeDBClient) AddNewPeriodArgsForCall(i int) (string, *models.Period) {
+	fake.addNewPeriodMutex.RLock()
+	defer fake.addNewPeriodMutex.RUnlock()
+	argsForCall := fake.addNewPeriodArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) AddNewPeriodReturns(result1 error) {
+	fake.addNewPeriodMutex.Lock()
+	defer fake.addNewPeriodMutex.Unlock()
+	fake.AddNewPeriodStub = nil
+	fake.addNewPeriodReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddNewPeriodReturnsOnCall(i int, result1 error) {
+	fake.addNewPeriodMutex.Lock()
+	defer fake.addNewPeriodMutex.Unlock()
+	fake.AddNewPeriodStub = nil
+	if fake.addNewPeriodReturnsOnCall == nil {
+		fake.addNewPeriodReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addNewPeriodReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -234,6 +694,192 @@ func (fake *FakeDBClient) AddNewUserReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
+func (fake *FakeDBClient) AddTag(arg1 string, arg2 *models.Tag) error {
+	fake.addTagMutex.Lock()
+	ret, specificReturn := fake.addTagReturnsOnCall[len(fake.addTagArgsForCall)]
+	fake.addTagArgsForCall = append(fake.addTagArgsForCall, struct {
+		arg1 string
+		arg2 *models.Tag
+	}{arg1, arg2})
+	fake.recordInvocation("AddTag", []interface{}{arg1, arg2})
+	fake.addTagMutex.Unlock()
+	if fake.AddTagStub != nil {
+		return fake.AddTagStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.addTagReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) AddTagCallCount() int {
+	fake.addTagMutex.RLock()
+	defer fake.addTagMutex.RUnlock()
+	return len(fake.addTagArgsForCall)
+}
+
+func (fake *FakeDBClient) AddTagCalls(stub func(string, *models.Tag) error) {
+	fake.addTagMutex.Lock()
+	defer fake.addTagMutex.Unlock()
+	fake.AddTagStub = stub
+}
+
+func (fake *FakeDBClient) AddTagArgsForCall(i int) (string, *models.Tag) {
+	fake.addTagMutex.RLock()
+	defer fake.addTagMutex.RUnlock()
+	argsForCall := fake.addTagArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) AddTagReturns(result1 error) {
+	fake.addTagMutex.Lock()
+	defer fake.addTagMutex.Unlock()
+	fake.AddTagStub = nil
+	fake.addTagReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) AddTagReturnsOnCall(i int, result1 error) {
+	fake.addTagMutex.Lock()
+	defer fake.addTagMutex.Unlock()
+	fake.AddTagStub = nil
+	if fake.addTagReturnsOnCall == nil {
+		fake.addTagReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.addTagReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteApplicant(arg1 string, arg2 string, arg3 string) error {
+	fake.deleteApplicantMutex.Lock()
+	ret, specificReturn := fake.deleteApplicantReturnsOnCall[len(fake.deleteApplicantArgsForCall)]
+	fake.deleteApplicantArgsForCall = append(fake.deleteApplicantArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("DeleteApplicant", []interface{}{arg1, arg2, arg3})
+	fake.deleteApplicantMutex.Unlock()
+	if fake.DeleteApplicantStub != nil {
+		return fake.DeleteApplicantStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.deleteApplicantReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) DeleteApplicantCallCount() int {
+	fake.deleteApplicantMutex.RLock()
+	defer fake.deleteApplicantMutex.RUnlock()
+	return len(fake.deleteApplicantArgsForCall)
+}
+
+func (fake *FakeDBClient) DeleteApplicantCalls(stub func(string, string, string) error) {
+	fake.deleteApplicantMutex.Lock()
+	defer fake.deleteApplicantMutex.Unlock()
+	fake.DeleteApplicantStub = stub
+}
+
+func (fake *FakeDBClient) DeleteApplicantArgsForCall(i int) (string, string, string) {
+	fake.deleteApplicantMutex.RLock()
+	defer fake.deleteApplicantMutex.RUnlock()
+	argsForCall := fake.deleteApplicantArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) DeleteApplicantReturns(result1 error) {
+	fake.deleteApplicantMutex.Lock()
+	defer fake.deleteApplicantMutex.Unlock()
+	fake.DeleteApplicantStub = nil
+	fake.deleteApplicantReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteApplicantReturnsOnCall(i int, result1 error) {
+	fake.deleteApplicantMutex.Lock()
+	defer fake.deleteApplicantMutex.Unlock()
+	fake.DeleteApplicantStub = nil
+	if fake.deleteApplicantReturnsOnCall == nil {
+		fake.deleteApplicantReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.deleteApplicantReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteApplication(arg1 string, arg2 string, arg3 string, arg4 string) error {
+	fake.deleteApplicationMutex.Lock()
+	ret, specificReturn := fake.deleteApplicationReturnsOnCall[len(fake.deleteApplicationArgsForCall)]
+	fake.deleteApplicationArgsForCall = append(fake.deleteApplicationArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		arg4 string
+	}{arg1, arg2, arg3, arg4})
+	fake.recordInvocation("DeleteApplication", []interface{}{arg1, arg2, arg3, arg4})
+	fake.deleteApplicationMutex.Unlock()
+	if fake.DeleteApplicationStub != nil {
+		return fake.DeleteApplicationStub(arg1, arg2, arg3, arg4)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.deleteApplicationReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) DeleteApplicationCallCount() int {
+	fake.deleteApplicationMutex.RLock()
+	defer fake.deleteApplicationMutex.RUnlock()
+	return len(fake.deleteApplicationArgsForCall)
+}
+
+func (fake *FakeDBClient) DeleteApplicationCalls(stub func(string, string, string, string) error) {
+	fake.deleteApplicationMutex.Lock()
+	defer fake.deleteApplicationMutex.Unlock()
+	fake.DeleteApplicationStub = stub
+}
+
+func (fake *FakeDBClient) DeleteApplicationArgsForCall(i int) (string, string, string, string) {
+	fake.deleteApplicationMutex.RLock()
+	defer fake.deleteApplicationMutex.RUnlock()
+	argsForCall := fake.deleteApplicationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
+}
+
+func (fake *FakeDBClient) DeleteApplicationReturns(result1 error) {
+	fake.deleteApplicationMutex.Lock()
+	defer fake.deleteApplicationMutex.Unlock()
+	fake.DeleteApplicationStub = nil
+	fake.deleteApplicationReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteApplicationReturnsOnCall(i int, result1 error) {
+	fake.deleteApplicationMutex.Lock()
+	defer fake.deleteApplicationMutex.Unlock()
+	fake.DeleteApplicationStub = nil
+	if fake.deleteApplicationReturnsOnCall == nil {
+		fake.deleteApplicationReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.deleteApplicationReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *FakeDBClient) DeleteClub(arg1 string) error {
 	fake.deleteClubMutex.Lock()
 	ret, specificReturn := fake.deleteClubReturnsOnCall[len(fake.deleteClubArgsForCall)]
@@ -290,6 +936,130 @@ func (fake *FakeDBClient) DeleteClubReturnsOnCall(i int, result1 error) {
 		})
 	}
 	fake.deleteClubReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteEvent(arg1 string, arg2 string, arg3 string) error {
+	fake.deleteEventMutex.Lock()
+	ret, specificReturn := fake.deleteEventReturnsOnCall[len(fake.deleteEventArgsForCall)]
+	fake.deleteEventArgsForCall = append(fake.deleteEventArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("DeleteEvent", []interface{}{arg1, arg2, arg3})
+	fake.deleteEventMutex.Unlock()
+	if fake.DeleteEventStub != nil {
+		return fake.DeleteEventStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.deleteEventReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) DeleteEventCallCount() int {
+	fake.deleteEventMutex.RLock()
+	defer fake.deleteEventMutex.RUnlock()
+	return len(fake.deleteEventArgsForCall)
+}
+
+func (fake *FakeDBClient) DeleteEventCalls(stub func(string, string, string) error) {
+	fake.deleteEventMutex.Lock()
+	defer fake.deleteEventMutex.Unlock()
+	fake.DeleteEventStub = stub
+}
+
+func (fake *FakeDBClient) DeleteEventArgsForCall(i int) (string, string, string) {
+	fake.deleteEventMutex.RLock()
+	defer fake.deleteEventMutex.RUnlock()
+	argsForCall := fake.deleteEventArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) DeleteEventReturns(result1 error) {
+	fake.deleteEventMutex.Lock()
+	defer fake.deleteEventMutex.Unlock()
+	fake.DeleteEventStub = nil
+	fake.deleteEventReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteEventReturnsOnCall(i int, result1 error) {
+	fake.deleteEventMutex.Lock()
+	defer fake.deleteEventMutex.Unlock()
+	fake.DeleteEventStub = nil
+	if fake.deleteEventReturnsOnCall == nil {
+		fake.deleteEventReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.deleteEventReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteTag(arg1 string, arg2 string, arg3 string) error {
+	fake.deleteTagMutex.Lock()
+	ret, specificReturn := fake.deleteTagReturnsOnCall[len(fake.deleteTagArgsForCall)]
+	fake.deleteTagArgsForCall = append(fake.deleteTagArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("DeleteTag", []interface{}{arg1, arg2, arg3})
+	fake.deleteTagMutex.Unlock()
+	if fake.DeleteTagStub != nil {
+		return fake.DeleteTagStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.deleteTagReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBClient) DeleteTagCallCount() int {
+	fake.deleteTagMutex.RLock()
+	defer fake.deleteTagMutex.RUnlock()
+	return len(fake.deleteTagArgsForCall)
+}
+
+func (fake *FakeDBClient) DeleteTagCalls(stub func(string, string, string) error) {
+	fake.deleteTagMutex.Lock()
+	defer fake.deleteTagMutex.Unlock()
+	fake.DeleteTagStub = stub
+}
+
+func (fake *FakeDBClient) DeleteTagArgsForCall(i int) (string, string, string) {
+	fake.deleteTagMutex.RLock()
+	defer fake.deleteTagMutex.RUnlock()
+	argsForCall := fake.deleteTagArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) DeleteTagReturns(result1 error) {
+	fake.deleteTagMutex.Lock()
+	defer fake.deleteTagMutex.Unlock()
+	fake.DeleteTagStub = nil
+	fake.deleteTagReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBClient) DeleteTagReturnsOnCall(i int, result1 error) {
+	fake.deleteTagMutex.Lock()
+	defer fake.deleteTagMutex.Unlock()
+	fake.DeleteTagStub = nil
+	if fake.deleteTagReturnsOnCall == nil {
+		fake.deleteTagReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.deleteTagReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -413,6 +1183,266 @@ func (fake *FakeDBClient) GetAllClubUsersReturnsOnCall(i int, result1 []*models.
 	}
 	fake.getAllClubUsersReturnsOnCall[i] = struct {
 		result1 []*models.ClubUser
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicant(arg1 string, arg2 string, arg3 string) (*models.Applicant, error) {
+	fake.getApplicantMutex.Lock()
+	ret, specificReturn := fake.getApplicantReturnsOnCall[len(fake.getApplicantArgsForCall)]
+	fake.getApplicantArgsForCall = append(fake.getApplicantArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("GetApplicant", []interface{}{arg1, arg2, arg3})
+	fake.getApplicantMutex.Unlock()
+	if fake.GetApplicantStub != nil {
+		return fake.GetApplicantStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getApplicantReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetApplicantCallCount() int {
+	fake.getApplicantMutex.RLock()
+	defer fake.getApplicantMutex.RUnlock()
+	return len(fake.getApplicantArgsForCall)
+}
+
+func (fake *FakeDBClient) GetApplicantCalls(stub func(string, string, string) (*models.Applicant, error)) {
+	fake.getApplicantMutex.Lock()
+	defer fake.getApplicantMutex.Unlock()
+	fake.GetApplicantStub = stub
+}
+
+func (fake *FakeDBClient) GetApplicantArgsForCall(i int) (string, string, string) {
+	fake.getApplicantMutex.RLock()
+	defer fake.getApplicantMutex.RUnlock()
+	argsForCall := fake.getApplicantArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) GetApplicantReturns(result1 *models.Applicant, result2 error) {
+	fake.getApplicantMutex.Lock()
+	defer fake.getApplicantMutex.Unlock()
+	fake.GetApplicantStub = nil
+	fake.getApplicantReturns = struct {
+		result1 *models.Applicant
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicantReturnsOnCall(i int, result1 *models.Applicant, result2 error) {
+	fake.getApplicantMutex.Lock()
+	defer fake.getApplicantMutex.Unlock()
+	fake.GetApplicantStub = nil
+	if fake.getApplicantReturnsOnCall == nil {
+		fake.getApplicantReturnsOnCall = make(map[int]struct {
+			result1 *models.Applicant
+			result2 error
+		})
+	}
+	fake.getApplicantReturnsOnCall[i] = struct {
+		result1 *models.Applicant
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicants(arg1 string, arg2 string) ([]*models.Applicant, error) {
+	fake.getApplicantsMutex.Lock()
+	ret, specificReturn := fake.getApplicantsReturnsOnCall[len(fake.getApplicantsArgsForCall)]
+	fake.getApplicantsArgsForCall = append(fake.getApplicantsArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("GetApplicants", []interface{}{arg1, arg2})
+	fake.getApplicantsMutex.Unlock()
+	if fake.GetApplicantsStub != nil {
+		return fake.GetApplicantsStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getApplicantsReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetApplicantsCallCount() int {
+	fake.getApplicantsMutex.RLock()
+	defer fake.getApplicantsMutex.RUnlock()
+	return len(fake.getApplicantsArgsForCall)
+}
+
+func (fake *FakeDBClient) GetApplicantsCalls(stub func(string, string) ([]*models.Applicant, error)) {
+	fake.getApplicantsMutex.Lock()
+	defer fake.getApplicantsMutex.Unlock()
+	fake.GetApplicantsStub = stub
+}
+
+func (fake *FakeDBClient) GetApplicantsArgsForCall(i int) (string, string) {
+	fake.getApplicantsMutex.RLock()
+	defer fake.getApplicantsMutex.RUnlock()
+	argsForCall := fake.getApplicantsArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) GetApplicantsReturns(result1 []*models.Applicant, result2 error) {
+	fake.getApplicantsMutex.Lock()
+	defer fake.getApplicantsMutex.Unlock()
+	fake.GetApplicantsStub = nil
+	fake.getApplicantsReturns = struct {
+		result1 []*models.Applicant
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicantsReturnsOnCall(i int, result1 []*models.Applicant, result2 error) {
+	fake.getApplicantsMutex.Lock()
+	defer fake.getApplicantsMutex.Unlock()
+	fake.GetApplicantsStub = nil
+	if fake.getApplicantsReturnsOnCall == nil {
+		fake.getApplicantsReturnsOnCall = make(map[int]struct {
+			result1 []*models.Applicant
+			result2 error
+		})
+	}
+	fake.getApplicantsReturnsOnCall[i] = struct {
+		result1 []*models.Applicant
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplication(arg1 string, arg2 string, arg3 string, arg4 string) (*models.Application, error) {
+	fake.getApplicationMutex.Lock()
+	ret, specificReturn := fake.getApplicationReturnsOnCall[len(fake.getApplicationArgsForCall)]
+	fake.getApplicationArgsForCall = append(fake.getApplicationArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+		arg4 string
+	}{arg1, arg2, arg3, arg4})
+	fake.recordInvocation("GetApplication", []interface{}{arg1, arg2, arg3, arg4})
+	fake.getApplicationMutex.Unlock()
+	if fake.GetApplicationStub != nil {
+		return fake.GetApplicationStub(arg1, arg2, arg3, arg4)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getApplicationReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetApplicationCallCount() int {
+	fake.getApplicationMutex.RLock()
+	defer fake.getApplicationMutex.RUnlock()
+	return len(fake.getApplicationArgsForCall)
+}
+
+func (fake *FakeDBClient) GetApplicationCalls(stub func(string, string, string, string) (*models.Application, error)) {
+	fake.getApplicationMutex.Lock()
+	defer fake.getApplicationMutex.Unlock()
+	fake.GetApplicationStub = stub
+}
+
+func (fake *FakeDBClient) GetApplicationArgsForCall(i int) (string, string, string, string) {
+	fake.getApplicationMutex.RLock()
+	defer fake.getApplicationMutex.RUnlock()
+	argsForCall := fake.getApplicationArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
+}
+
+func (fake *FakeDBClient) GetApplicationReturns(result1 *models.Application, result2 error) {
+	fake.getApplicationMutex.Lock()
+	defer fake.getApplicationMutex.Unlock()
+	fake.GetApplicationStub = nil
+	fake.getApplicationReturns = struct {
+		result1 *models.Application
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicationReturnsOnCall(i int, result1 *models.Application, result2 error) {
+	fake.getApplicationMutex.Lock()
+	defer fake.getApplicationMutex.Unlock()
+	fake.GetApplicationStub = nil
+	if fake.getApplicationReturnsOnCall == nil {
+		fake.getApplicationReturnsOnCall = make(map[int]struct {
+			result1 *models.Application
+			result2 error
+		})
+	}
+	fake.getApplicationReturnsOnCall[i] = struct {
+		result1 *models.Application
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplications(arg1 string, arg2 string, arg3 string) ([]*models.Application, error) {
+	fake.getApplicationsMutex.Lock()
+	ret, specificReturn := fake.getApplicationsReturnsOnCall[len(fake.getApplicationsArgsForCall)]
+	fake.getApplicationsArgsForCall = append(fake.getApplicationsArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("GetApplications", []interface{}{arg1, arg2, arg3})
+	fake.getApplicationsMutex.Unlock()
+	if fake.GetApplicationsStub != nil {
+		return fake.GetApplicationsStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getApplicationsReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetApplicationsCallCount() int {
+	fake.getApplicationsMutex.RLock()
+	defer fake.getApplicationsMutex.RUnlock()
+	return len(fake.getApplicationsArgsForCall)
+}
+
+func (fake *FakeDBClient) GetApplicationsCalls(stub func(string, string, string) ([]*models.Application, error)) {
+	fake.getApplicationsMutex.Lock()
+	defer fake.getApplicationsMutex.Unlock()
+	fake.GetApplicationsStub = stub
+}
+
+func (fake *FakeDBClient) GetApplicationsArgsForCall(i int) (string, string, string) {
+	fake.getApplicationsMutex.RLock()
+	defer fake.getApplicationsMutex.RUnlock()
+	argsForCall := fake.getApplicationsArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) GetApplicationsReturns(result1 []*models.Application, result2 error) {
+	fake.getApplicationsMutex.Lock()
+	defer fake.getApplicationsMutex.Unlock()
+	fake.GetApplicationsStub = nil
+	fake.getApplicationsReturns = struct {
+		result1 []*models.Application
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetApplicationsReturnsOnCall(i int, result1 []*models.Application, result2 error) {
+	fake.getApplicationsMutex.Lock()
+	defer fake.getApplicationsMutex.Unlock()
+	fake.GetApplicationsStub = nil
+	if fake.getApplicationsReturnsOnCall == nil {
+		fake.getApplicationsReturnsOnCall = make(map[int]struct {
+			result1 []*models.Application
+			result2 error
+		})
+	}
+	fake.getApplicationsReturnsOnCall[i] = struct {
+		result1 []*models.Application
 		result2 error
 	}{result1, result2}
 }
@@ -544,6 +1574,199 @@ func (fake *FakeDBClient) GetEmailVerificationReturnsOnCall(i int, result1 *mode
 	}{result1, result2}
 }
 
+func (fake *FakeDBClient) GetEvent(arg1 string, arg2 string, arg3 string) (*models.EventProps, error) {
+	fake.getEventMutex.Lock()
+	ret, specificReturn := fake.getEventReturnsOnCall[len(fake.getEventArgsForCall)]
+	fake.getEventArgsForCall = append(fake.getEventArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("GetEvent", []interface{}{arg1, arg2, arg3})
+	fake.getEventMutex.Unlock()
+	if fake.GetEventStub != nil {
+		return fake.GetEventStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getEventReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetEventCallCount() int {
+	fake.getEventMutex.RLock()
+	defer fake.getEventMutex.RUnlock()
+	return len(fake.getEventArgsForCall)
+}
+
+func (fake *FakeDBClient) GetEventCalls(stub func(string, string, string) (*models.EventProps, error)) {
+	fake.getEventMutex.Lock()
+	defer fake.getEventMutex.Unlock()
+	fake.GetEventStub = stub
+}
+
+func (fake *FakeDBClient) GetEventArgsForCall(i int) (string, string, string) {
+	fake.getEventMutex.RLock()
+	defer fake.getEventMutex.RUnlock()
+	argsForCall := fake.getEventArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBClient) GetEventReturns(result1 *models.EventProps, result2 error) {
+	fake.getEventMutex.Lock()
+	defer fake.getEventMutex.Unlock()
+	fake.GetEventStub = nil
+	fake.getEventReturns = struct {
+		result1 *models.EventProps
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetEventReturnsOnCall(i int, result1 *models.EventProps, result2 error) {
+	fake.getEventMutex.Lock()
+	defer fake.getEventMutex.Unlock()
+	fake.GetEventStub = nil
+	if fake.getEventReturnsOnCall == nil {
+		fake.getEventReturnsOnCall = make(map[int]struct {
+			result1 *models.EventProps
+			result2 error
+		})
+	}
+	fake.getEventReturnsOnCall[i] = struct {
+		result1 *models.EventProps
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetEvents(arg1 string, arg2 string) ([]*models.EventProps, error) {
+	fake.getEventsMutex.Lock()
+	ret, specificReturn := fake.getEventsReturnsOnCall[len(fake.getEventsArgsForCall)]
+	fake.getEventsArgsForCall = append(fake.getEventsArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("GetEvents", []interface{}{arg1, arg2})
+	fake.getEventsMutex.Unlock()
+	if fake.GetEventsStub != nil {
+		return fake.GetEventsStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getEventsReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetEventsCallCount() int {
+	fake.getEventsMutex.RLock()
+	defer fake.getEventsMutex.RUnlock()
+	return len(fake.getEventsArgsForCall)
+}
+
+func (fake *FakeDBClient) GetEventsCalls(stub func(string, string) ([]*models.EventProps, error)) {
+	fake.getEventsMutex.Lock()
+	defer fake.getEventsMutex.Unlock()
+	fake.GetEventsStub = stub
+}
+
+func (fake *FakeDBClient) GetEventsArgsForCall(i int) (string, string) {
+	fake.getEventsMutex.RLock()
+	defer fake.getEventsMutex.RUnlock()
+	argsForCall := fake.getEventsArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) GetEventsReturns(result1 []*models.EventProps, result2 error) {
+	fake.getEventsMutex.Lock()
+	defer fake.getEventsMutex.Unlock()
+	fake.GetEventsStub = nil
+	fake.getEventsReturns = struct {
+		result1 []*models.EventProps
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetEventsReturnsOnCall(i int, result1 []*models.EventProps, result2 error) {
+	fake.getEventsMutex.Lock()
+	defer fake.getEventsMutex.Unlock()
+	fake.GetEventsStub = nil
+	if fake.getEventsReturnsOnCall == nil {
+		fake.getEventsReturnsOnCall = make(map[int]struct {
+			result1 []*models.EventProps
+			result2 error
+		})
+	}
+	fake.getEventsReturnsOnCall[i] = struct {
+		result1 []*models.EventProps
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetTags(arg1 string, arg2 string) ([]*models.Tag, error) {
+	fake.getTagsMutex.Lock()
+	ret, specificReturn := fake.getTagsReturnsOnCall[len(fake.getTagsArgsForCall)]
+	fake.getTagsArgsForCall = append(fake.getTagsArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("GetTags", []interface{}{arg1, arg2})
+	fake.getTagsMutex.Unlock()
+	if fake.GetTagsStub != nil {
+		return fake.GetTagsStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getTagsReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDBClient) GetTagsCallCount() int {
+	fake.getTagsMutex.RLock()
+	defer fake.getTagsMutex.RUnlock()
+	return len(fake.getTagsArgsForCall)
+}
+
+func (fake *FakeDBClient) GetTagsCalls(stub func(string, string) ([]*models.Tag, error)) {
+	fake.getTagsMutex.Lock()
+	defer fake.getTagsMutex.Unlock()
+	fake.GetTagsStub = stub
+}
+
+func (fake *FakeDBClient) GetTagsArgsForCall(i int) (string, string) {
+	fake.getTagsMutex.RLock()
+	defer fake.getTagsMutex.RUnlock()
+	argsForCall := fake.getTagsArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeDBClient) GetTagsReturns(result1 []*models.Tag, result2 error) {
+	fake.getTagsMutex.Lock()
+	defer fake.getTagsMutex.Unlock()
+	fake.GetTagsStub = nil
+	fake.getTagsReturns = struct {
+		result1 []*models.Tag
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDBClient) GetTagsReturnsOnCall(i int, result1 []*models.Tag, result2 error) {
+	fake.getTagsMutex.Lock()
+	defer fake.getTagsMutex.Unlock()
+	fake.GetTagsStub = nil
+	if fake.getTagsReturnsOnCall == nil {
+		fake.getTagsReturnsOnCall = make(map[int]struct {
+			result1 []*models.Tag
+			result2 error
+		})
+	}
+	fake.getTagsReturnsOnCall[i] = struct {
+		result1 []*models.Tag
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeDBClient) GetUser(arg1 string) (*models.User, error) {
 	fake.getUserMutex.Lock()
 	ret, specificReturn := fake.getUserReturnsOnCall[len(fake.getUserArgsForCall)]
@@ -610,20 +1833,52 @@ func (fake *FakeDBClient) GetUserReturnsOnCall(i int, result1 *models.User, resu
 func (fake *FakeDBClient) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.addNewApplicantMutex.RLock()
+	defer fake.addNewApplicantMutex.RUnlock()
+	fake.addNewApplicationMutex.RLock()
+	defer fake.addNewApplicationMutex.RUnlock()
 	fake.addNewClubMutex.RLock()
 	defer fake.addNewClubMutex.RUnlock()
+	fake.addNewEventMutex.RLock()
+	defer fake.addNewEventMutex.RUnlock()
+	fake.addNewPeriodMutex.RLock()
+	defer fake.addNewPeriodMutex.RUnlock()
 	fake.addNewUserMutex.RLock()
 	defer fake.addNewUserMutex.RUnlock()
+	fake.addTagMutex.RLock()
+	defer fake.addTagMutex.RUnlock()
+	fake.deleteApplicantMutex.RLock()
+	defer fake.deleteApplicantMutex.RUnlock()
+	fake.deleteApplicationMutex.RLock()
+	defer fake.deleteApplicationMutex.RUnlock()
 	fake.deleteClubMutex.RLock()
 	defer fake.deleteClubMutex.RUnlock()
+	fake.deleteEventMutex.RLock()
+	defer fake.deleteEventMutex.RUnlock()
+	fake.deleteTagMutex.RLock()
+	defer fake.deleteTagMutex.RUnlock()
 	fake.deleteUserMutex.RLock()
 	defer fake.deleteUserMutex.RUnlock()
 	fake.getAllClubUsersMutex.RLock()
 	defer fake.getAllClubUsersMutex.RUnlock()
+	fake.getApplicantMutex.RLock()
+	defer fake.getApplicantMutex.RUnlock()
+	fake.getApplicantsMutex.RLock()
+	defer fake.getApplicantsMutex.RUnlock()
+	fake.getApplicationMutex.RLock()
+	defer fake.getApplicationMutex.RUnlock()
+	fake.getApplicationsMutex.RLock()
+	defer fake.getApplicationsMutex.RUnlock()
 	fake.getClubMutex.RLock()
 	defer fake.getClubMutex.RUnlock()
 	fake.getEmailVerificationMutex.RLock()
 	defer fake.getEmailVerificationMutex.RUnlock()
+	fake.getEventMutex.RLock()
+	defer fake.getEventMutex.RUnlock()
+	fake.getEventsMutex.RLock()
+	defer fake.getEventsMutex.RUnlock()
+	fake.getTagsMutex.RLock()
+	defer fake.getTagsMutex.RUnlock()
 	fake.getUserMutex.RLock()
 	defer fake.getUserMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

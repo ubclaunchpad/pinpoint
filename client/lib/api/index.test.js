@@ -171,7 +171,7 @@ describe('createClub', () => {
     moxios.stubRequest('/club/create', {
       status: 200,
       response: {
-        ClubID: 'UBC Launchpad',
+        clubID: 'UBC Launchpad',
       },
     });
 
@@ -190,7 +190,7 @@ describe('createClub', () => {
     moxios.stubRequest('/club/create', {
       status: 404,
       response: {
-        ClubID: 'UBC Launchpad',
+        clubID: 'UBC Launchpad',
       },
     });
 
@@ -211,14 +211,12 @@ describe('createPeriod', () => {
     moxios.stubRequest('/club/period/create', {
       status: 200,
       response: {
-        PeriodID: '1234',
+        period: '1234',
       },
     });
 
     a.createPeriod({
-      name: 'Winter Semester',
-      start: '2018-08-09',
-      end: '2018-08-12',
+      period: '1234',
     }).then(onFulfilled);
     moxios.wait(() => {
       const response = onFulfilled.getCall(0).args[0];
@@ -231,15 +229,13 @@ describe('createPeriod', () => {
     moxios.stubRequest('/club/period/create', {
       status: 400,
       response: {
-        PeriodID: '1234',
+        period: '1234',
       },
     });
 
     expect.assertions(1);
     a.createPeriod({
-      name: 'Winter Semester',
-      start: '2018-08-09',
-      end: '2018-08-12',
+
     }).then(onFulfilled)
       .catch(err => {
         expect(err).toEqual(Error('error 400'));

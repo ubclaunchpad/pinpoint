@@ -10,6 +10,25 @@ import (
 	"github.com/ubclaunchpad/pinpoint/protobuf/models"
 )
 
+// AddNewPeriod creates a new period item in the club table
+func (db *Database) AddNewPeriod(clubID string, period *models.Period) error {
+	if clubID == "" || period.Period == "" {
+		return errors.New("invalid period fields")
+	}
+	var p = newDBPeriod(period)
+	item, err := dynamodbattribute.MarshalMap(p)
+	if err != nil {
+		return fmt.Errorf("Failed to marshal event: %s", err.Error())
+	}
+	if _, err := db.c.PutItem(&dynamodb.PutItemInput{
+		Item:      item,
+		TableName: getClubTable(clubID),
+	}); err != nil {
+		return fmt.Errorf("Failed to put period: %s", err.Error())
+	}
+	return nil
+}
+
 // AddNewEvent creates a new event in the club table
 func (db *Database) AddNewEvent(clubID string, event *models.EventProps) error {
 	if clubID == "" || event.Period == "" || event.Name == "" || event.EventID == "" {
