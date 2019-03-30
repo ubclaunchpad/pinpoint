@@ -37,7 +37,7 @@ class Navbar extends Component {
       return (
         <span>
           <li><a className="margin-sides-s" href="/me/clubs">My Clubs</a></li>
-          <li><button className="click-button button-small animate-button" type="submit" onClick={attemptLogOut}>Log Out</button></li>
+          <li><button className="button-click button-small animate-button" type="submit" onClick={attemptLogOut}>Log Out</button></li>
         </span>
       );
     }
