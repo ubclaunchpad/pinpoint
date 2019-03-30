@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import logo from '../assets/pinpointlogo.png';
 
 class Navbar extends Component {
   constructor(props, context) {
