@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Pinpoint from 'pinpoint-client';
 import Cookies from 'universal-cookie';
-import logo from '../assets/logo.svg';
 import ClubsSelection from './ClubsSelection';
 import Login from './Login';
 import Reset from './Reset';
@@ -57,7 +56,7 @@ class App extends Component {
               <div className="app flex-al-center dir-col jc-between margin-top-200">
                 <h1 className="fs-64">Find the best candidates.</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquam.</p>
-                <br/>
+                <br />
                 <a className="button-signup margin-top-100" href="/signup">Sign Up for Free</a>
               </div>
             </Route>
