@@ -34,7 +34,7 @@ class Reset extends Component {
           <input className="input-box input-small" type="email" placeholder="E-mail address" onChange={this.updateTextFields} />
         </div>
         <div>
-          <button className="click-button button-medium animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
+          <button className="button-click button-medium animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
         </div>
         <div>
           <a href="/login">Back to login</a>

@@ -69,7 +69,7 @@ class Login extends Component {
           <input type="checkbox" />
           <span className="card-text">Remember me</span>
         </div>
-        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
+        <button className="button-click button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/reset">Forgot Password?</a>
         </div>

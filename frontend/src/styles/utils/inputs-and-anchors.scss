@@ -60,7 +60,7 @@ input:focus, textarea:focus, button:focus {
   font-size: 24px;
 }
 
-.click-button {
+.button-click {
   @extend .button-default;
   font-weight: bold;
   a {

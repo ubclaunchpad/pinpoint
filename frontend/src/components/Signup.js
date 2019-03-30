@@ -78,7 +78,7 @@ class Signup extends Component {
           <input type="checkbox" />
           <span className="card-text">Send me e-mail updates</span>
         </div>
-        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptSignup}><a href="/login">Sign up</a></button>
+        <button className="button-click button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptSignup}><a href="/login">Sign up</a></button>
         <div className="margin-top-xs">
           <span className="card-text">Already have a pinpoint account? &nbsp;</span>
           <a href="/login">Sign In</a>
