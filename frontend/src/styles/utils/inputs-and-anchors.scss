@@ -18,61 +18,64 @@ input:focus, textarea:focus, button:focus {
   outline: none;
 }
 
-// TODO: Remove most of this
-.input-small {
-  width: 300px;
-  height: 45px;
-}
+.input {
+  &-small {
+    width: 300px;
+    height: 45px;
+  }
 
-.input-large {
-  width: 600px;
-  height: 30px;
-}
+  &-large {
+    width: 600px;
+    height: 30px;
+  }
 
-.button-small {
-  height: 30px;
-  width: 100px;
-}
-
-.button-medium {
-  height: 30px;
-  width: 150px;
-}
-
-.button-default {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: $primary;
-  border: $primary;
-  border-radius: 20px;
-  color: white;
-  a:hover, &:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  // Input textbox, apply to any <input> to apply pinpoint theme
+  &-box {
+    margin: 5px;
+    border: 1px solid $gray-4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    text-indent: 10px;
   }
 }
 
-.button-signup {
-  @extend .button-default;
-  width: 300px;
-  height: 60px;
-  font-size: 24px;
-}
+.button {
+  &-small {
+    height: 30px;
+    width: 100px;
+  }
 
-.button-click {
-  @extend .button-default;
-  font-weight: bold;
-  a {
-    color:white;
+  &-medium {
+    height: 30px;
+    width: 150px;
   }
 }
 
-// Input textbox, apply to any <input> to apply pinpoint theme
-.input-box {
-  margin: 5px;
-  border: 1px solid $gray-4;
-  box-sizing: border-box;
-  border-radius: 10px;
-  text-indent: 10px;
+.button {
+  &-default {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: $primary;
+    border: $primary;
+    border-radius: 20px;
+    color: white;
+    a:hover, &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  &-signup {
+    @extend .button-default;
+    width: 300px;
+    height: 60px;
+    font-size: 24px;
+  }
+
+  &-click {
+    @extend .button-default;
+    font-weight: bold;
+    a { color:white; }
+  }
 }
