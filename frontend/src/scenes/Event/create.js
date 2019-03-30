@@ -1,87 +1,63 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Pinpoint from 'pinpoint-client';
-import Notification from '../../components/Notification';
-import './create.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class CreateEvent extends Component {
-  static contextTypes = {
-    router: PropTypes.func.isRequired,
-  }
-
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.state = {
-      email: '',
-      password: '',
-      notification: null,
+      startDate: new Date(),
+      endDate: new Date(),
+      hasError: false,
     };
-    this.updateTextField = this.updateTextField.bind(this);
-    this.attemptLogin = this.attemptLogin.bind(this);
+    this.updateTextFields = this.updateTextFields.bind(this);
+    this.handleChangeStart = this.handleChangeStart.bind(this);
+    this.handleChangeEnd = this.handleChangeEnd.bind(this);
   }
 
-  updateTextField(e) {
-    const loginField = e.target.getAttribute('name');
-    this.setState({
-      notification: null,
-      [loginField]: e.target.value,
-    });
-  }
-
-  // Checks user log in credentials
-  async attemptLogin() {
-    const { email, password } = this.state;
-    const { client, setLoginState } = this.props;
-    if (!email || !password) {
-      this.setState({
-        notification: {
-          type: 'error',
-          message: 'Please fill in all fields.',
-        },
-      });
+  handleChangeStart(date) {
+    const { endDate } = this.state;
+    if (endDate < date) {
+      this.setState({ hasError: true });
+      const { hasError } = this.state;
+      console.log('Start date cannot be greater than end date!', hasError);
     } else {
-      try {
-        setLoginState(await client.login({ email, password }));
-        const { router: { history } } = this.context;
-        history.push('/');
-      } catch {
-        this.setState({
-          notification: {
-            type: 'error',
-            message: 'Incorrect Credentials',
-          },
-        });
-      }
+      this.setState({
+        startDate: date,
+      });
     }
   }
 
-  render() {
-    const { notification } = this.state;
-    return (
-      <div className="flex-al-center">
-        <div className="title margin-title">Create an Event</div>
-        <p>Add a point of data entry to your application period.</p>
-        <Notification {...notification} />
-        <div className="flex-inlinegrid margin-ends-xs">
-          <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
-          <input className="input-box input-small" type="password" name="password" placeholder="Password" onChange={this.updateTextField} />
-        </div>
+  handleChangeEnd(date) {
+    const { startDate } = this.state;
+    if (startDate > date) {
+      this.setState({ hasError: true });
+      const { hasError } = this.state;
+      console.log('Start date cannot be greater than end date!', hasError);
+    } else {
+      this.setState({ endDate: date });
+    }
+  }
 
-        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
-        <div className="loginhelp">
-          <a href="/reset">Forgot Password?</a>
-        </div>
-        <div className="loginhelp">
-          <span>Don&#x2019;t have an account? &nbsp;</span>
-          <a href="/signup">Sign up</a>
+  updateTextFields(e) {
+    const infoField = e.target.getAttribute('id');
+    this.setState({ [infoField]: e.target.value });
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="flex dir-col pad-left-300">
+          <div className="title margin-title">Create Event</div>
+          <h2 className="fw-normal">Add a point of data entry to your application period</h2>
+          <h2 className="flex-ai-start pad-top-xxl fw-normal">Event Name </h2>
+          <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
+            <input className="input-box input-large" id="applications" placeholder="Eg. Launch Pad Interview Notes" onChange={this.updatetextfields} />
+          </div>
         </div>
       </div>
     );
   }
 }
-
-CreateEvent.propTypes = {
-  client: PropTypes.instanceOf(Pinpoint.API).isRequired,
-};
 
 export default CreateEvent;

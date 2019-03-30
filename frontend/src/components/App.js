@@ -75,7 +75,7 @@ class App extends Component {
             <Route exact path="/reset" component={Reset} />
             <Route exact path="/signup" component={() => <Signup client={client} />} />
             <Route exact path="/scenes/applicationperiod" component={CreateApplicationPeriod} />
-            <Route exact path="/scenes/event" component={CreateEvent} />
+            <Route exact path="/event" component={CreateEvent} />
           </Switch>
         </div>
       </BrowserRouter>
