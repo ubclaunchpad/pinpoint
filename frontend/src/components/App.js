@@ -55,7 +55,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/">
               <div className="app flex-al-center dir-col jc-between margin-top-200">
-                <h1>Find the best candidates.</h1>
+                <h1 className="fs-64">Find the best candidates.</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquam.</p>
                 <br/>
                 <a className="button-signup margin-top-100" href="/signup">Sign Up for Free</a>

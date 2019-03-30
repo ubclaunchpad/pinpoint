@@ -3,6 +3,10 @@
 /////////////////////////
 
 // todo - font faces
+.fs {
+  &-64 { font-size: 64px; }
+}
+
 .fw {
   &-100 { font-weight: 100; }
   &-200 { font-weight: 200; }
@@ -14,9 +18,9 @@
   &-800 { font-weight: 800; }
   &-900 { font-weight: 900; }
   &-lighter {font-weight: lighter; }
-  &-normal {font-weight: normal; }
-  &-bold { font-weight: bold; }
-  &-bolder { font-weight: bolder; }
+  &-normal  {font-weight: normal; }
+  &-bold    { font-weight: bold; }
+  &-bolder  { font-weight: bolder; }
 }
 
 /////////////////////////
