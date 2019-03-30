@@ -49,15 +49,15 @@ class CreateApplicationPeriod extends Component {
     const { endDate } = this.state;
     return (
       <div>
-        <div className="flex dir-col pad-left-xxxl">
+        <div className="flex dir-col pad-left-300">
           <div className="title margin-title">Create Application Period</div>
-          <div className="h1 flex-ai-start pad-top-xxl">Applications</div>
+          <h2 className="flex-ai-start pad-top-xxl fw-normal">Applications</h2>
           <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
             <input className="input-box input-large" id="applications" placeholder="Application" onChange={this.updatetextfields} />
           </div>
-          <div className="h1 pad-top-xxl">Allow applicants to apply</div>
+          <h2 className="pad-top-xxl fw-normal">Allow applicants to apply</h2>
         </div>
-        <div className="flex dir-row pad-left-xxxl">
+        <div className="flex dir-row pad-left-300">
           <div>
             <div>From</div>
             <DatePicker

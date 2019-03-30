@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import logo from '../assets/pinpointlogo.png';
 
 class Navbar extends Component {
   constructor(props, context) {
@@ -44,8 +43,8 @@ class Navbar extends Component {
     }
     return (
       <span>
-        <li><a className="margin-sides-s" href="/signup">Sign Up</a></li>
-        <li><a href="/login">Log In</a></li>
+        <li><a className="animate-link" href="/signup">Sign Up</a></li>
+        <li><a className="animate-link" href="/login">Log In</a></li>
       </span>
     );
   }
@@ -53,14 +52,11 @@ class Navbar extends Component {
   render() {
     return (
       <div className="pad-nav border-m">
-        <nav className="animate-menu navbar">
-          <div className="logo">
-            <a href="/">
-              <img src={logo} className="pinpointlogo" alt="logo" />
-            </a>
+        <nav className="navbar">
+          <div className="pinpointlogo">
+            <a href="/">pinpoint</a>
           </div>
           <ul className="margin-right-s">
-            <li><a href="/">Home</a></li>
             {this.loginStateDiv()}
           </ul>
         </nav>

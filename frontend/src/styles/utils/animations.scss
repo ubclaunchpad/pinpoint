@@ -13,26 +13,23 @@ $button-hover-textcolor: #ffffff;
       transition: all $transition-time ease-in-out;
     }
   }
-
-  &-menu {
-    li a:before, #navbar li a:after {
+  &-link {
+    &:before, &:after {
       content: '';
       position: absolute;
       width: 0%;
       height: 1px;
       bottom: -1px;
     }
-    
-    li a:before {
+    :before {
       left: 0;
       transition: $transition-time;
     }
-    
-    li a:hover:before {
-      background: rgb(13, 26, 38);
+    &:hover:before {
+      background: white;
       width: 100%;
       transition: width $transition-time cubic-bezier((0.22, 0.61, 0.36, 1));
-    } 
+    }
   }
 }
 
