@@ -26,6 +26,13 @@ message Login {
   string password = 2;
 }
 
+message CreateClub {
+  string clubID = 1;
+  string description = 2;
+  string email = 3;
+
+}
+
 message CreateEvent {
   models.EventProps event = 1;
 }

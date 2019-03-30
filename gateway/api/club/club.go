@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
 	"github.com/ubclaunchpad/pinpoint/gateway/api/ctxutil"
 	"github.com/ubclaunchpad/pinpoint/gateway/res"
@@ -123,15 +124,22 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 
 func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
-	var data schema.CreateClub
+	var data request.CreateClub
 	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	data.Email = fmt.Sprintf("%v", claims["email"])
 
-	// TODO: create club in core
+	fmt.Printf("Stuff: %#v \n", data)
+	resp, err := c.c.CreateClub(r.Context(), &data)
+	if err != nil {
+		render.Render(w, r, res.ErrInternalServer(err.Error(), err))
+		return
+	}
 
-	render.Render(w, r, res.Msg("Club created successfully", http.StatusCreated))
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusCreated, "clubID", data.GetClubID()))
 }
 
 func (c *Router) createPeriod(w http.ResponseWriter, r *http.Request) {

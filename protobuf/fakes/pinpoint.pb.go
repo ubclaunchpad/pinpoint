@@ -27,6 +27,21 @@ type FakeCoreClient struct {
 		result1 *response.Message
 		result2 error
 	}
+	CreateClubStub        func(context.Context, *request.CreateClub, ...grpc.CallOption) (*response.Message, error)
+	createClubMutex       sync.RWMutex
+	createClubArgsForCall []struct {
+		arg1 context.Context
+		arg2 *request.CreateClub
+		arg3 []grpc.CallOption
+	}
+	createClubReturns struct {
+		result1 *response.Message
+		result2 error
+	}
+	createClubReturnsOnCall map[int]struct {
+		result1 *response.Message
+		result2 error
+	}
 	CreateEventStub        func(context.Context, *request.CreateEvent, ...grpc.CallOption) (*response.Message, error)
 	createEventMutex       sync.RWMutex
 	createEventArgsForCall []struct {
@@ -166,6 +181,71 @@ func (fake *FakeCoreClient) CreateAccountReturnsOnCall(i int, result1 *response.
 		})
 	}
 	fake.createAccountReturnsOnCall[i] = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CreateClub(arg1 context.Context, arg2 *request.CreateClub, arg3 ...grpc.CallOption) (*response.Message, error) {
+	fake.createClubMutex.Lock()
+	ret, specificReturn := fake.createClubReturnsOnCall[len(fake.createClubArgsForCall)]
+	fake.createClubArgsForCall = append(fake.createClubArgsForCall, struct {
+		arg1 context.Context
+		arg2 *request.CreateClub
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("CreateClub", []interface{}{arg1, arg2, arg3})
+	fake.createClubMutex.Unlock()
+	if fake.CreateClubStub != nil {
+		return fake.CreateClubStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.createClubReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) CreateClubCallCount() int {
+	fake.createClubMutex.RLock()
+	defer fake.createClubMutex.RUnlock()
+	return len(fake.createClubArgsForCall)
+}
+
+func (fake *FakeCoreClient) CreateClubCalls(stub func(context.Context, *request.CreateClub, ...grpc.CallOption) (*response.Message, error)) {
+	fake.createClubMutex.Lock()
+	defer fake.createClubMutex.Unlock()
+	fake.CreateClubStub = stub
+}
+
+func (fake *FakeCoreClient) CreateClubArgsForCall(i int) (context.Context, *request.CreateClub, []grpc.CallOption) {
+	fake.createClubMutex.RLock()
+	defer fake.createClubMutex.RUnlock()
+	argsForCall := fake.createClubArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) CreateClubReturns(result1 *response.Message, result2 error) {
+	fake.createClubMutex.Lock()
+	defer fake.createClubMutex.Unlock()
+	fake.CreateClubStub = nil
+	fake.createClubReturns = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CreateClubReturnsOnCall(i int, result1 *response.Message, result2 error) {
+	fake.createClubMutex.Lock()
+	defer fake.createClubMutex.Unlock()
+	fake.CreateClubStub = nil
+	if fake.createClubReturnsOnCall == nil {
+		fake.createClubReturnsOnCall = make(map[int]struct {
+			result1 *response.Message
+			result2 error
+		})
+	}
+	fake.createClubReturnsOnCall[i] = struct {
 		result1 *response.Message
 		result2 error
 	}{result1, result2}
@@ -501,6 +581,8 @@ func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
+	fake.createClubMutex.RLock()
+	defer fake.createClubMutex.RUnlock()
 	fake.createEventMutex.RLock()
 	defer fake.createEventMutex.RUnlock()
 	fake.getStatusMutex.RLock()

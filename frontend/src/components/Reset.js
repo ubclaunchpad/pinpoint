@@ -26,15 +26,15 @@ class Reset extends Component {
 
   render() {
     return (
-      <div className="flex-al-center">
-        <div className="title margin-title">Reset Password</div>
-        <p>Enter the e-mail linked to your account</p>
-        <p>We&#x2019;ll send you an e-mail with a link to reset your password.</p>
+      <div className="flex-al-center card margin-top-100 margin-sides-auto w-500">
+        <div className="title card-title">Reset Password</div>
+        <p className="card-text">Enter the e-mail linked to your account</p>
+        <p className="card-text">We&#x2019;ll send you an e-mail with a link to reset your password.</p>
         <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
           <input className="input-box input-small" type="email" placeholder="E-mail address" onChange={this.updateTextFields} />
         </div>
-        <div>
-          <button className="click-button button-medium animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
+        <div className="pad-ends-25">
+          <button className="button-click button-medium animate-button margin-top-xs margin-bottom-xs" type="submit" onClick={this.attemptSendReset}>Send reset link</button>
         </div>
         <div>
           <a href="/login">Back to login</a>

@@ -57,24 +57,24 @@ class Login extends Component {
   render() {
     const { notification } = this.state;
     return (
-      <div className="flex-al-center">
-        <div className="title margin-title">Sign In</div>
+      <div className="flex-al-center card margin-top-100 margin-sides-auto w-400">
+        <div className="title card-title">Login</div>
         <Notification {...notification} />
-        <div className="flex-inlinegrid margin-ends-xs">
+        <div className="flex-inlinegrid margin-ends-xs margin-top-50">
           <input className="input-box input-small" type="email" name="email" placeholder="Email" onChange={this.updateTextField} />
           <input className="input-box input-small" type="password" name="password" placeholder="Password" onChange={this.updateTextField} />
         </div>
 
         <div>
           <input type="checkbox" />
-          <span>Remember me</span>
+          <span className="card-text">Remember me</span>
         </div>
-        <button className="click-button button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
+        <button className="button-click button-small animate-button margin-ends-xs" type="submit" onClick={this.attemptLogin}>Sign in</button>
         <div className="loginhelp">
           <a href="/reset">Forgot Password?</a>
         </div>
-        <div className="loginhelp">
-          <span>Don&#x2019;t have an account? &nbsp;</span>
+        <div className="loginhelp pad-bot-25">
+          <span className="card-text">Don&#x2019;t have an account? &nbsp;</span>
           <a href="/signup">Sign up</a>
         </div>
       </div>
