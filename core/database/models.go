@@ -30,6 +30,11 @@ type emailVerificationItem struct {
 	Expiry int64  `json:"expiry"`
 }
 
+type periodItem struct {
+	PeriodPK string `json:"pk"`
+	PeriodSK string `json:"sk"`
+}
+
 type eventItem struct {
 	Period      string                          `json:"pk"`
 	EventID     string                          `json:"sk"`
@@ -132,6 +137,20 @@ func newEmailVerification(i *emailVerificationItem) *models.EmailVerification {
 		Email:  e,
 		Hash:   h,
 		Expiry: i.Expiry,
+	}
+}
+
+func newDBPeriod(period *models.Period) *periodItem {
+	p := prefixPeriodID(period.Period)
+	return &periodItem{
+		PeriodPK: p,
+		PeriodSK: p,
+	}
+}
+
+func newPeriod(item *periodItem) *models.Period {
+	return &models.Period{
+		Period: removePrefix(item.PeriodPK),
 	}
 }
 

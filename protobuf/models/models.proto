@@ -28,6 +28,10 @@ message EmailVerification {
   int64 expiry = 3;
 }
 
+message Period {
+  string period = 1;
+}
+
 message EventProps {
   string period = 1;
   string eventID = 2;
