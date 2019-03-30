@@ -3,6 +3,25 @@
 /////////////////////////
 
 // todo - font faces
+.fs {
+  &-64 { font-size: 64px; }
+}
+
+.fw {
+  &-100 { font-weight: 100; }
+  &-200 { font-weight: 200; }
+  &-300 { font-weight: 300; }
+  &-400 { font-weight: 400; }
+  &-500 { font-weight: 500; }
+  &-600 { font-weight: 600; }
+  &-700 { font-weight: 700; }
+  &-800 { font-weight: 800; }
+  &-900 { font-weight: 900; }
+  &-lighter { font-weight: lighter; }
+  &-normal  { font-weight: normal; }
+  &-bold    { font-weight: bold; }
+  &-bolder  { font-weight: bolder; }
+}
 
 /////////////////////////
 //    TEXT CLASSES     //
@@ -13,10 +32,6 @@
 .text {
   &-center { text-align: center; }
   &-nowrap { white-space: nowrap; }
-}
-
-.h1 {
-  font-size: 30px;
 }
 
 .underline { text-decoration: underline; }
