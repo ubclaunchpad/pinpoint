@@ -65,8 +65,8 @@ class Signup extends Component {
   render() {
     const { notification } = this.state;
     return (
-      <div className="flex-al-center card">
-        <div className="title card-title">Sign-up</div>
+      <div className="flex-al-center card margin-top-100 margin-sides-auto w-400">
+        <div className="title card-title">Sign Up</div>
         <Notification {...notification} />
         <div className="flex-inlinegrid margin-ends-xs">
           <input className="input-box input-small" type="name" name="name" placeholder="Name" onChange={this.updateTextField} />

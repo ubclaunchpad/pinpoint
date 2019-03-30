@@ -4,8 +4,8 @@
 
 // TODO: Remove most of this
 .input-small {
-  width: 200px;
-  height: 30px;
+  width: 300px;
+  height: 45px;
 }
 
 .input-large {
@@ -41,11 +41,10 @@
 
 // Input textbox, apply to any <input> to apply pinpoint theme
 .input-box {
-  border-radius: 5px;
-  margin: 2px;
+  margin: 5px;
+  border: 1px solid $gray-4;
+  box-sizing: border-box;
   border-radius: 10px;
-  border-color: black;
-  border-width: 3px;
   text-indent: 10px;
 }
 
