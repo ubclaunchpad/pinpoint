@@ -4,6 +4,7 @@ package pinpoint;
 
 import "request/request.proto";
 import "response/response.proto";
+import "models/models.proto";
 
 // Protobuf definitions for pinpoint's core service
 service Core {
@@ -11,6 +12,7 @@ service Core {
   rpc Handshake(request.Empty) returns (response.Empty) {}
 
   // clubs
+  rpc CreateClub(request.CreateClub) returns (response.Message) {}
   rpc CreateEvent(request.CreateEvent) returns (response.Message) {}
 
   // users

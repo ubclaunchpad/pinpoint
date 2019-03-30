@@ -14,7 +14,6 @@ var club = &models.Club{
 var user = &models.ClubUser{
 	ClubID: "1234",
 	Email:  "abc@def.com",
-	Name:   "Bob Ross",
 	Role:   "Artist",
 }
 
@@ -126,7 +125,7 @@ func TestDatabase_Applicant(t *testing.T) {
 			&models.Applicant{
 				Period: "Winter Semester",
 				Email:  user.Email,
-				Name:   user.Name,
+				Name:   "Bob",
 			},
 		}, errs{true, true, true}, false},
 		{"valid", args{
@@ -134,7 +133,7 @@ func TestDatabase_Applicant(t *testing.T) {
 			&models.Applicant{
 				Period: "Winter Semester",
 				Email:  user.Email,
-				Name:   user.Name,
+				Name:   "Rob",
 			},
 		}, errs{false, false, false}, true},
 	}

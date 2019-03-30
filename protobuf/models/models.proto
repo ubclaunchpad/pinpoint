@@ -19,8 +19,7 @@ message Club {
 message ClubUser {
   string clubID = 1;
   string email = 2;
-  string name = 3;
-  string role = 4;
+  string role = 3;
 }
 
 message EmailVerification {

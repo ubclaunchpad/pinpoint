@@ -21,7 +21,6 @@ type clubItem struct {
 type clubUserItem struct {
 	ClubID string `json:"pk"`
 	Email  string `json:"sk"`
-	Name   string `json:"name"`
 	Role   string `json:"role"`
 }
 
@@ -102,7 +101,6 @@ func newDBClubUser(cu *models.ClubUser) *clubUserItem {
 	return &clubUserItem{
 		ClubID: id,
 		Email:  e,
-		Name:   cu.Name,
 		Role:   cu.Role,
 	}
 }
@@ -113,7 +111,6 @@ func newClubUser(i *clubUserItem) *models.ClubUser {
 	return &models.ClubUser{
 		ClubID: id,
 		Email:  e,
-		Name:   i.Name,
 		Role:   i.Role,
 	}
 }

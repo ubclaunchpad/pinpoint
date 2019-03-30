@@ -176,8 +176,8 @@ describe('createClub', () => {
     });
 
     a.createClub({
-      name: 'UBC Launchpad',
-      desc: 'The best software engineering club',
+      clubID: 'UBC Launchpad',
+      description: 'The best software engineering club',
     }).then(onFulfilled);
     moxios.wait(() => {
       const response = onFulfilled.getCall(0).args[0];
@@ -196,8 +196,8 @@ describe('createClub', () => {
 
     expect.assertions(1);
     a.createClub({
-      name: 'UBC Launchpad',
-      desc: 'The best software engineering club',
+      clubID: 'UBC Launchpad',
+      description: 'The best software engineering club',
     }).then(onFulfilled)
       .catch(err => {
         expect(err).toEqual(Error('error 404'));

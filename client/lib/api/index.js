@@ -50,9 +50,9 @@ class API {
     }
   }
 
-  async createClub({ name, desc }) {
+  async createClub({ clubID, description }) {
     try {
-      const response = await this.req.post('/club/create', { name, desc });
+      const response = await this.req.post('/club/create', { clubID, description });
       return response.data.ClubID;
     } catch (error) {
       switch (error.response.status) {

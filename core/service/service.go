@@ -168,6 +168,20 @@ func (s *Service) Handshake(ctx context.Context, req *request.Empty) (*response.
 	return &response.Empty{}, nil
 }
 
+// CreateClub creates a club
+func (s *Service) CreateClub(ctx context.Context, req *request.CreateClub) (*response.Message, error) {
+	// TODO: role should be based on user input; not hardcoded
+	if err := s.db.AddNewClub(
+		&models.Club{ClubID: req.ClubID, Description: req.Description},
+		&models.ClubUser{ClubID: req.ClubID, Email: req.Email, Role: "Admin"},
+	); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create club: %s", err.Error())
+	}
+	return &response.Message{
+		Message: "club successfully created",
+	}, nil
+}
+
 // CreateEvent creates a form
 func (s *Service) CreateEvent(ctx context.Context, req *request.CreateEvent) (*response.Message, error) {
 	// TODO
