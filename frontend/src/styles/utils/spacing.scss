@@ -10,6 +10,8 @@ $spacing-l:   32px;
 $spacing-xl:  40px;
 $spacing-xxl: 48px;
 $spacing-nav: 60px;
+$spacing-25:  25px;
+$spacing-50:  50px;
 $spacing-100: 100px;
 $spacing-200: 200px;
 $spacing-300: 300px;
@@ -47,6 +49,7 @@ $spacing-300: 300px;
     &-xs { padding-bottom: $spacing-xs; }
     &-s { padding-bottom: $spacing-s; }
     &-m { padding-bottom: $spacing-m; }
+    &-25 { padding-bottom: $spacing-25; }
   }
 }
 
@@ -85,6 +88,7 @@ $spacing-300: 300px;
     &-s { margin-top: $spacing-s; }
     &-m { margin-top: $spacing-m; }
     &-l { margin-top: $spacing-l; }
+    &-50 { margin-top: $spacing-50; }
     &-100 { margin-top: $spacing-100; }
     &-200 { margin-top: $spacing-200; }
   }
