@@ -107,7 +107,6 @@ func TestDatabase_AddNewClub_GetClub(t *testing.T) {
 		{"valid", args{
 			&models.Club{
 				ClubID:      "1234",
-				Name:        "Launchpad",
 				Description: "1337 h4x0r",
 			},
 			&models.ClubUser{

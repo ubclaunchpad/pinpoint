@@ -15,7 +15,6 @@ type userItem struct {
 type clubItem struct {
 	ClubIDPK    string `json:"pk"`
 	ClubIDSK    string `json:"sk"`
-	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
@@ -85,7 +84,6 @@ func newDBClub(c *models.Club) *clubItem {
 	return &clubItem{
 		ClubIDPK:    id,
 		ClubIDSK:    id,
-		Name:        c.Name,
 		Description: c.Description,
 	}
 }
@@ -94,7 +92,6 @@ func newClub(i *clubItem) *models.Club {
 	id := removePrefix(i.ClubIDPK)
 	return &models.Club{
 		ClubID:      id,
-		Name:        i.Name,
 		Description: i.Description,
 	}
 }

@@ -13,8 +13,7 @@ message User {
 
 message Club {
   string clubID = 1;
-  string name = 2;
-  string description = 3;
+  string description = 2;
 }
 
 message ClubUser {

@@ -123,11 +123,13 @@ func (c *Router) createEvent(w http.ResponseWriter, r *http.Request) {
 
 func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 	var decoder = json.NewDecoder(r.Body)
-	var data schema.CreateClub
+	var data models.Club
 	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
+
+	fmt.Printf("Stuff: %#v \n", data)
 
 	// TODO: create club in core
 

@@ -171,7 +171,7 @@ describe('createClub', () => {
     moxios.stubRequest('/club/create', {
       status: 200,
       response: {
-        ClubID: '1234',
+        ClubID: 'UBC Launchpad',
       },
     });
 
@@ -181,7 +181,7 @@ describe('createClub', () => {
     }).then(onFulfilled);
     moxios.wait(() => {
       const response = onFulfilled.getCall(0).args[0];
-      expect(response).toEqual('1234');
+      expect(response).toEqual('UBC Launchpad');
       done();
     });
   });
@@ -190,7 +190,7 @@ describe('createClub', () => {
     moxios.stubRequest('/club/create', {
       status: 404,
       response: {
-        ClubID: '1234',
+        ClubID: 'UBC Launchpad',
       },
     });
 

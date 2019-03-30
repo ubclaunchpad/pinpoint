@@ -9,7 +9,6 @@ import (
 
 var club = &models.Club{
 	ClubID:      "1234",
-	Name:        "Launchpad",
 	Description: "1337 h4x0r",
 }
 var user = &models.ClubUser{
