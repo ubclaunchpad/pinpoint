@@ -182,6 +182,19 @@ func (s *Service) CreateClub(ctx context.Context, req *request.CreateClub) (*res
 	}, nil
 }
 
+// CreatePeriod creates a period
+func (s *Service) CreatePeriod(ctx context.Context, req *request.CreatePeriod) (*response.Message, error) {
+	if err := s.db.AddNewPeriod(
+		req.ClubID,
+		&models.Period{Period: req.Period},
+	); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create period: %s", err.Error())
+	}
+	return &response.Message{
+		Message: "period successfully created",
+	}, nil
+}
+
 // CreateEvent creates a form
 func (s *Service) CreateEvent(ctx context.Context, req *request.CreateEvent) (*response.Message, error) {
 	// TODO

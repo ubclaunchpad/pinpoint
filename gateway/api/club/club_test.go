@@ -9,6 +9,7 @@ import (
 
 	"github.com/ubclaunchpad/pinpoint/gateway/schema"
 	"github.com/ubclaunchpad/pinpoint/protobuf/fakes"
+	"github.com/ubclaunchpad/pinpoint/protobuf/request"
 	"go.uber.org/zap/zaptest"
 )
 
@@ -129,7 +130,7 @@ func TestClubRouter_createEvent(t *testing.T) {
 func TestClubRouter_createPeriod(t *testing.T) {
 	type args struct {
 		path   string
-		period *schema.CreatePeriod
+		period *request.CreatePeriod
 	}
 	tests := []struct {
 		name     string
@@ -137,33 +138,11 @@ func TestClubRouter_createPeriod(t *testing.T) {
 		wantCode int
 	}{
 		{"bad input", args{"/my_club/period/create", nil}, http.StatusBadRequest},
-		{"invalid start", args{
-			"/my_club/period/create",
-			&schema.CreatePeriod{
-				Name:  "Winter Semester",
-				Start: "2018asdasdfawkjefe-09",
-				End:   "2018-08-09",
-			}}, http.StatusBadRequest},
-		{"invalid end", args{
-			"/my_club/period/create",
-			&schema.CreatePeriod{
-				Name:  "Winter Semester",
-				Start: "2018-08-09",
-				End:   "2018-08asdfasdfasdf-12",
-			}}, http.StatusBadRequest},
-		{"end before start", args{
-			"/my_club/period/create",
-			&schema.CreatePeriod{
-				Name:  "Winter Semester",
-				Start: "2018-08-15",
-				End:   "2018-08-10",
-			}}, http.StatusBadRequest},
 		{"successfully create period", args{
 			"/my_club/period/create",
-			&schema.CreatePeriod{
-				Name:  "Winter Semester",
-				Start: "2018-08-09",
-				End:   "2018-08-10",
+			&request.CreatePeriod{
+				Period: "Winter Semester",
+				ClubID: "UBC Launch Pad",
 			}}, http.StatusCreated},
 	}
 	for _, tt := range tests {

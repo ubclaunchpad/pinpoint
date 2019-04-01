@@ -89,7 +89,7 @@ proto:
 	counterfeiter -o ./protobuf/fakes/pinpoint.pb.go \
 		./protobuf/pinpoint.pb.go CoreClient
 
-## proto-pkg: Runs protoc definitions 
+## proto-pkg: Runs protoc definitions
 .PHONY: proto-pkg
 proto-pkg:
 	protoc -I protobuf $(PKG)/$(PKG).proto --go_out=plugins=grpc:$(GOPATH)/src
@@ -98,7 +98,8 @@ proto-pkg:
 .PHONY: mocks
 mocks:
 	ifacemaker \
-		-f ./core/database/*.go \
+		-f ./core/database/clubuser.go \
+		-f ./core/database/eventapplicant.go \
 		-s Database \
 		-i DBClient \
 		--pkg database \
@@ -121,7 +122,7 @@ gateway:
 	go run gateway/main.go run --dev \
 		--core.cert dev/certs/127.0.0.1.crt $(FLAGS)
 
-## gateway-tls: Runs gateway tls 
+## gateway-tls: Runs gateway tls
 .PHONY: gateway-tls
 gateway-tls:
 	go run gateway/main.go run --dev \
