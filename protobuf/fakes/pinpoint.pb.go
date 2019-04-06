@@ -57,6 +57,21 @@ type FakeCoreClient struct {
 		result1 *response.Message
 		result2 error
 	}
+	CreatePeriodStub        func(context.Context, *request.CreatePeriod, ...grpc.CallOption) (*response.Message, error)
+	createPeriodMutex       sync.RWMutex
+	createPeriodArgsForCall []struct {
+		arg1 context.Context
+		arg2 *request.CreatePeriod
+		arg3 []grpc.CallOption
+	}
+	createPeriodReturns struct {
+		result1 *response.Message
+		result2 error
+	}
+	createPeriodReturnsOnCall map[int]struct {
+		result1 *response.Message
+		result2 error
+	}
 	GetStatusStub        func(context.Context, *request.Status, ...grpc.CallOption) (*response.Status, error)
 	getStatusMutex       sync.RWMutex
 	getStatusArgsForCall []struct {
@@ -311,6 +326,71 @@ func (fake *FakeCoreClient) CreateEventReturnsOnCall(i int, result1 *response.Me
 		})
 	}
 	fake.createEventReturnsOnCall[i] = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CreatePeriod(arg1 context.Context, arg2 *request.CreatePeriod, arg3 ...grpc.CallOption) (*response.Message, error) {
+	fake.createPeriodMutex.Lock()
+	ret, specificReturn := fake.createPeriodReturnsOnCall[len(fake.createPeriodArgsForCall)]
+	fake.createPeriodArgsForCall = append(fake.createPeriodArgsForCall, struct {
+		arg1 context.Context
+		arg2 *request.CreatePeriod
+		arg3 []grpc.CallOption
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("CreatePeriod", []interface{}{arg1, arg2, arg3})
+	fake.createPeriodMutex.Unlock()
+	if fake.CreatePeriodStub != nil {
+		return fake.CreatePeriodStub(arg1, arg2, arg3...)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.createPeriodReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeCoreClient) CreatePeriodCallCount() int {
+	fake.createPeriodMutex.RLock()
+	defer fake.createPeriodMutex.RUnlock()
+	return len(fake.createPeriodArgsForCall)
+}
+
+func (fake *FakeCoreClient) CreatePeriodCalls(stub func(context.Context, *request.CreatePeriod, ...grpc.CallOption) (*response.Message, error)) {
+	fake.createPeriodMutex.Lock()
+	defer fake.createPeriodMutex.Unlock()
+	fake.CreatePeriodStub = stub
+}
+
+func (fake *FakeCoreClient) CreatePeriodArgsForCall(i int) (context.Context, *request.CreatePeriod, []grpc.CallOption) {
+	fake.createPeriodMutex.RLock()
+	defer fake.createPeriodMutex.RUnlock()
+	argsForCall := fake.createPeriodArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeCoreClient) CreatePeriodReturns(result1 *response.Message, result2 error) {
+	fake.createPeriodMutex.Lock()
+	defer fake.createPeriodMutex.Unlock()
+	fake.CreatePeriodStub = nil
+	fake.createPeriodReturns = struct {
+		result1 *response.Message
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeCoreClient) CreatePeriodReturnsOnCall(i int, result1 *response.Message, result2 error) {
+	fake.createPeriodMutex.Lock()
+	defer fake.createPeriodMutex.Unlock()
+	fake.CreatePeriodStub = nil
+	if fake.createPeriodReturnsOnCall == nil {
+		fake.createPeriodReturnsOnCall = make(map[int]struct {
+			result1 *response.Message
+			result2 error
+		})
+	}
+	fake.createPeriodReturnsOnCall[i] = struct {
 		result1 *response.Message
 		result2 error
 	}{result1, result2}
@@ -585,6 +665,8 @@ func (fake *FakeCoreClient) Invocations() map[string][][]interface{} {
 	defer fake.createClubMutex.RUnlock()
 	fake.createEventMutex.RLock()
 	defer fake.createEventMutex.RUnlock()
+	fake.createPeriodMutex.RLock()
+	defer fake.createPeriodMutex.RUnlock()
 	fake.getStatusMutex.RLock()
 	defer fake.getStatusMutex.RUnlock()
 	fake.handshakeMutex.RLock()

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/jwtauth"
@@ -132,7 +131,6 @@ func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	data.Email = fmt.Sprintf("%v", claims["email"])
 
-	fmt.Printf("Stuff: %#v \n", data)
 	resp, err := c.c.CreateClub(r.Context(), &data)
 	if err != nil {
 		render.Render(w, r, res.ErrInternalServer(err.Error(), err))
@@ -143,36 +141,18 @@ func (c *Router) createClub(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Router) createPeriod(w http.ResponseWriter, r *http.Request) {
-	var (
-		decoder    = json.NewDecoder(r.Body)
-		data       schema.CreatePeriod
-		err        error
-		start, end time.Time
-	)
+	var decoder = json.NewDecoder(r.Body)
+	var data request.CreatePeriod
 	if err := decoder.Decode(&data); err != nil {
 		render.Render(w, r, res.ErrBadRequest("invalid request"))
 		return
 	}
-
-	// parse form date input into standard format
-	const layout = "2006-01-02"
-	if start, err = time.Parse(layout, data.Start); err != nil {
-		render.Render(w, r, res.ErrBadRequest("invalid start date"))
-		return
-	}
-	if end, err = time.Parse(layout, data.End); err != nil {
-		render.Render(w, r, res.ErrBadRequest("invalid end date"))
+	data.ClubID = chi.URLParam(r, string(keyClub))
+	resp, err := c.c.CreatePeriod(r.Context(), &data)
+	if err != nil {
+		render.Render(w, r, res.ErrInternalServer(err.Error(), err))
 		return
 	}
 
-	// check validity
-	if start.After(end) {
-		render.Render(w, r, res.ErrBadRequest("start date must be before end date"))
-		return
-	}
-
-	// TODO: create period in core, for now just log
-	fmt.Println(start, end)
-
-	render.Render(w, r, res.Msg("period created sucessfully", http.StatusCreated))
+	render.Render(w, r, res.Msg(resp.GetMessage(), http.StatusCreated, "period", data.GetPeriod()))
 }
