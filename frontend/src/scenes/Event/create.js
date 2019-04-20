@@ -11,17 +11,12 @@ class CreateEvent extends Component {
   }
 
   updateTextFields(e) {
-    const infoField = e.target.getAttribute('id');
+    const infoField = e.target.getAttribute('name');
     this.setState({ [infoField]: e.target.value });
   }
 
-  // TODO once endpoint is set up, currently does nothing
-  async attemptCreateEvent() {
-    const {
-      eventname,
-    } = this.state;
-
-    const { client } = this.props;
+  async checkEventName() {
+    const { eventname } = this.state;
 
     if (!eventname) {
       this.setState({
@@ -30,17 +25,6 @@ class CreateEvent extends Component {
           message: 'Event name cannot be empty',
         },
       });
-    } else {
-      try {
-        await client.createEvent({ eventname });
-      } catch (e) {
-        this.setState({
-          notification: {
-            type: 'error',
-            message: 'Failed to create a new event.',
-          },
-        });
-      }
     }
   }
 
@@ -48,17 +32,22 @@ class CreateEvent extends Component {
     const { notification } = this.state;
     return (
       <div>
-        <div className="flex-al-center card margin-top-100 margin-sides-auto w-800">
-          <div className="margin-left-s"><a href="/login">Go Back</a></div>
-          <div className="title card-title">Create Event</div>
-          <Notification {...notification} />
-          <h2 className="fw-normal card-description">Add a point of data entry to your application period</h2>
-          <h2 className="flex-ai-start pad-top-xxl fw-normal card-text">Event Name</h2>
-          <div className="flex-inlinegrid margin-top-xs margin-bottom-xs">
-            <input className="input-box input-large" name="eventname" type="eventname" placeholder="Eg. Launch Pad Interview Notes" onChange={this.updatetextfields} />
+        <div className="card card-smallpad card-box margin-top-100 margin-sides-auto w-800">
+          <div>
+            <a href="/login">Go Back</a>
+            <div className="card-align-right"><a href="/login">X</a></div>
           </div>
-          <button className="button-click button-small animate-button margin-ends-xs margin-right-s" type="submit" onClick={this.attemptCreateEvent}><a href="/event/type">Next</a></button>
-          <a href="/login">Cancel</a>
+          <div className="pad-left-100 title card-title">Create Event</div>
+          <Notification {...notification} />
+          <h2 className="pad-left-100 fw-normal card-description pad-bot-m">Add a point of data entry to your application period</h2>
+          <h2 className="pad-left-100 flex-ai-start pad-top- fw-normal card-text">Event Name</h2>
+          <div className="pad-left-100 flex-inlinegrid margin-top-xs margin-bottom-xs pad-bot-m">
+            <input className="input-box input-large" name="eventname" type="eventname" placeholder="Eg. Launch Pad Interview Notes" onChange={this.updateTextFields} />
+          </div>
+          <div className="pad-ends-25 flex-al-center">
+            <button className="button-click button-small animate-button margin-ends-xs margin-right-s" type="submit" eventname={this.state.eventname} onClick={this.checkEventName}><a href="/event/type">Next</a></button>
+            <a href="/login" className="card-underline">Cancel</a>
+          </div>
         </div>
       </div>
     );

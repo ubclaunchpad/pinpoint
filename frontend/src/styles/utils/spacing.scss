@@ -12,6 +12,7 @@ $spacing-xxl: 48px;
 $spacing-nav: 60px;
 $spacing-25:  25px;
 $spacing-50:  50px;
+$spacing-80:  80px;
 $spacing-100: 100px;
 $spacing-200: 200px;
 $spacing-300: 300px;
@@ -28,6 +29,8 @@ $spacing-300: 300px;
   // left padding
   &-left, &-sides {
     &-m { padding-left: $spacing-m; }
+    &-50 { padding-left: $spacing-50; }
+    &-100 { padding-left: $spacing-100; }
     &-300 { padding-left: $spacing-300; }
   }
 

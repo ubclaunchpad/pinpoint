@@ -1,12 +1,27 @@
 // Default Card (without fixed weight and height)
 .card {
   background: white;
+  padding: 25px 50px;  
+  &-smallpad { padding: 10px 15px; }
+
   border-radius: 50px;
-  padding: 25px 50px;
+  &-box { border-radius: 10px; }
+
   .card {
     &-title { color: $gray-2; }
     &-text { color: $gray-3; }
+    &-underline { 
+        &:hover {
+        text-decoration: underline;
+        transition: all $transition-time ease-in-out;
+        }
+    }
     &-description { font-size: 16px; color: $gray-3; }
+  }
+  &-align-right { 
+    right: 15px;
+    top: 5px;
+    float: right;
   }
   &-button {
     background-color: rgb(243, 62, 62);
@@ -22,5 +37,9 @@
         &-small { font-size: 14px; }
         &-large { font-size: 16px; }
     }
+  }
+  &-row {
+    display: flex;
+    flex-direction: row;
   }
 }
