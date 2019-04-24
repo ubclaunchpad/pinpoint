@@ -29,7 +29,7 @@ class CreateEvent extends Component {
   }
 
   render() {
-    const { notification } = this.state;
+    const { notification, eventname } = this.state;
     return (
       <div>
         <div className="card card-smallpad card-box margin-top-100 margin-sides-auto w-800">
@@ -45,7 +45,7 @@ class CreateEvent extends Component {
             <input className="input-box input-large" name="eventname" type="eventname" placeholder="Eg. Launch Pad Interview Notes" onChange={this.updateTextFields} />
           </div>
           <div className="pad-ends-25 flex-al-center">
-            <button className="button-click button-small animate-button margin-ends-xs margin-right-s" type="submit" eventname={this.state.eventname} onClick={this.checkEventName}><a href="/event/type">Next</a></button>
+            <button className="button-click button-small animate-button margin-ends-xs margin-right-s" type="submit" eventname={eventname} onClick={this.checkEventName}><a href="/event/type">Next</a></button>
             <a href="/login" className="card-underline">Cancel</a>
           </div>
         </div>
