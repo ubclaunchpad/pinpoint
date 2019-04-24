@@ -9,7 +9,8 @@ import Reset from './Reset';
 import Signup from './Signup';
 import Navbar from './Navbar';
 import CreateApplicationPeriod from '../scenes/ApplicationPeriod/create';
-
+import CreateEvent from '../scenes/Event/create';
+import EventType from '../scenes/Event/type';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
@@ -74,6 +75,8 @@ class App extends Component {
             <Route exact path="/reset" component={Reset} />
             <Route exact path="/signup" component={() => <Signup client={client} />} />
             <Route exact path="/scenes/applicationperiod" component={CreateApplicationPeriod} />
+            <Route exact path="/event" component={CreateEvent} />
+            <Route exact path="/event/type" component={EventType} />
           </Switch>
         </div>
       </BrowserRouter>
